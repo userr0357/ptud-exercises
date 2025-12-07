@@ -1,0 +1,11 @@
+node_modules/
+backups/
+*.log
+.env
+.DS_Store
+/.vscode/
+/*.zip
+db.json.backup.*.json
+/.idea/
+npm-debug.log*
+dist/

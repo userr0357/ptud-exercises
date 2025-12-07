@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trang Quản lý - Giảng viên</title>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container" style="padding:24px;">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h1>Trang Quản lý (Giảng viên)</h1>
+        <div>
+          <button id="btn-export" class="accent">Xuất Excel</button>
+          <button id="btn-logout">Đăng xuất</button>
+        </div>
+      </div>
+
+      <div id="lecturer-info" style="margin:8px 0 16px"></div>
+
+      <h3>Thêm / Sửa bài tập</h3>
+      <form id="exercise-form">
+        <input type="hidden" name="original_id" id="original_id" />
+        <label>Môn</label>
+        <select id="form-subject" name="subject_id" required></select>
+        <label>Dạng</label>
+        <select id="form-form" name="form_id" required></select>
+        <label>Tên bài</label>
+        <input name="title" required />
+        <label>Id (unique)</label>
+        <input name="id" required />
+        <label>Độ khó</label>
+        <select name="difficulty">
+          <option>Dễ</option>
+          <option>Trung bình</option>
+          <option>Khó</option>
+        </select>
+        <label>Mô tả Markdown</label>
+        <textarea name="description" rows="4"></textarea>
+        <label>Yêu cầu (mỗi dòng 1 yêu cầu)</label>
+        <textarea name="requirements" rows="3"></textarea>
+        <label>4 tiêu chí chấm (mỗi dòng 1 tiêu chí)</label>
+        <textarea name="grading_criteria" rows="4"></textarea>
+        <label>Định dạng nộp</label>
+        <input name="submission_format" />
+        <label>File kèm (có thể chọn nhiều)</label>
+        <input type="file" name="files" multiple />
+        <div style="margin-top:12px">
+          <button type="submit" class="accent">Lưu</button>
+          <button type="button" id="exercise-cancel">Huỷ</button>
+        </div>
+      </form>
+
+      <h3>Danh sách bài (có thể xóa)</h3>
+      <div id="manage-list"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
+  <script src="/lecturer-app.js"></script>
+</body>
+</html>

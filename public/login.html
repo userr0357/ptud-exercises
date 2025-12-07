@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Đăng nhập Giảng viên</title>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div style="max-width:720px;margin:40px auto;padding:16px;">
+    <h1>Đăng nhập Giảng viên</h1>
+    <form id="login-page-form">
+      <label>Tên (phải chính xác)</label>
+      <input name="name" required />
+      <label>Mã giảng viên</label>
+      <input name="lecturer_id" required />
+      <label>Mật khẩu</label>
+      <input name="password" type="password" required />
+      <div style="margin-top:12px">
+        <button type="submit" class="accent">Đăng nhập</button>
+        <button type="button" id="login-back">Quay lại Trang Sinh viên</button>
+      </div>
+    </form>
+    <div id="login-error" style="color:#c00;margin-top:12px;display:none"></div>
+  </div>
+  <script src="/login.js"></script>
+</body>
+</html>

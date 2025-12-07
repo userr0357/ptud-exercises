@@ -1,0 +1,94 @@
+:root{
+  --primary: #3F51B5;
+  --bg: #F0F2F5;
+  --accent: #FF9800;
+  --text: #222;
+  --card: #fff;
+  --font: 'PT Sans', sans-serif;
+}
+*{box-sizing:border-box}
+body{font-family:var(--font);margin:0;background:var(--bg);color:var(--text)}
+.sidebar{width:260px;position:fixed;left:0;top:0;bottom:0;background:var(--card);padding:20px;border-right:1px solid #e6e9ee}
+.brand{font-weight:700;color:var(--primary);margin-bottom:12px}
+.sidebar ul{list-style:none;padding:0;margin:0}
+.sidebar li{padding:8px 10px;border-radius:6px;cursor:pointer}
+.sidebar li:hover{background:#f3f6ff}
+.sidebar li.active{background:var(--primary);color:#fff}
+.main{margin-left:280px;padding:24px}
+#main-header{display:flex;align-items:center;justify-content:space-between}
+#forms-container{margin-top:16px}
+.form-card{background:var(--card);padding:12px;border-radius:8px;margin-bottom:12px;border:1px solid #e6e9ee}
+.form-card h3{margin:0 0 6px}
+.exercise-item{padding:8px;border-radius:6px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}
+.exercise-item .title{cursor:pointer}
+.exercise-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:16px}
+.exercise-card{background:var(--card);padding:18px;border-radius:10px;border:1px solid #e6e9ee;cursor:pointer;display:flex;flex-direction:column;gap:10px;min-height:140px}
+.exercise-card:hover{box-shadow:0 10px 28px rgba(31,41,55,0.09);transform:translateY(-4px);transition:all .14s ease}
+.exercise-title{font-weight:700;font-size:16px}
+.exercise-desc{font-size:14px;color:#444}
+.exercise-meta{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+.badge{background:#f3f3f3;padding:6px 10px;border-radius:12px;font-size:13px}
+
+/* difficulty colors */
+.badge.easy{background:#e6f4ea;color:#0b6f3a;border:1px solid #cdeed0}
+.badge.medium{background:#fff4e5;color:#b45f00;border:1px solid #ffe2b8}
+.badge.hard{background:#fdecea;color:#a31f1f;border:1px solid #f6c8c8}
+
+/* ensure primary and accent used for headings and buttons */
+.brand{color:var(--primary)}
+h1, h2, h3 {font-family:var(--font);color:var(--primary)}
+.accent{background:var(--accent);color:#fff}
+
+/* exercise detail overlay */
+#exercise-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1098;opacity:0;visibility:hidden;transition:opacity .22s ease, visibility .22s}
+#exercise-overlay.show{opacity:1;visibility:visible}
+
+/* right-side panel for exercise detail */
+#exercise-detail{position:fixed;right:0;top:0;height:100vh;width:480px;max-width:92vw;z-index:1100;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);box-shadow: -8px 0 24px rgba(2,6,23,0.12);overflow:auto;padding:20px;background:var(--card);border-left:1px solid rgba(0,0,0,0.06)}
+#exercise-detail.open{transform:translateX(0)}
+#exercise-detail .close-ex{position:absolute;left:8px;top:8px;border:none;background:transparent;font-size:22px;cursor:pointer}
+
+/* content inside panel should scroll if long */
+#exercise-detail .content{padding-top:28px}
+
+
+/* exercise detail modal */
+#exercise-detail.open{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1200;background:var(--card);padding:20px;border-radius:10px;max-width:880px;max-height:86vh;overflow:auto;border:1px solid #e6e9ee;box-shadow:0 20px 50px rgba(31,41,55,0.2)}
+#exercise-detail.open .close-ex{position:absolute;right:16px;top:12px;border:none;background:transparent;font-size:22px;cursor:pointer}
+
+/* header controls */
+#main-header{display:flex;align-items:center;justify-content:space-between}
+#header-controls{display:flex;gap:12px;align-items:center}
+#header-controls #search-input{padding:8px;border-radius:8px;border:1px solid #ddd;min-width:320px}
+#theme-toggle{background:transparent;border:1px solid #ddd;padding:6px 8px;border-radius:6px;cursor:pointer}
+
+/* dark mode */
+body.dark-mode{background:#0f1724;color:#e6eef8}
+body.dark-mode .sidebar{background:#0b1220;color:#cfe0ff;border-right:1px solid #111827}
+body.dark-mode .form-card, body.dark-mode .exercise-card, body.dark-mode .card, body.dark-mode .modal-content{background:#0b1220;color:#e6eef8;border:1px solid #1f2937}
+body.dark-mode .exercise-desc, body.dark-mode .small{color:#cbd5e1}
+body.dark-mode .badge{background:#111827;color:#e6eef8}
+body.dark-mode .accent{background:var(--accent);color:#fff}
+.card{background:var(--card);padding:16px;border-radius:8px;border:1px solid #e6e9ee}
+.hidden{display:none}
+.accent{background:var(--accent);color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer}
+button{cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center}
+.modal-content{background:var(--card);padding:16px;border-radius:8px;width:720px;max-height:80vh;overflow:auto}
+.modal-content.large{width:920px}
+/* modal close button */
+.modal-close{position:absolute;right:12px;top:12px;border:none;background:transparent;font-size:22px;line-height:1;color:#666;cursor:pointer}
+.modal-close:hover{color:#000}
+
+/* modal header and text close button */
+.modal-header{position:relative;padding-right:88px}
+.modal-header h2{margin:0 0 12px}
+.modal-close-text{position:absolute;right:48px;top:10px;background:#f3f3f3;border:1px solid #ddd;padding:6px 8px;border-radius:6px;cursor:pointer}
+.modal-close-text:hover{background:#eee}
+form label{display:block;margin-top:8px;font-size:13px}
+form input, form textarea, form select{width:100%;padding:8px;margin-top:4px;border:1px solid #ddd;border-radius:6px}
+.panel-actions{display:flex;gap:8px;margin:8px 0}
+.lecturer-login{position:absolute;bottom:20px;left:20px}
+
+/* small screens */
+@media(max-width:800px){.sidebar{position:relative;width:100%;height:auto}.main{margin-left:0}}
