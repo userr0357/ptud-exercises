@@ -19,7 +19,14 @@ if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR);
 const upload = multer({ dest: UPLOAD_DIR });
 
 const app = express();
-app.use(cors());
+// Configure CORS: if FRONTEND_URL is set, allow only that origin and enable credentials
+const FRONTEND_URL = process.env.FRONTEND_URL || '';
+if (FRONTEND_URL) {
+  app.use(cors({ origin: FRONTEND_URL, credentials: true }));
+} else {
+  // no FRONTEND_URL configured -> allow all origins (useful for local/dev)
+  app.use(cors());
+}
 app.use(express.json());
 
 // Protect lecturer-only static assets from being served directly without auth.
@@ -103,7 +110,10 @@ app.post('/api/lecturer/login', (req, res) => {
   if (!found) return res.status(401).json({ error: 'Invalid credentials' });
   const token = jwt.sign({ lecturer_id: found.lecturer_id, name: found.name }, JWT_SECRET, { expiresIn: '8h' });
   // set HttpOnly cookie so browser will send it on subsequent requests
-  res.cookie('token', token, { httpOnly: true, sameSite: 'lax', maxAge: 8 * 3600 * 1000 });
+  // in production set secure flag when using HTTPS
+  const cookieOpts = { httpOnly: true, sameSite: 'lax', maxAge: 8 * 3600 * 1000 };
+  if (process.env.NODE_ENV === 'production') cookieOpts.secure = true;
+  res.cookie('token', token, cookieOpts);
   res.json({ success: true, lecturer: { lecturer_id: found.lecturer_id, name: found.name } });
 });
 
