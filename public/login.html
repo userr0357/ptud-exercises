@@ -11,12 +11,12 @@
   <div style="max-width:720px;margin:40px auto;padding:16px;">
     <h1>Đăng nhập Giảng viên</h1>
     <form id="login-page-form">
-      <label>Tên (phải chính xác)</label>
-      <input name="name" required />
-      <label>Mã giảng viên</label>
-      <input name="lecturer_id" required />
-      <label>Mật khẩu</label>
-      <input name="password" type="password" required />
+      <label for="login-name">Tên (phải chính xác)</label>
+      <input id="login-name" name="name" required />
+      <label for="login-lecturer-id">Mã giảng viên</label>
+      <input id="login-lecturer-id" name="lecturer_id" required />
+      <label for="login-password">Mật khẩu</label>
+      <input id="login-password" name="password" type="password" required />
       <div style="margin-top:12px">
         <button type="submit" class="accent">Đăng nhập</button>
         <button type="button" id="login-back">Quay lại Trang Sinh viên</button>

@@ -110,14 +110,33 @@ function renderSubject() {
       if (!q) return true;
       return (ex.title || '').toLowerCase().includes(q) || (ex.description || '').toLowerCase().includes(q);
     });
-    // sort by difficulty (easy -> medium -> hard), then by title
+    // sort by difficulty (easy -> medium -> hard), then by numeric order extracted from title (e.g. "Bài 10")
+    // fall back to localeCompare when no numeric prefix is found
     filtered.sort((a, b) => {
       const daLabel = normalizeDifficultyLabel(a.difficulty) || a.difficulty || '';
       const dbLabel = normalizeDifficultyLabel(b.difficulty) || b.difficulty || '';
       const da = DIFF_ORDER[(daLabel).toLowerCase()] ?? 1;
       const db = DIFF_ORDER[(dbLabel).toLowerCase()] ?? 1;
       if (da !== db) return da - db;
-      return (a.title || '').localeCompare(b.title || '');
+
+      const titleA = (a.title || '').trim();
+      const titleB = (b.title || '').trim();
+
+      // try to extract the first integer that appears in the title (handles "Bài 1", "Exercise 10", etc.)
+      const numA = (() => { const m = titleA.match(/(\d+)/); return m ? parseInt(m[1], 10) : null; })();
+      const numB = (() => { const m = titleB.match(/(\d+)/); return m ? parseInt(m[1], 10) : null; })();
+
+      if (numA != null && numB != null) {
+        if (numA !== numB) return numA - numB;
+        // if numbers equal, fall through to text compare of the rest
+      } else if (numA != null) {
+        // put numeric-prefixed titles before non-numeric
+        return -1;
+      } else if (numB != null) {
+        return 1;
+      }
+
+      return titleA.localeCompare(titleB);
     });
 
     const key = `${s.subject_id}-${form.form_id}`;

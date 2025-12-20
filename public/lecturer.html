@@ -23,30 +23,30 @@
       <h3>Thêm / Sửa bài tập</h3>
       <form id="exercise-form">
         <input type="hidden" name="original_id" id="original_id" />
-        <label>Môn</label>
+        <label for="form-subject">Môn</label>
         <select id="form-subject" name="subject_id" required></select>
-        <label>Dạng</label>
+        <label for="form-form">Dạng</label>
         <select id="form-form" name="form_id" required></select>
-        <label>Tên bài</label>
-        <input name="title" required />
-        <label>Id (unique)</label>
-        <input name="id" required />
-        <label>Độ khó</label>
-        <select name="difficulty">
+        <label for="field-title">Tên bài</label>
+        <input id="field-title" name="title" required />
+        <label for="field-id">Id (unique)</label>
+        <input id="field-id" name="id" required />
+        <label for="field-difficulty">Độ khó</label>
+        <select id="field-difficulty" name="difficulty">
           <option>Dễ</option>
           <option>Trung bình</option>
           <option>Khó</option>
         </select>
-        <label>Mô tả Markdown</label>
-        <textarea name="description" rows="4"></textarea>
-        <label>Yêu cầu (mỗi dòng 1 yêu cầu)</label>
-        <textarea name="requirements" rows="3"></textarea>
-        <label>4 tiêu chí chấm (mỗi dòng 1 tiêu chí)</label>
-        <textarea name="grading_criteria" rows="4"></textarea>
-        <label>Định dạng nộp</label>
-        <input name="submission_format" />
-        <label>File kèm (có thể chọn nhiều)</label>
-        <input type="file" name="files" multiple />
+        <label for="field-description">Mô tả Markdown</label>
+        <textarea id="field-description" name="description" rows="4"></textarea>
+        <label for="field-requirements">Yêu cầu (mỗi dòng 1 yêu cầu)</label>
+        <textarea id="field-requirements" name="requirements" rows="3"></textarea>
+        <label for="field-grading">4 tiêu chí chấm (mỗi dòng 1 tiêu chí)</label>
+        <textarea id="field-grading" name="grading_criteria" rows="4"></textarea>
+        <label for="field-submission">Định dạng nộp</label>
+        <input id="field-submission" name="submission_format" />
+        <label for="field-files">File kèm (có thể chọn nhiều)</label>
+        <input id="field-files" type="file" name="files" multiple />
         <div style="margin-top:12px">
           <button type="submit" class="accent">Lưu</button>
           <button type="button" id="exercise-cancel">Huỷ</button>
