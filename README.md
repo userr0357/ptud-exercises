@@ -27,37 +27,7 @@ Ghi chú:
 - Khuyến nghị tạo Personal Access Token (PAT) trên GitHub với quyền `repo`.
 
 Nếu cần hướng dẫn từng bước tạo PAT hoặc tạo repo, báo tôi — tôi sẽ hướng dẫn chi tiết.
-
------------------
-Migration to SQL Server
------------------
-
-We've included a helper script to generate a T-SQL migration file from `db.json`.
-
-Generate migration SQL:
-
-```powershell
-cd D:\3\PTUD
-node scripts\generate_sql_migration.js migrate_to_sqlserver.sql PTUD
-```
-
-This writes `scripts\migrate_to_sqlserver.sql` (or the path you pass) which contains CREATE TABLE and INSERT statements.
-
-Run the generated SQL with `sqlcmd`:
-
-- Windows Authentication:
-```powershell
-sqlcmd -S "<SERVER_NAME>\<INSTANCE>" -E -i scripts\migrate_to_sqlserver.sql
-```
-
-- SQL Authentication:
-```powershell
-sqlcmd -S "<SERVER_NAME>\<INSTANCE>" -U <user> -P <password> -i scripts\migrate_to_sqlserver.sql
-```
-
-Replace `<SERVER_NAME>\<INSTANCE>` (e.g. `DESKTOP-8UPGPO6\SQLEXPRESS`) and credentials accordingly.
-
-If you prefer I can also generate CSVs or run the migration for you (you must provide DB connection details and allow me to run commands on your machine). Otherwise run the two commands above on your machine.
+ 
 # Ngân hàng Bài tập
 
 Local prototype web app (Student & Lecturer views) built with Node.js + Express and a JSON file `db.json` as the data store.
