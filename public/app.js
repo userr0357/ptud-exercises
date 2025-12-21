@@ -515,23 +515,7 @@ function renderManageList() {
   });
 }
 
-const btnExportEl = document.getElementById('btn-export');
-if (btnExportEl) btnExportEl.onclick = async () => {
-  if (!state.currentSubject) return alert('Chọn môn trước khi xuất');
-  try {
-    const res = await fetch(`/api/export?subject_id=${state.currentSubject.subject_id}`, { credentials: 'include' });
-    if (!res.ok) throw new Error('Export failed');
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${state.currentSubject.subject_id}-exercises.xlsx`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  } catch (err) { alert('Xuất Excel thất bại'); }
-};
+// Export button removed from lecturer UI; export handled elsewhere when needed
 
 // init
 loadSubjects().catch(err=>console.error(err));
