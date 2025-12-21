@@ -44,7 +44,7 @@ app.use(express.json());
 //  PROTECT LECTURER STATIC FILES
 // ==================================================
 app.use((req, res, next) => {
-  const protectedPaths = ['/lecturer.html', '/lecturer-app.js', '/lecturer-app.bundle.js'];
+  const protectedPaths = ['/lecturer.html', '/lecturer-new.html', '/lecturer-app.js', '/lecturer-new.js', '/lecturer-app.bundle.js'];
 
   try {
     const p = req.path;
@@ -194,6 +194,9 @@ app.post('/api/exercise', auth, upload.array('files'), (req, res) => {
 
     const exercise = JSON.parse(payload.exercise);
 
+    // add created_at timestamp for new exercises if not provided
+    if (!exercise.created_at) exercise.created_at = new Date().toISOString();
+
     if (req.files && req.files.length) {
       exercise.attached_files = req.files.map(f => ({
         originalname: f.originalname,
@@ -242,6 +245,9 @@ app.put('/api/exercise/:id', auth, upload.array('files'), (req, res) => {
         if (idx !== -1) {
           const ex = form.exercises[idx];
           const merged = { ...ex, ...updated };
+
+          // preserve original created_at if present; if merged has no created_at, keep existing or set now
+          if (!merged.created_at) merged.created_at = ex.created_at || new Date().toISOString();
 
           if (req.files?.length) {
             merged.attached_files = (merged.attached_files || []).concat(
@@ -321,6 +327,13 @@ app.delete('/api/exercise/:id', auth, (req, res) => {
 app.get('/api/export', auth, async (req, res) => {
   const subject_id = req.query.subject_id;
 
+  // optional filters: since (ISO date) to export only exercises created after this time
+  // and form_ids (comma-separated) to export only specific form types
+  const since = req.query.since ? new Date(req.query.since) : null;
+  const formIds = req.query.form_ids ? req.query.form_ids.split(',').map(s=>s.trim()).filter(Boolean) : null;
+  // optional explicit exercise ids (comma-separated) to export specific exercises
+  const exIds = req.query.exercise_ids ? req.query.exercise_ids.split(',').map(s=>s.trim()).filter(Boolean) : null;
+
   const db = readDB();
   const subject = db.find(s => s.subject_id === subject_id);
 
@@ -335,11 +348,24 @@ app.get('/api/export', auth, async (req, res) => {
     { header: 'Exercise ID', key: 'id', width: 20 },
     { header: 'Title', key: 'title', width: 40 },
     { header: 'Difficulty', key: 'difficulty', width: 12 },
-    { header: 'Submission Format', key: 'submission_format', width: 20 }
+    { header: 'Submission Format', key: 'submission_format', width: 20 },
+    { header: 'Description', key: 'description', width: 40 },
+    { header: 'Requirements', key: 'requirements', width: 30 },
+    { header: 'Grading Criteria', key: 'grading_criteria', width: 30 },
+    { header: 'Attached Files', key: 'attached_files', width: 30 },
+    { header: 'Created At', key: 'created_at', width: 20 }
   ];
 
   for (const form of subject.forms) {
+    if (formIds && formIds.length && !formIds.includes(form.form_id)) continue;
     for (const ex of form.exercises) {
+      // if explicit exercise ids provided, only include those
+      if (exIds && exIds.length && !exIds.includes(ex.id)) continue;
+      if (since) {
+        if (!ex.created_at) continue;
+        const d = new Date(ex.created_at);
+        if (isNaN(d.getTime()) || d < since) continue;
+      }
       sheet.addRow({
         form_id: form.form_id,
         form_name: form.name,
@@ -347,6 +373,12 @@ app.get('/api/export', auth, async (req, res) => {
         title: ex.title,
         difficulty: ex.difficulty,
         submission_format: ex.submission_format
+        ,
+        description: ex.description || '',
+        requirements: Array.isArray(ex.requirements) ? ex.requirements.join(' | ') : (ex.requirements || ''),
+        grading_criteria: Array.isArray(ex.grading_criteria) ? ex.grading_criteria.join(' | ') : (ex.grading_criteria || ''),
+        attached_files: Array.isArray(ex.attached_files) ? ex.attached_files.map(f=>f.originalname||f.filename||'').join(', ') : (ex.attached_files||'') ,
+        created_at: ex.created_at || ''
       });
     }
   }
@@ -371,6 +403,57 @@ app.get('/api/export', auth, async (req, res) => {
 app.post('/api/lecturer/logout', (req, res) => {
   res.clearCookie('token');
   res.json({ success: true });
+});
+
+// ==================================================
+//  EXPORT INLINE (export exercises provided in request body)
+// ==================================================
+app.post('/api/export-inline', auth, async (req, res) => {
+  try {
+    const { exercises, subject_id } = req.body;
+    if (!Array.isArray(exercises) || !exercises.length) return res.status(400).json({ error: 'No exercises provided' });
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet(subject_id || 'export');
+
+    sheet.columns = [
+      { header: 'Form ID', key: 'form_id', width: 10 },
+      { header: 'Form Name', key: 'form_name', width: 20 },
+      { header: 'Exercise ID', key: 'id', width: 20 },
+      { header: 'Title', key: 'title', width: 40 },
+      { header: 'Difficulty', key: 'difficulty', width: 12 },
+      { header: 'Submission Format', key: 'submission_format', width: 20 },
+      { header: 'Description', key: 'description', width: 40 },
+      { header: 'Requirements', key: 'requirements', width: 30 },
+      { header: 'Grading Criteria', key: 'grading_criteria', width: 30 },
+      { header: 'Attached Files', key: 'attached_files', width: 30 },
+      { header: 'Created At', key: 'created_at', width: 20 }
+    ];
+
+    for (const ex of exercises) {
+      sheet.addRow({
+        form_id: ex.form_id || '',
+        form_name: ex.form_name || '',
+        id: ex.id || '',
+        title: ex.title || '',
+        difficulty: ex.difficulty || '',
+        submission_format: ex.submission_format || '',
+        description: ex.description || '',
+        requirements: Array.isArray(ex.requirements) ? ex.requirements.join(' | ') : (ex.requirements || ''),
+        grading_criteria: Array.isArray(ex.grading_criteria) ? ex.grading_criteria.join(' | ') : (ex.grading_criteria || ''),
+        attached_files: Array.isArray(ex.attached_files) ? ex.attached_files.map(f=>f.originalname||f.filename||'').join(', ') : (ex.attached_files||''),
+        created_at: ex.created_at || ''
+      });
+    }
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${subject_id || 'export'}-exercises.xlsx"`);
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error('export-inline error', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 // ==================================================
