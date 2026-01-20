@@ -1,0 +1,400 @@
+DANH SÁCH BÀI TẬP NHẬP MÔN LẬP TRÌNH
+DẠNG 3: CẤU TRÚC ĐIỀU KHIỂN (IF-ELSE, SWITCH-CASE)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Kiểm tra tính chẵn lẻ và âm dương
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng cấu trúc If-Else cơ bản.
+- Mô tả: Nhập vào một số nguyên n. Kiểm tra và in ra thông báo:
+  + n là số chẵn hay số lẻ?
+  + n là số âm, số dương hay số 0?
+- Tiêu chí chấm điểm:
+  1. Sử dụng đúng toán tử chia lấy dư % 2 để kiểm tra chẵn lẻ.
+  2. Cấu trúc If-Else đầy đủ các trường hợp.
+
+Bài 2: Tìm số lớn nhất (Max) trong 3 số
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng kỹ thuật lính canh hoặc If-Else lồng nhau.
+- Mô tả: Nhập vào 3 số thực a, b, c. Tìm và in ra giá trị lớn nhất trong 3 số đó.
+- Tiêu chí chấm điểm:
+  1. Thuật toán tối ưu (ít phép so sánh nhất).
+  2. Xử lý đúng trường hợp các số bằng nhau.
+
+Bài 3: Kiểm tra ký tự nguyên âm/phụ âm
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng cấu trúc Switch-Case hoặc If-Else kết hợp toán tử logic.
+- Mô tả: Nhập vào một ký tự trong bảng chữ cái tiếng Anh. Kiểm tra ký tự đó là nguyên âm (a, e, i, o, u) hay phụ âm.
+- Tiêu chí chấm điểm:
+  1. Xử lý được cả chữ hoa và chữ thường.
+  2. Sử dụng Switch-Case gom nhóm các trường hợp nguyên âm để code ngắn gọn.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 4: Tính tiền điện sinh hoạt
+- Độ khó: Trung bình
+- Yêu cầu: Sử dụng If-Else bậc thang (Else-If).
+- Mô tả: Nhập vào số kWh điện tiêu thụ. Tính tổng tiền điện theo lũy tiến:
+  + 50 kWh đầu: 1.678 đ/kWh
+  + 51 - 100 kWh: 1.734 đ/kWh
+  + Trên 100 kWh: 2.014 đ/kWh
+- Tiêu chí chấm điểm:
+  1. Công thức tính tiền đúng (phải tính theo từng bậc, không nhân trực tiếp tổng số chữ với đơn giá cao nhất).
+  2. Kiểm tra điều kiện số kWh nhập vào không được âm.
+
+Bài 5: Giải phương trình bậc hai ax^2 + bx + c = 0
+- Độ khó: Trung bình
+- Yêu cầu: Biện luận đầy đủ các trường hợp toán học.
+- Mô tả: Nhập 3 hệ số a, b, c. Giải và biện luận nghiệm của phương trình.
+- Tiêu chí chấm điểm:
+  1. Xử lý trường hợp a = 0 (trở thành phương trình bậc nhất).
+  2. Tính Delta và xét đúng 3 trường hợp: Delta < 0, Delta = 0, Delta > 0.
+
+Bài 6: Tính ngày trong tháng
+- Độ khó: Trung bình
+- Yêu cầu: Sử dụng Switch-Case và lồng If-Else kiểm tra năm nhuận.
+- Mô tả: Nhập vào tháng và năm. In ra số ngày của tháng đó.
+- Tiêu chí chấm điểm:
+  1. Xử lý đúng các tháng 1, 3, 5, 7, 8, 10, 12 có 31 ngày.
+  2. Tháng 2 phải dựa vào năm nhuận để xác định 28 hay 29 ngày.
+
+Bài 7: Kiểm tra tính hợp lệ của ngày tháng năm
+- Độ khó: Trung bình
+- Yêu cầu: Kết hợp nhiều điều kiện logic phức tạp.
+- Mô tả: Nhập vào ngày, tháng, năm. Kiểm tra xem ngày tháng năm đó có hợp lệ hay không (Ví dụ: 30/02/2023 là không hợp lệ).
+- Tiêu chí chấm điểm:
+  1. Kiểm tra miền giá trị: tháng (1-12), ngày (1-31 tùy tháng).
+  2. Kiểm tra logic năm nhuận cho ngày 29/02.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 8: Đọc số nguyên có 2 chữ số
+- Độ khó: Khó
+- Yêu cầu: Sử dụng Switch-Case lồng nhau để xử lý chuỗi văn bản.
+- Mô tả: Nhập vào số nguyên n (10 <= n <= 99). In ra cách đọc của số đó bằng tiếng Việt (Ví dụ: 25 in ra "Hai muoi lam", 11 in ra "Muoi mot").
+- Tiêu chí chấm điểm:
+  1. Tách đúng hàng chục và hàng đơn vị.
+  2. Xử lý các trường hợp đặc biệt: số hàng đơn vị là 1 (mốt/một), 5 (lăm/năm), hàng chục là 1 (mười).
+
+Bài 9: Tìm ngày kế tiếp (Next Day)
+- Độ khó: Khó
+- Yêu cầu: Tư duy logic về sự chuyển giao đơn vị thời gian.
+- Mô tả: Nhập vào ngày, tháng, năm hợp lệ. Tìm và in ra ngày, tháng, năm của ngày tiếp theo.
+- Tiêu chí chấm điểm:
+  1. Xử lý đúng khi ngày tiếp theo chuyển sang tháng mới.
+  2. Xử lý đúng khi ngày tiếp theo chuyển sang năm mới (31/12).
+  3. Xử lý đúng ngày cuối cùng của tháng 2 năm nhuận.
+
+Bài 10: Xây dựng máy tính bỏ túi đơn giản (Calculator)
+- Độ khó: Khó
+- Yêu cầu: Xử lý menu và điều kiện lỗi toán học.
+- Mô tả: Nhập vào hai số thực a, b và một ký tự toán tử (+, -, *, /). In ra kết quả phép tính. Nếu người dùng nhập sai ký tự hoặc chia cho 0, phải thông báo lỗi cụ thể.
+- Tiêu chí chấm điểm:
+  1. Sử dụng Switch-Case cho các toán tử.
+  2. Bắt lỗi chia cho số 0 (Zero Division Error) trước khi thực hiện phép tính.
+
+DANH SÁCH BÀI TẬP NHẬP MÔN LẬP TRÌNH
+DẠNG 4: VÒNG LẶP (FOR, WHILE, DO-WHILE)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: In dãy số và tính tổng cơ bản
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng vòng lặp for.
+- Mô tả: Nhập vào số nguyên dương n. 
+  a. In các số từ 1 đến n ra màn hình, mỗi số cách nhau một khoảng trắng.
+  b. Tính tổng S = 1 + 2 + ... + n.
+- Tiêu chí chấm điểm:
+  1. Khởi tạo biến chạy i và biến tích lũy S đúng giá trị.
+  2. Vòng lặp chạy đủ số lần (từ 1 đến n).
+
+Bài 2: Bảng cửu chương
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng vòng lặp for.
+- Mô tả: Nhập vào một số nguyên n (1 <= n <= 9). In ra bảng cửu chương của số đó.
+- Tiêu chí chấm điểm:
+  1. Hiển thị đúng định dạng (Ví dụ: 2 x 1 = 2).
+  2. Sử dụng vòng lặp chạy từ 1 đến 10.
+
+Bài 3: Liệt kê số chẵn/lẻ
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng vòng lặp và câu lệnh điều kiện bên trong.
+- Mô tả: Nhập vào số nguyên dương n. In ra tất cả các số chẵn nhỏ hơn hoặc bằng n.
+- Tiêu chí chấm điểm:
+  1. Sử dụng bước nhảy i++ kết hợp if(i%2==0) hoặc tối ưu bằng bước nhảy i+=2.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 4: Tính tổng chuỗi phân số
+- Độ khó: Trung bình
+- Yêu cầu: Kiểm soát kiểu dữ liệu số thực trong vòng lặp.
+- Mô tả: Tính tổng S = 1 + 1/2 + 1/3 + ... + 1/n với n nhập từ bàn phím.
+- Tiêu chí chấm điểm:
+  1. Biến S phải khai báo kiểu float/double.
+  2. Ép kiểu trong phép chia (ví dụ: 1.0/i) để không bị mất phần thập phân.
+
+Bài 5: Phân tích một số ra thừa số nguyên tố
+- Độ khó: Trung bình
+- Yêu cầu: Kết hợp vòng lặp và phép chia lấy dư.
+- Mô tả: Nhập n = 12, in ra: 2 * 2 * 3.
+- Tiêu chí chấm điểm:
+  1. Sử dụng vòng lặp while để chia triệt để cho từng số nguyên tố từ nhỏ đến lớn.
+
+Bài 6: Tìm ước chung lớn nhất (UCLN) và Bội chung nhỏ nhất (BCNN)
+- Độ khó: Trung bình
+- Yêu cầu: Sử dụng vòng lặp while với điều kiện phức tạp.
+- Mô tả: Nhập 2 số a, b. Tìm UCLN và BCNN của chúng.
+- Tiêu chí chấm điểm:
+  1. Áp dụng đúng thuật toán Euclid.
+  2. Công thức BCNN = (a * b) / UCLN.
+
+Bài 7: Kiểm tra số hoàn thiện (Perfect Number)
+- Độ khó: Trung bình
+- Yêu cầu: Vòng lặp tìm ước số.
+- Mô tả: Số hoàn thiện là số có tổng các ước (không kể chính nó) bằng chính nó. Ví dụ: 6 = 1 + 2 + 3. Kiểm tra n có phải số hoàn thiện không?
+- Tiêu chí chấm điểm:
+  1. Vòng lặp chạy từ 1 đến n/2 để tìm ước.
+  2. So sánh tổng ước với số ban đầu.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 8: Kiểm tra số nguyên tố (Tối ưu)
+- Độ khó: Khó
+- Yêu cầu: Tối ưu hiệu năng vòng lặp.
+- Mô tả: Nhập n, kiểm tra n có phải số nguyên tố không. 
+- Tiêu chí chấm điểm:
+  1. Xử lý các trường hợp đặc biệt (n < 2).
+  2. Vòng lặp chỉ cần chạy từ 2 đến căn bậc hai của n (sqrt(n)) để tăng tốc độ.
+
+Bài 9: Thao tác với chữ số của một số nguyên
+- Độ khó: Khó
+- Yêu cầu: Sử dụng vòng lặp while(n > 0).
+- Mô tả: Nhập số nguyên dương n.
+  a. Đếm số lượng chữ số của n.
+  b. Tìm chữ số lớn nhất của n.
+  c. Tính tổng các chữ số của n.
+- Tiêu chí chấm điểm:
+  1. Sử dụng n % 10 để lấy chữ số cuối và n / 10 để bỏ chữ số cuối.
+  2. Khởi tạo giá trị Max chính xác.
+
+Bài 10: In hình sao (Vòng lặp lồng nhau - Nested Loops)
+- Độ khó: Khó
+- Yêu cầu: Quản lý hai biến chạy i (dòng) và j (cột).
+- Mô tả: Nhập chiều cao h. In ra tam giác vuông cân nằm bên trái và bên phải.
+  Ví dụ h=3 (trái):
+  *
+  **
+  ***
+- Tiêu chí chấm điểm:
+  1. Vòng lặp ngoài kiểm soát số dòng.
+  2. Vòng lặp trong kiểm soát số lượng dấu sao dựa trên biến chạy của vòng lặp ngoài.
+
+
+
+DANH SÁCH BÀI TẬP NHẬP MÔN LẬP TRÌNH
+DẠNG 5: HÀM (FUNCTION)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Hàm tính giá trị tuyệt đối và lũy thừa
+- Độ khó: Dễ
+- Yêu cầu: Định nghĩa và gọi hàm cơ bản.
+- Mô tả: 
+  a. Viết hàm TinhTuyetDoi(float n) trả về giá trị tuyệt đối của n.
+  b. Viết hàm TinhLuyThua(float cơ_số, int số_mũ) trả về giá trị lũy thừa tương ứng.
+- Tiêu chí chấm điểm:
+  1. Khai báo đúng kiểu trả về (float).
+  2. Truyền tham số đúng kiểu dữ liệu.
+
+Bài 2: Hàm kiểm tra tính chất số (Boolean Function)
+- Độ khó: Dễ
+- Yêu cầu: Viết hàm trả về giá trị kiểu logic (bool hoặc int 0/1).
+- Mô tả: Viết hàm kiemTraChanLe(int n). Nếu n chẵn trả về 1, ngược lại trả về 0. Áp dụng hàm này trong chương trình chính để kiểm tra một số nhập từ bàn phím.
+- Tiêu chí chấm điểm:
+  1. Hàm thực hiện đúng chức năng kiểm tra.
+  2. Sử dụng kết quả của hàm trong câu lệnh if ở hàm main() một cách hợp lý.
+
+Bài 3: Hàm tìm số lớn nhất (Max)
+- Độ khó: Dễ
+- Yêu cầu: Xây dựng hàm có nhiều tham số.
+- Mô tả: Viết hàm timMax3So(float a, float b, float c) trả về giá trị lớn nhất trong 3 số.
+- Tiêu chí chấm điểm:
+  1. Logic tìm Max đúng.
+  2. Hàm trả về đúng giá trị lớn nhất thay vì chỉ in ra màn hình bên trong hàm.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 4: Hoán vị hai số (Tham biến và Tham trị)
+- Độ khó: Trung bình
+- Yêu cầu: Sử dụng con trỏ (pointer) hoặc tham chiếu (reference) để thay đổi giá trị biến.
+- Mô tả: Viết hàm swap(int &a, int &b) để hoán đổi giá trị của hai biến sau khi hàm kết thúc.
+- Tiêu chí chấm điểm:
+  1. Phân biệt được sự khác biệt khi dùng tham chiếu (&) và khi không dùng.
+  2. Giá trị của biến trong hàm main() phải thực sự thay đổi sau khi gọi hàm.
+
+Bài 5: Hàm kiểm tra số nguyên tố và số hoàn thiện
+- Độ khó: Trung bình
+- Yêu cầu: Tái sử dụng hàm.
+- Mô tả: 
+  a. Viết hàm kiemTraSNT(int n).
+  b. Sử dụng hàm trên để viết chương trình liệt kê tất cả các số nguyên tố nhỏ hơn 1000.
+- Tiêu chí chấm điểm:
+  1. Hàm kiemTraSNT có logic tối ưu.
+  2. Gọi hàm đúng cách trong vòng lặp ở hàm main().
+
+Bài 6: Tính tổng các chữ số bằng hàm
+- Độ khó: Trung bình
+- Yêu cầu: Tách biệt xử lý logic và nhập xuất.
+- Mô tả: Viết hàm tinhTongChuSo(int n). Chương trình chính cho phép người dùng nhập n, gọi hàm và in kết quả.
+- Tiêu chí chấm điểm:
+  1. Hàm không chứa lệnh nhập/xuất (cin/cout hoặc scanf/printf) để đảm bảo tính độc lập.
+  2. Xử lý đúng cho cả số âm (nếu có).
+
+Bài 7: Rút gọn phân số bằng hàm
+- Độ khó: Trung bình
+- Yêu cầu: Kết hợp nhiều hàm với nhau.
+- Mô tả: Viết hàm timUCLN(int a, int b). Sau đó viết hàm rutGonPhanSo(int &tu, int &mau) bằng cách chia cả tử và mẫu cho UCLN.
+- Tiêu chí chấm điểm:
+  1. Hàm timUCLN hoạt động chính xác.
+  2. Hàm rutGonPhanSo sử dụng tham chiếu để cập nhật trực tiếp tử và mẫu.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 8: Hàm đệ quy cơ bản (Recursion)
+- Độ khó: Khó
+- Yêu cầu: Hiểu về cơ chế gọi lại chính nó của hàm.
+- Mô tả: 
+  a. Viết hàm đệ quy tinhGiaiThua(int n) để tính n!.
+  b. Viết hàm đệ quy tinhFibonacci(int n) để tìm số Fibonacci thứ n.
+- Tiêu chí chấm điểm:
+  1. Xác định đúng "điểm dừng" (base case) để tránh lặp vô hạn.
+  2. Công thức đệ quy đúng với định nghĩa toán học.
+
+Bài 9: Giải hệ phương trình bậc nhất bằng hàm
+- Độ khó: Khó
+- Yêu cầu: Hàm trả về nhiều giá trị thông qua tham số.
+- Mô tả: Viết hàm giaiHePhuongTrinh(a1, b1, c1, a2, b2, c2, &x, &y). Hàm trả về trạng thái (0: Vô nghiệm, 1: Có nghiệm, 2: Vô số nghiệm). Nếu có nghiệm thì gán giá trị vào x và y.
+- Tiêu chí chấm điểm:
+  1. Sử dụng đúng kỹ thuật truyền tham chiếu để lấy kết quả x, y.
+  2. Biện luận đầy đủ các trường hợp của định thức (Cramer).
+
+Bài 10: Xây dựng thư viện tính toán hình học
+- Độ khó: Khó
+- Yêu cầu: Tổ chức code chuyên nghiệp.
+- Mô tả: Viết một bộ các hàm: tinhChuViTamGiac(), tinhDienTichTamGiac(), kiemTraTamGiacHopLe(). Chương trình chính cho phép nhập 3 cạnh, kiểm tra tính hợp lệ trước khi tính toán.
+- Tiêu chí chấm điểm:
+  1. Các hàm có tính liên kết logic (hàm này sử dụng kết quả hàm kia).
+  2. Kiểm soát lỗi chặt chẽ (ví dụ: không tính diện tích nếu tam giác không hợp lệ).
+
+
+
+DANH SÁCH BÀI TẬP NHẬP MÔN LẬP TRÌNH
+DẠNG 6: MẢNG MỘT CHIỀU (ARRAY)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Nhập xuất mảng cơ bản
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng vòng lặp để duyệt mảng.
+- Mô tả: Viết chương trình nhập vào một mảng n số nguyên. In ra mảng vừa nhập theo thứ tự xuôi và thứ tự ngược lại.
+- Tiêu chí chấm điểm:
+  1. Khai báo mảng với kích thước tối đa phù hợp.
+  2. Sử dụng đúng chỉ số mảng (từ 0 đến n-1).
+
+Bài 2: Tính tổng và trung bình cộng
+- Độ khó: Dễ
+- Yêu cầu: Kỹ thuật tích lũy giá trị trong mảng.
+- Mô tả: Nhập mảng n số thực. Tính tổng các phần tử trong mảng và trung bình cộng của các số dương trong mảng.
+- Tiêu chí chấm điểm:
+  1. Duyệt mảng chính xác.
+  2. Xử lý đúng biến đếm để chia trung bình cộng (tránh chia cho 0 nếu không có số dương).
+
+Bài 3: Tìm Max/Min đơn giản
+- Độ khó: Dễ
+- Yêu cầu: Kỹ thuật đặt "lính canh".
+- Mô tả: Nhập mảng n số nguyên. Tìm giá trị lớn nhất và giá trị nhỏ nhất trong mảng.
+- Tiêu chí chấm điểm:
+  1. Khởi tạo giá trị Max/Min bằng phần tử đầu tiên của mảng (a[0]).
+  2. So sánh lần lượt để cập nhật Max/Min.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 4: Liệt kê phần tử thỏa điều kiện
+- Độ khó: Trung bình
+- Yêu cầu: Kết hợp mảng và các bài toán số học.
+- Mô tả: Nhập mảng n số nguyên. Hãy liệt kê tất cả các số nguyên tố có trong mảng.
+- Tiêu chí chấm điểm:
+  1. Viết hàm kiểm tra số nguyên tố riêng biệt.
+  2. Duyệt mảng và gọi hàm để kiểm tra từng phần tử.
+
+Bài 5: Tìm kiếm vị trí
+- Độ khó: Trung bình
+- Yêu cầu: Kỹ thuật tìm kiếm tuyến tính (Linear Search).
+- Mô tả: Nhập mảng n số nguyên và một số x. Tìm và in ra tất cả các vị trí (chỉ số) mà a[i] == x. Nếu không thấy, in ra -1.
+- Tiêu chí chấm điểm:
+  1. Trả về đúng chỉ số (index) thay vì giá trị.
+  2. Xử lý được trường hợp x xuất hiện nhiều lần hoặc không xuất hiện.
+
+Bài 6: Sắp xếp mảng cơ bản
+- Độ khó: Trung bình
+- Yêu cầu: Sử dụng thuật toán đổi chỗ trực tiếp (Interchange Sort).
+- Mô tả: Nhập mảng n số nguyên. Hãy sắp xếp mảng theo thứ tự tăng dần.
+- Tiêu chí chấm điểm:
+  1. Sử dụng 2 vòng lặp lồng nhau.
+  2. Thực hiện hoán vị (swap) đúng khi điều kiện sai thứ tự xảy ra.
+
+Bài 7: Thêm phần tử vào mảng
+- Độ khó: Trung bình
+- Yêu cầu: Kỹ thuật dời chỗ phần tử.
+- Mô tả: Nhập mảng n số nguyên. Nhập một giá trị x và vị trí k. Hãy chèn x vào vị trí k trong mảng (các phần tử từ k trở đi phải dời sang phải).
+- Tiêu chí chấm điểm:
+  1. Vòng lặp dời chỗ phải chạy từ cuối mảng về vị trí k.
+  2. Cập nhật lại số lượng phần tử n sau khi chèn.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 8: Xóa phần tử thỏa điều kiện
+- Độ khó: Khó
+- Yêu cầu: Kỹ thuật dời chỗ và xử lý chỉ số biến thiên.
+- Mô tả: Nhập mảng n số nguyên. Hãy xóa tất cả các số chẵn có trong mảng.
+- Tiêu chí chấm điểm:
+  1. Khi xóa một phần tử, các phần tử sau phải dời sang trái.
+  2. Lưu ý xử lý chỉ số i cẩn thận để không bỏ sót các số chẵn nằm liên tiếp nhau.
+
+Bài 9: Đếm số lần xuất hiện (Tần suất)
+- Độ khó: Khó
+- Yêu cầu: Kỹ thuật mảng phụ hoặc đánh dấu.
+- Mô tả: Nhập mảng n số nguyên. In ra các giá trị khác nhau trong mảng và số lần xuất hiện tương ứng của chúng.
+- Tiêu chí chấm điểm:
+  1. Mỗi giá trị chỉ được liệt kê một lần duy nhất kèm theo số lần xuất hiện.
+  2. Thuật toán tối ưu, không in trùng lặp kết quả.
+
+Bài 10: Kiểm tra mảng đối xứng/Mảng con
+- Độ khó: Khó
+- Yêu cầu: Tư duy logic mảng cao cấp.
+- Mô tả: 
+  a. Kiểm tra mảng có đối xứng hay không (ví dụ: 1 2 3 2 1 là đối xứng).
+  b. Tìm dãy con liên tiếp có tổng lớn nhất trong mảng.
+- Tiêu chí chấm điểm:
+  1. Sử dụng vòng lặp chạy đến n/2 để kiểm tra đối xứng.
+  2. Thuật toán tìm dãy con chính xác (có thể sử dụng thuật toán Kadane nếu muốn tối ưu). 

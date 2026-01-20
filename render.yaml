@@ -1,5 +1,20 @@
 services:
   - type: web
+    name: ptud-grading-api
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: cd api && npm install
+    startCommand: cd api && npm start
+    disk: 512
+    envVars:
+      - key: DB_USER
+      - key: DB_PASS
+      - key: DB_HOST
+      - key: DB_NAME
+      - key: PORT
+services:
+  - type: web
     name: ptud-backend
     env: node
     plan: free

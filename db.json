@@ -577,7 +577,7 @@
               "Hiển thị kết quả rõ ràng.",
               "Chú thích mã nguồn rõ ràng."
             ],
-            "grading_criteria": [
+            "grading_criteri  a": [
               {
                 "name": "Core correctness (logic)",
                 "points": 8,

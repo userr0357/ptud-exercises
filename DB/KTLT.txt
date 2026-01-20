@@ -1,0 +1,479 @@
+DANH SÁCH BÀI TẬP KỸ THUẬT LẬP TRÌNH
+DẠNG 1: CON TRỎ VÀ QUẢN LÝ BỘ NHỚ ĐỘNG
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Truy xuất giá trị và địa chỉ qua con trỏ
+- Độ khó: Dễ
+- Yêu cầu: Hiểu các toán tử & (lấy địa chỉ) và * (lấy giá trị).
+- Mô tả: Khai báo một biến nguyên x và một con trỏ p. Gán địa chỉ của x cho p. Thay đổi giá trị của x thông qua p. In ra địa chỉ của x, giá trị của p và giá trị mà p đang trỏ tới.
+- Tiêu chí chấm điểm:
+  1. Sử dụng đúng toán tử &x và *p.
+  2. Hiển thị đúng địa chỉ ô nhớ (thường là hệ thập lục phân).
+
+Bài 2: Hàm hoán vị sử dụng con trỏ
+- Độ khó: Dễ
+- Yêu cầu: Truyền tham số bằng con trỏ.
+- Mô tả: Viết hàm swap(int *a, int *b) để hoán đổi giá trị của hai biến số thực sự trong bộ nhớ.
+- Tiêu chí chấm điểm:
+  1. Sử dụng biến tạm bên trong hàm.
+  2. Khi gọi hàm trong main(), phải truyền vào địa chỉ của biến (&x, &y).
+
+Bài 3: Nhập xuất mảng qua con trỏ
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng ký hiệu con trỏ để duyệt mảng.
+- Mô tả: Viết chương trình nhập mảng n phần tử. Sử dụng con trỏ để duyệt và in ra các phần tử trong mảng thay vì dùng chỉ số a[i].
+- Tiêu chí chấm điểm:
+  1. Sử dụng phép toán cộng con trỏ (p + i) hoặc *(p + i).
+  2. Không dùng toán tử [ ] trong quá trình xuất mảng.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 4: Cấp phát động mảng 1 chiều
+- Độ khó: Trung bình
+- Yêu cầu: Sử dụng hàm malloc/calloc (C) hoặc toán tử new (C++).
+- Mô tả: Nhập số lượng n từ bàn phím. Cấp phát bộ nhớ động cho mảng n số nguyên. Sau khi tính tổng các phần tử, phải giải phóng bộ nhớ.
+- Tiêu chí chấm điểm:
+  1. Ép kiểu đúng cho hàm cấp phát.
+  2. Có bước kiểm tra cấp phát thành công (p != NULL).
+  3. Sử dụng free() hoặc delete[] đúng quy định.
+
+Bài 5: Tìm phần tử lớn nhất bằng con trỏ
+- Độ khó: Trung bình
+- Yêu cầu: Kết hợp hàm và con trỏ.
+- Mô tả: Viết hàm int* timMax(int *a, int n) trả về "địa chỉ" của phần tử lớn nhất trong mảng.
+- Tiêu chí chấm điểm:
+  1. Kiểu trả về của hàm là một con trỏ (int*).
+  2. Trong hàm main(), in ra cả giá trị lớn nhất và vị trí của nó dựa trên địa chỉ trả về.
+
+Bài 6: Đảo ngược mảng dùng hai con trỏ
+- Độ khó: Trung bình
+- Yêu cầu: Kỹ thuật con trỏ đầu và con trỏ cuối (Two Pointers).
+- Mô tả: Sử dụng một con trỏ trỏ vào đầu mảng và một con trỏ trỏ vào cuối mảng. Hoán đổi giá trị của chúng rồi dịch chuyển hai con trỏ lại gần nhau cho đến khi gặp nhau để đảo ngược mảng.
+- Tiêu chí chấm điểm:
+  1. Không sử dụng mảng phụ.
+  2. Điều kiện dừng vòng lặp (pLeft < pRight) chính xác.
+
+Bài 7: Quản lý chuỗi ký tự (String) bằng con trỏ
+- Độ khó: Trung bình
+- Yêu cầu: Thao tác với con trỏ kiểu char*.
+- Mô tả: Viết hàm tự định nghĩa strlen(char *s) để đếm độ dài chuỗi mà không dùng thư viện string.h.
+- Tiêu chí chấm điểm:
+  1. Duyệt chuỗi cho đến khi gặp ký tự kết thúc '\0'.
+  2. Không dùng biến đếm i, chỉ dùng phép toán trên con trỏ.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 8: Cấp phát động mảng 2 chiều (Ma trận)
+- Độ khó: Khó
+- Yêu cầu: Hiểu khái niệm con trỏ cấp 2 (Pointer to Pointer).
+- Mô tả: Nhập số hàng r và số cột c. Cấp phát động cho một ma trận r x c. Nhập dữ liệu và tính tổng các phần tử trên đường chéo chính.
+- Tiêu chí chấm điểm:
+  1. Cấp phát đúng mảng các con trỏ trước, sau đó cấp phát từng dòng.
+  2. Quy trình giải phóng bộ nhớ phải ngược lại (giải phóng từng dòng trước, sau đó mới giải phóng mảng con trỏ).
+
+Bài 9: Mảng con trỏ quản lý danh sách chuỗi
+- Độ khó: Khó
+- Yêu cầu: Quản lý bộ nhớ không đồng nhất.
+- Mô tả: Nhập vào n cái tên sinh viên. Mỗi tên có độ dài khác nhau. Hãy cấp phát bộ nhớ vừa đủ cho mỗi cái tên và lưu chúng vào một mảng con trỏ char *ds[100].
+- Tiêu chí chấm điểm:
+  1. Sử dụng mảng tạm để nhập dữ liệu trước khi cấp phát bộ nhớ chính thức.
+  2. Tiết kiệm bộ nhớ (mỗi tên chỉ chiếm đúng số byte cần thiết).
+
+Bài 10: Con trỏ hàm (Function Pointer)
+- Độ khó: Khó
+- Yêu cầu: Sử dụng con trỏ trỏ đến địa chỉ của hàm.
+- Mô tả: Viết 2 hàm Tăng(int a, int b) và Giảm(int a, int b). Viết một hàm trung gian ThucThi(int a, int b, int (*p)(int, int)) để gọi một trong hai hàm trên thông qua con trỏ.
+- Tiêu chí chấm điểm:
+  1. Khai báo đúng cú pháp con trỏ hàm.
+  2. Giải thích được ứng dụng của con trỏ hàm trong việc tối ưu hóa code (Callback function).
+
+
+DANH SÁCH BÀI TẬP KỸ THUẬT LẬP TRÌNH
+DẠNG 2: ĐỆ QUY (RECURSION)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Tính giai thừa của n (n!)
+- Độ khó: Dễ
+- Yêu cầu: Xây dựng hàm đệ quy tuyến tính cơ bản.
+- Mô tả: Viết hàm đệ quy tinhGiaiThua(int n). Biết rằng 0! = 1 và n! = n * (n-1)!.
+- Tiêu chí chấm điểm:
+  1. Xác định đúng điều kiện dừng (n == 0 hoặc n == 1).
+  2. Công thức gọi đệ quy chính xác.
+
+Bài 2: Tính tổng dãy số S = 1 + 2 + ... + n
+- Độ khó: Dễ
+- Yêu cầu: Chuyển đổi từ vòng lặp sang đệ quy.
+- Mô tả: Viết hàm đệ quy tinhTong(int n) trả về tổng các số từ 1 đến n.
+- Tiêu chí chấm điểm:
+  1. Điều kiện dừng đúng (n == 1).
+  2. Hàm trả về kết quả chính xác cho n > 0.
+
+Bài 3: Tìm số Fibonacci thứ n
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng đệ quy nhị phân (Binary Recursion).
+- Mô tả: Dãy Fibonacci có F(0)=0, F(1)=1, F(n) = F(n-1) + F(n-2). Viết hàm tìm số Fibonacci thứ n.
+- Tiêu chí chấm điểm:
+  1. Xử lý đúng 2 trường hợp cơ sở (n=0 và n=1).
+  2. Hiểu được cơ chế gọi hàm lồng nhau của đệ quy nhị phân.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 4: Chuyển đổi hệ cơ số (Thập phân sang Nhị phân)
+- Độ khó: Trung bình
+- Yêu cầu: Đệ quy xử lý luồng ra (Output).
+- Mô tả: Viết hàm đệ quy decToBin(int n) để in ra mã nhị phân của số nguyên dương n.
+- Tiêu chí chấm điểm:
+  1. Gọi đệ quy (n/2) trước khi in (n%2) để các chữ số xuất hiện đúng thứ tự.
+  2. Không sử dụng mảng phụ hay chuỗi để lưu trữ.
+
+Bài 5: Tìm Ước chung lớn nhất (UCLN)
+- Độ khó: Trung bình
+- Yêu cầu: Áp dụng thuật toán Euclid bằng đệ quy.
+- Mô tả: Viết hàm đệ quy tìm UCLN của hai số a và b. Gợi ý: UCLN(a, b) = UCLN(b, a % b).
+- Tiêu chí chấm điểm:
+  1. Xác định đúng điều kiện dừng (khi số dư bằng 0).
+  2. Code ngắn gọn, tối ưu.
+
+Bài 6: Đếm số chữ số của số nguyên dương n
+- Độ khó: Trung bình
+- Yêu cầu: Đệ quy xử lý trên chữ số.
+- Mô tả: Viết hàm đệ quy countDigits(int n) trả về số lượng chữ số của n. Ví dụ: n=1234 trả về 4.
+- Tiêu chí chấm điểm:
+  1. Điều kiện dừng: n < 10 trả về 1.
+  2. Bước đệ quy: 1 + countDigits(n / 10).
+
+Bài 7: Tìm giá trị lớn nhất (Max) trong mảng bằng đệ quy
+- Độ khó: Trung bình
+- Yêu cầu: Đệ quy trên cấu trúc dữ liệu mảng.
+- Mô tả: Viết hàm findMax(int a[], int n) sử dụng đệ quy để tìm phần tử lớn nhất.
+- Tiêu chí chấm điểm:
+  1. Chia nhỏ mảng hoặc so sánh phần tử cuối với Max của mảng (n-1) phần tử đầu.
+  2. Không sử dụng vòng lặp for/while bên trong hàm.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 8: Bài toán Tháp Hà Nội (Tower of Hanoi)
+- Độ khó: Khó
+- Yêu cầu: Tư duy đệ quy phức tạp.
+- Mô tả: Có n tầng đĩa và 3 cọc A, B, C. Viết hàm đệ quy moTaDiChuyen(int n, char nguon, char dich, char trung_gian) để in ra các bước di chuyển đĩa từ cọc A sang cọc C.
+- Tiêu chí chấm điểm:
+  1. Hiểu và mô tả đúng 3 bước cốt lõi của bài toán Tháp Hà Nội.
+  2. Kết quả in ra các bước di chuyển phải logic và khả thi.
+
+Bài 9: Bài toán n-Hậu (n-Queens Puzzle)
+- Độ khó: Khó
+- Yêu cầu: Đệ quy quay lui (Backtracking).
+- Mô tả: Tìm cách đặt n quân hậu trên bàn cờ n x n sao cho không quân nào ăn được quân nào. In ra một phương án bất kỳ.
+- Tiêu chí chấm điểm:
+  1. Hàm kiểm tra điều kiện an toàn (hàng, cột, đường chéo).
+  2. Cơ chế quay lui phải hoàn trả trạng thái của bàn cờ khi không tìm được nghiệm.
+
+Bài 10: Tính giá trị đa thức (Công thức Horner) bằng đệ quy
+- Độ khó: Khó
+- Yêu cầu: Tối ưu hóa biểu thức toán học.
+- Mô tả: Cho mảng a chứa các hệ số của đa thức bậc n. Viết hàm đệ quy tính giá trị đa thức P(x) tại điểm x0.
+- Tiêu chí chấm điểm:
+  1. Áp dụng đúng công thức truy hồi Horner để giảm số phép nhân.
+  2. Hàm chạy hiệu quả với bộ dữ liệu lớn.
+
+DANH SÁCH BÀI TẬP KỸ THUẬT LẬP TRÌNH
+DẠNG 3: KIỂU DỮ LIỆU CÓ CẤU TRÚC (STRUCT)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Định nghĩa Struct Phân số
+- Độ khó: Dễ
+- Yêu cầu: Khai báo và truy xuất thành phần của Struct.
+- Mô tả: Định nghĩa cấu trúc PHANSO gồm Tử số và Mẫu số (số nguyên). Viết hàm Nhập và Xuất một phân số.
+- Tiêu chí chấm điểm:
+  1. Khai báo đúng kiểu dữ liệu cho các thành phần.
+  2. Truy xuất thành phần thông qua toán tử dấu chấm (.).
+
+Bài 2: Tính khoảng cách giữa hai điểm (2D)
+- Độ khó: Dễ
+- Yêu cầu: Sử dụng Struct làm tham số cho hàm.
+- Mô tả: Định nghĩa cấu trúc DIEM gồm hoành độ x và tung độ y. Viết hàm tính khoảng cách giữa hai điểm A và B theo công thức Euclide.
+- Tiêu chí chấm điểm:
+  1. Sử dụng hàm sqrt() và pow() từ thư viện math.h.
+  2. Truyền tham số kiểu Struct vào hàm một cách hợp lý.
+
+Bài 3: Quản lý một quyển sách
+- Độ khó: Dễ
+- Yêu cầu: Thao tác với kiểu chuỗi trong Struct.
+- Mô tả: Định nghĩa cấu trúc SACH gồm: Mã sách, Tên sách, Tác giả, Năm xuất bản. Viết chương trình nhập thông tin cho 1 quyển sách và in ra màn hình.
+- Tiêu chí chấm điểm:
+  1. Sử dụng đúng kiểu char[] hoặc string cho các thuộc tính văn bản.
+  2. Xử lý được vấn đề trôi lệnh (nuốt dòng) khi nhập chuỗi sau khi nhập số.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 4: Mảng các Phân số
+- Độ khó: Trung bình
+- Yêu cầu: Kết hợp mảng và Struct.
+- Mô tả: Nhập vào một danh sách n phân số. Tìm phân số có giá trị lớn nhất trong danh sách đó.
+- Tiêu chí chấm điểm:
+  1. Kỹ thuật duyệt mảng các Struct.
+  2. Quy đồng hoặc chuyển sang số thực để so sánh giá trị các phân số.
+
+Bài 5: Quản lý danh sách Sinh viên (Cơ bản)
+- Độ khó: Trung bình
+- Yêu cầu: Xử lý dữ liệu hỗn hợp.
+- Mô tả: Định nghĩa Struct SINHVIEN gồm: MSSV, Họ tên, Điểm Toán, Điểm Lý, Điểm Hóa. Tính điểm trung bình và xếp loại cho n sinh viên.
+- Tiêu chí chấm điểm:
+  1. Công thức tính điểm trung bình chính xác.
+  2. In danh sách sinh viên dưới dạng bảng rõ ràng.
+
+Bài 6: Sắp xếp danh sách sản phẩm
+- Độ khó: Trung bình
+- Yêu cầu: Thuật toán sắp xếp trên Struct.
+- Mô tả: Định nghĩa Struct SANPHAM (Mã, Tên, Đơn giá, Số lượng). Nhập danh sách n sản phẩm và sắp xếp danh sách giảm dần theo Đơn giá.
+- Tiêu chí chấm điểm:
+  1. Hoán vị toàn bộ cấu trúc Struct khi thực hiện sắp xếp (không chỉ hoán vị đơn giá).
+  2. Kết quả danh sách sau khi sắp xếp phải chính xác.
+
+Bài 7: Tìm kiếm thông tin nhân viên
+- Độ khó: Trung bình
+- Yêu cầu: Tìm kiếm theo thuộc tính chuỗi.
+- Mô tả: Cho danh sách n nhân viên. Nhập vào một Mã nhân viên từ bàn phím, hãy tìm và in ra toàn bộ thông tin của nhân viên đó. Nếu không thấy, thông báo "Không tìm thấy".
+- Tiêu chí chấm điểm:
+  1. Sử dụng hàm strcmp() (trong C) hoặc toán tử == (trong C++) để so sánh chuỗi.
+  2. Xử lý tốt trường hợp không có dữ liệu trùng khớp.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 8: Quản lý Hình chữ nhật (Struct lồng Struct)
+- Độ khó: Khó
+- Yêu cầu: Cấu trúc lồng nhau (Nested Struct).
+- Mô tả: Định nghĩa Struct DIEM (x, y). Định nghĩa Struct HINHCHUNHAT gồm hai điểm: diemTrenTrai và diemDuoiPhai. Viết hàm tính chu vi và diện tích của hình chữ nhật đó.
+- Tiêu chí chấm điểm:
+  1. Khai báo Struct lồng nhau đúng cú pháp.
+  2. Tính độ dài các cạnh từ tọa độ các điểm trước khi tính chu vi/diện tích.
+
+Bài 9: Quản lý Đơn thức và Đa thức
+- Độ khó: Khó
+- Yêu cầu: Mảng động của các Struct.
+- Mô tả: Định nghĩa Struct DONTHUC (hệ số, số mũ). Định nghĩa Struct DATHUC gồm mảng các đơn thức. Viết hàm tính đạo hàm của đa thức và tính giá trị đa thức tại x0.
+- Tiêu chí chấm điểm:
+  1. Quản lý tốt số lượng đơn thức trong đa thức.
+  2. Thực hiện đúng quy tắc toán học về đạo hàm.
+
+Bài 10: Tổng hợp: Quản lý danh sách Học sinh (Nâng cao)
+- Độ khó: Khó
+- Yêu cầu: Thêm, Xóa, Sửa trên mảng Struct.
+- Mô tả: Viết chương trình có Menu điều khiển để:
+  a. Thêm học sinh mới vào vị trí bất kỳ.
+  b. Xóa học sinh theo Mã số.
+  c. Tìm học sinh có điểm trung bình cao nhất.
+- Tiêu chí chấm điểm:
+  1. Cấu trúc Menu (Switch-case) chuyên nghiệp.
+  2. Logic dời chỗ phần tử trong mảng Struct khi thêm/xóa phải chính xác tuyệt đối.
+
+
+DANH SÁCH BÀI TẬP KỸ THUẬT LẬP TRÌNH
+DẠNG 4: THAO TÁC VỚI TẬP TIN (FILE I/O)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Ghi văn bản đơn giản vào File
+- Độ khó: Dễ
+- Yêu cầu: Mở và ghi file văn bản cơ bản.
+- Mô tả: Viết chương trình nhập vào một chuỗi ký tự từ bàn phím và ghi chuỗi đó vào file có tên "output.txt".
+- Tiêu chí chấm điểm:
+  1. Sử dụng đúng hàm fopen/fclose (C) hoặc ofstream (C++).
+  2. Kiểm tra file có mở thành công hay không trước khi ghi.
+
+Bài 2: Đọc dữ liệu từ File và in ra màn hình
+- Độ khó: Dễ
+- Yêu cầu: Đọc file văn bản.
+- Mô tả: Tạo một file "input.txt" chứa một số nguyên n. Viết chương trình đọc số n từ file đó, tính n*n và in kết quả ra màn hình.
+- Tiêu chí chấm điểm:
+  1. Sử dụng đúng hàm fscanf (C) hoặc ifstream (C++).
+  2. Xử lý đúng trường hợp file không tồn tại.
+
+Bài 3: Sao chép nội dung File
+- Độ khó: Dễ
+- Yêu cầu: Đọc và ghi đồng thời.
+- Mô tả: Viết chương trình đọc nội dung từ file "source.txt" và sao chép toàn bộ nội dung đó sang file "dest.txt".
+- Tiêu chí chấm điểm:
+  1. Đọc từng ký tự (fgetc) hoặc từng dòng (fgets) cho đến khi kết thúc file (EOF).
+  2. File đích phải có nội dung y hệt file nguồn.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 4: Đọc mảng số nguyên từ File
+- Độ khó: Trung bình
+- Yêu cầu: Xử lý mảng kết hợp File.
+- Mô tả: File "data.txt" có cấu trúc: dòng đầu là số phần tử n, dòng sau là n số nguyên. Đọc mảng này vào chương trình và tính tổng của chúng.
+- Tiêu chí chấm điểm:
+  1. Đọc đúng số lượng n trước khi dùng vòng lặp để đọc các phần tử.
+  2. Cấp phát mảng (tĩnh hoặc động) đủ sức chứa dữ liệu.
+
+Bài 5: Ghi bảng cửu chương vào File
+- Độ khó: Trung bình
+- Yêu cầu: Định dạng dữ liệu ghi vào file.
+- Mô tả: Viết chương trình ghi bảng cửu chương từ 2 đến 9 vào file "cuuchuong.txt" sao cho trình bày đẹp mắt, dễ đọc.
+- Tiêu chí chấm điểm:
+  1. Sử dụng các hàm định dạng (fprintf hoặc setw) để căn chỉnh cột.
+  2. Nội dung file phải đầy đủ và chính xác.
+
+Bài 6: Thống kê ký tự trong File
+- Độ khó: Trung bình
+- Yêu cầu: Duyệt file và xử lý logic.
+- Mô tả: Đọc một file văn bản bất kỳ và đếm xem trong file có bao nhiêu chữ cái, bao nhiêu chữ số và bao nhiêu khoảng trắng.
+- Tiêu chí chấm điểm:
+  1. Duyệt hết file mà không làm tràn bộ nhớ.
+  2. Phân loại đúng các loại ký tự.
+
+Bài 7: Ghi và đọc Struct vào File văn bản
+- Độ khó: Trung bình
+- Yêu cầu: Lưu trữ cấu trúc dữ liệu.
+- Mô tả: Định nghĩa Struct SINHVIEN. Nhập danh sách 3 sinh viên và ghi thông tin (MSSV, Họ tên, Điểm) vào file "sinhvien.txt". Sau đó viết hàm đọc ngược lại từ file này để in ra màn hình.
+- Tiêu chí chấm điểm:
+  1. Thông tin ghi vào file phải theo quy tắc nhất định (ví dụ mỗi thuộc tính cách nhau dấu phẩy hoặc xuống dòng).
+  2. Đọc lại đúng dữ liệu ban đầu.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 8: Thao tác với File nhị phân (Binary File)
+- Độ khó: Khó
+- Yêu cầu: Đọc/Ghi dữ liệu ở dạng nhị phân.
+- Mô tả: Ghi một mảng 100 số thực vào file "data.bin" ở dạng nhị phân. Sau đó, đọc phần tử thứ 50 của mảng từ file mà không cần đọc toàn bộ file (dùng định vị con trỏ file).
+- Tiêu chí chấm điểm:
+  1. Sử dụng hàm fwrite/fread và fseek.
+  2. Truy cập đúng vị trí byte của phần tử thứ 50.
+
+Bài 9: Sắp xếp dữ liệu trong File
+- Độ khó: Khó
+- Yêu cầu: Kết hợp File, Struct và Sắp xếp.
+- Mô tả: File "input.txt" chứa danh sách các số nguyên chưa sắp xếp. Viết chương trình đọc các số này, sắp xếp tăng dần và ghi kết quả vào file "output.txt".
+- Tiêu chí chấm điểm:
+  1. Xử lý được trường hợp số lượng phần tử trong file không biết trước (dùng mảng động hoặc đọc đến EOF).
+  2. Thuật toán sắp xếp hoạt động chính xác.
+
+Bài 10: Quản lý cơ sở dữ liệu nhân viên (File tổng hợp)
+- Độ khó: Khó
+- Yêu cầu: Xây dựng hệ thống quản lý nhỏ dựa trên File.
+- Mô tả: Viết chương trình có Menu: 
+  a. Thêm nhân viên mới (ghi nối tiếp vào cuối file).
+  b. Tìm kiếm nhân viên theo mã (đọc file để tìm).
+  c. Xuất báo cáo danh sách nhân viên ra file văn bản định dạng bảng.
+- Tiêu chí chấm điểm:
+  1. Sử dụng chế độ "a" (append) để thêm dữ liệu và "r" (read) để tìm kiếm.
+  2. Quản lý con trỏ file và đóng file đúng lúc để tránh mất dữ liệu.
+
+
+DANH SÁCH BÀI TẬP KỸ THUẬT LẬP TRÌNH
+DẠNG 5: DANH SÁCH LIÊN KẾT ĐƠN (SINGLY LINKED LIST)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Khởi tạo và Duyệt danh sách liên kết
+- Độ khó: Dễ
+- Yêu cầu: Định nghĩa cấu trúc Node và thao tác duyệt cơ bản.
+- Mô tả: Định nghĩa một Node chứa số nguyên. Viết hàm khởi tạo danh sách rỗng, hàm tạo một Node mới và hàm in toàn bộ các giá trị trong danh sách ra màn hình.
+- Tiêu chí chấm điểm:
+  1. Khai báo đúng cấu trúc Node (gồm data và con trỏ next).
+  2. Hàm duyệt sử dụng con trỏ tạm để không làm mất địa chỉ đầu danh sách (Head).
+
+Bài 2: Thêm Node vào đầu danh sách (AddHead)
+- Độ khó: Dễ
+- Yêu cầu: Thao tác thay đổi con trỏ Head.
+- Mô tả: Viết hàm thêm một Node chứa giá trị x vào đầu danh sách liên kết đơn.
+- Tiêu chí chấm điểm:
+  1. Xử lý đúng việc cập nhật con trỏ Head.
+  2. Đảm bảo Node mới trỏ đúng vào Head cũ.
+
+Bài 3: Đếm số lượng phần tử
+- Độ khó: Dễ
+- Yêu cầu: Kỹ thuật duyệt và đếm.
+- Mô tả: Viết hàm đếm xem trong danh sách liên kết đơn hiện đang có bao nhiêu phần tử (Node).
+- Tiêu chí chấm điểm:
+  1. Duyệt từ đầu đến cuối danh sách (cho đến khi gặp NULL).
+  2. Biến đếm hoạt động chính xác.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 4: Thêm Node vào cuối danh sách (AddTail)
+- Độ khó: Trung bình
+- Yêu cầu: Kỹ thuật tìm Node cuối cùng.
+- Mô tả: Viết hàm thêm một Node vào cuối danh sách liên kết đơn.
+- Tiêu chí chấm điểm:
+  1. Xử lý được trường hợp danh sách đang rỗng (Head == NULL).
+  2. Nếu không rỗng, phải duyệt tìm đến Node cuối rồi mới thực hiện liên kết.
+
+Bài 5: Tìm kiếm giá trị x trong danh sách
+- Độ khó: Trung bình
+- Yêu cầu: Tìm kiếm trên cấu trúc dữ liệu động.
+- Mô tả: Viết hàm tìm kiếm một số nguyên x trong danh sách. Nếu thấy, trả về địa chỉ của Node đó, ngược lại trả về NULL.
+- Tiêu chí chấm điểm:
+  1. Hàm trả về kiểu con trỏ Node*.
+  2. Xử lý đúng logic tìm kiếm tuyến tính trên danh sách.
+
+Bài 6: Tính tổng các số nguyên tố trong danh sách
+- Độ khó: Trung bình
+- Yêu cầu: Kết hợp kiểm tra điều kiện khi duyệt danh sách.
+- Mô tả: Viết hàm duyệt qua danh sách liên kết các số nguyên và tính tổng các số nào là số nguyên tố.
+- Tiêu chí chấm điểm:
+  1. Tái sử dụng hàm kiểm tra số nguyên tố đã học.
+  2. Logic cộng dồn chính xác.
+
+Bài 7: Xóa Node đầu tiên trong danh sách (RemoveHead)
+- Độ khó: Trung bình
+- Yêu cầu: Quản lý bộ nhớ khi xóa.
+- Mô tả: Viết hàm xóa phần tử đầu tiên của danh sách. Lưu ý phải giải phóng bộ nhớ của Node bị xóa.
+- Tiêu chí chấm điểm:
+  1. Sử dụng biến tạm để giữ địa chỉ Node đầu trước khi cập nhật Head.
+  2. Sử dụng lệnh free() hoặc delete để tránh rò rỉ bộ nhớ.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 8: Sắp xếp danh sách liên kết đơn
+- Độ khó: Khó
+- Yêu cầu: Thuật toán sắp xếp trên con trỏ.
+- Mô tả: Viết hàm sắp xếp các phần tử trong danh sách liên kết đơn theo thứ tự tăng dần (Sử dụng thuật toán Selection Sort hoặc Interchange Sort).
+- Tiêu chí chấm điểm:
+  1. Hoán vị dữ liệu (data) giữa các Node mà không làm đứt gãy liên kết.
+  2. Sử dụng 2 vòng lặp lồng nhau trên con trỏ chính xác.
+
+Bài 9: Xóa một Node có giá trị x bất kỳ
+- Độ khó: Khó
+- Yêu cầu: Kỹ thuật liên kết lại các Node (Re-linking).
+- Mô tả: Tìm số nguyên x trong danh sách và xóa Node đó. Lưu ý: phải nối Node đứng trước x với Node đứng sau x.
+- Tiêu chí chấm điểm:
+  1. Xử lý được 3 trường hợp: x ở đầu, x ở cuối, x ở giữa danh sách.
+  2. Đảm bảo danh sách không bị ngắt quãng sau khi xóa.
+
+Bài 10: Đảo ngược danh sách liên kết đơn (Reverse List)
+- Độ khó: Khó
+- Yêu cầu: Tư duy logic con trỏ nâng cao.
+- Mô tả: Viết hàm đảo ngược thứ tự các Node trong danh sách liên kết đơn (không được tạo danh sách mới, chỉ được thay đổi các liên kết next).
+- Tiêu chí chấm điểm:
+  1. Sử dụng kỹ thuật 3 con trỏ (previous, current, next) để đảo chiều liên kết.
+  2. Cập nhật lại con trỏ Head vào Node cuối cùng (nay đã thành đầu).
