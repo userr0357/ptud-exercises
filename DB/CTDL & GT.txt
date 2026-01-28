@@ -1,0 +1,634 @@
+DANH SÁCH BÀI TẬP CẤU TRÚC DỮ LIỆU VÀ GIẢI THUẬT (CẬP NHẬT)
+DẠNG 1: PHÂN TÍCH ĐỘ PHỨC TẠP THUẬT TOÁN (BIG O)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Xác định độ phức tạp của câu lệnh gán và điều kiện
+- Độ khó: Dễ
+- Yêu cầu: Phân tích đoạn mã đơn lẻ.
+- Mô tả: Cho đoạn mã gồm các phép gán số học và một cấu trúc if-else đơn giản (không chứa vòng lặp).
+- Tiêu chí chấm điểm:
+  1. Xác định đúng độ phức tạp là O(1).
+  2. Giải thích được tại sao các phép toán cơ bản được coi là thời gian hằng số.
+  3. Bổ sung 1: Chứng minh được tổng thời gian là Max(thời gian nhánh If, thời gian nhánh Else).
+  4. Bổ sung 2: Xác định đúng độ phức tạp không gian (Space Complexity) là O(1).
+
+Bài 2: Vòng lặp đơn tính tổng
+- Độ khó: Dễ
+- Yêu cầu: Phân tích vòng lặp for/while cơ bản.
+- Mô tả: Cho đoạn mã duyệt từ 1 đến n để tính tổng S.
+- Tiêu chí chấm điểm:
+  1. Xác định đúng O(n).
+  2. Chỉ ra câu lệnh nào là câu lệnh chủ chốt (dominant operation) được lặp lại n lần.
+  3. Bổ sung 1: Giải thích sự phụ thuộc tuyến tính giữa kích thước đầu vào n và số bước thực thi.
+  4. Bổ sung 2: Đánh giá bộ nhớ sử dụng không thay đổi theo n (O(1)).
+
+Bài 3: Vòng lặp với bước nhảy hằng số
+- Độ khó: Dễ
+- Yêu cầu: Phân tích vòng lặp có bước nhảy i += 5.
+- Mô tả: Cho vòng lặp for (int i = 0; i < n; i += 5).
+- Tiêu chí chấm điểm:
+  1. Xác định đúng O(n).
+  2. Giải thích được quy tắc bỏ qua hằng số nhân (1/5 * n vẫn là O(n)).
+  3. Bổ sung 1: Thiết lập được biểu thức toán học tính số lần lặp chính xác (n/5).
+  4. Bổ sung 2: Phân biệt được sự khác biệt giữa số lần lặp thực tế và bậc tăng trưởng (Rate of growth).
+
+Bài 4: Tìm kiếm tuyến tính (Linear Search)
+- Độ khó: Dễ
+- Yêu cầu: Phân tích trường hợp tốt nhất và xấu nhất.
+- Mô tả: Phân tích thuật toán tìm x trong mảng n phần tử.
+- Tiêu chí chấm điểm:
+  1. Chỉ ra Best case là O(1) và Worst case là O(n).
+  2. Giải thích được điều kiện xảy ra của từng trường hợp.
+  3. Bổ sung 1: Tính toán độ phức tạp trung bình (Average case) nếu giả định x nằm ngẫu nhiên.
+  4. Bổ sung 2: Đánh giá ảnh hưởng của việc mảng đã sắp xếp hay chưa đối với thuật toán này.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 5: Vòng lặp lồng nhau cơ bản
+- Độ khó: Trung bình
+- Yêu cầu: Phân tích cấu trúc hai vòng lặp lồng nhau độc lập.
+- Mô tả: Vòng lặp i chạy từ 1 đến n, vòng lặp j chạy từ 1 đến n.
+- Tiêu chí chấm điểm:
+  1. Xác định đúng O(n^2).
+  2. Sử dụng quy tắc nhân để giải thích (n lần của n bước).
+  3. Bổ sung 1: Vẽ được mô hình lưới (grid) thể hiện số lần thực thi các câu lệnh bên trong.
+  4. Bổ sung 2: Đánh giá sự bùng nổ thời gian khi n tăng lên gấp đôi (thời gian tăng gấp 4).
+
+Bài 6: Vòng lặp lồng nhau dạng tam giác
+- Độ khó: Trung bình
+- Yêu cầu: Tính toán tổng cấp số cộng.
+- Mô tả: Vòng lặp i chạy từ 1 đến n, vòng lặp j chạy từ 1 đến i.
+- Tiêu chí chấm điểm:
+  1. Chứng minh tổng số lần lặp là n*(n+1)/2.
+  2. Kết luận đúng bậc cao nhất là O(n^2).
+  3. Bổ sung 1: Giải thích quy tắc bỏ qua các thành phần bậc thấp (n/2) và hệ số (1/2).
+  4. Bổ sung 2: So sánh hiệu năng thực tế với Bài 5 (nhanh hơn khoảng 2 lần nhưng cùng bậc Big O).
+
+Bài 7: Thuật toán chia để trị đơn giản (Chia đôi)
+- Độ khó: Trung bình
+- Yêu cầu: Phân tích biến chạy theo phép nhân/chia.
+- Mô tả: Cho vòng lặp for (int i = 1; i < n; i *= 2).
+- Tiêu chí chấm điểm:
+  1. Giải thích tại sao số lần lặp là log2(n).
+  2. Kết luận O(log n).
+  3. Bổ sung 1: Chỉ ra được tốc độ tăng trưởng cực chậm của hàm Logarit khi n rất lớn.
+  4. Bổ sung 2: Xác định điều kiện dừng của vòng lặp dưới dạng bất phương trình toán học.
+
+Bài 8: Độ phức tạp của thuật toán sắp xếp cơ bản
+- Độ khó: Trung bình
+- Yêu cầu: Phân tích Selection Sort hoặc Bubble Sort.
+- Mô tả: Phân tích đoạn mã của thuật toán sắp xếp có 2 vòng lặp lồng nhau.
+- Tiêu chí chấm điểm:
+  1. Xác định đúng O(n^2).
+  2. Phân tích được số phép so sánh và số phép hoán vị.
+  3. Bổ sung 1: Đánh giá độ phức tạp không gian (In-place sorting) là O(1).
+  4. Bổ sung 2: Phân tích trường hợp tốt nhất của Bubble Sort khi có biến cờ hiệu (flag).
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 9: Đệ quy tuyến tính (Tính Giai thừa)
+- Độ khó: Khó
+- Yêu cầu: Thiết lập phương trình truy hồi.
+- Mô tả: Phân tích hàm đệ quy T(n) = T(n-1) + O(1).
+- Tiêu chí chấm điểm:
+  1. Xác định đúng độ phức tạp thời gian O(n).
+  2. Xác định đúng độ phức tạp không gian O(n).
+  3. Bổ sung 1: Giải thích cơ chế Stack Frame dẫn đến tiêu tốn bộ nhớ trong đệ quy.
+  4. Bổ sung 2: So sánh với phương pháp dùng vòng lặp (O(1) không gian).
+
+Bài 10: Đệ quy nhị phân (Fibonacci đệ quy)
+- Độ khó: Khó
+- Yêu cầu: Vẽ cây đệ quy để phân tích.
+- Mô tả: Phân tích hàm đệ quy T(n) = T(n-1) + T(n-2) + O(1).
+- Tiêu chí chấm điểm:
+  1. Chứng minh số lượng lời gọi hàm tăng theo hàm mũ O(2^n).
+  2. Giải thích sự lặp lại lãng phí trong các nhánh cây đệ quy.
+  3. Bổ sung 1: Xác định chiều cao tối đa của cây đệ quy để suy ra Space Complexity O(n).
+  4. Bổ sung 2: Đề xuất phương pháp tối ưu (Quy hoạch động) để giảm về O(n).
+
+Bài 11: Thuật toán Tìm kiếm nhị phân (Binary Search)
+- Độ khó: Khó
+- Yêu cầu: Phân tích đệ quy chia đôi dữ liệu.
+- Mô tả: Phân tích T(n) = T(n/2) + O(1).
+- Tiêu chí chấm điểm:
+  1. Kết luận O(log n).
+  2. Giải thích cơ chế loại bỏ một nửa dữ liệu sau mỗi bước.
+  3. Bổ sung 1: Chứng minh bằng phương pháp thế (Substitution method) trong toán học.
+  4. Bổ sung 2: Đánh giá Space Complexity cho cả hai phiên bản: Đệ quy (O(log n)) và Vòng lặp (O(1)).
+
+Bài 12: Phân tích thuật toán Quick Sort (Trường hợp xấu nhất)
+- Độ khó: Khó
+- Yêu cầu: Phân tích sâu về sự mất cân bằng.
+- Mô tả: Phân tích Quick Sort khi Pivot luôn là phần tử cực đại/cực tiểu.
+- Tiêu chí chấm điểm:
+  1. Chỉ ra tại sao đệ quy biến thành T(n) = T(n-1) + O(n).
+  2. Kết luận Worst case là O(n^2).
+  3. Bổ sung 1: Phân tích độ phức tạp không gian trong trường hợp xấu nhất (O(n)).
+  4. Bổ sung 2: Đề xuất giải pháp chọn Pivot ngẫu nhiên (Randomized Quick Sort) để đạt O(n log n).
+
+
+
+
+DANH SÁCH BÀI TẬP CẤU TRÚC DỮ LIỆU VÀ GIẢI THUẬT
+DẠNG 2: CÁC THUẬT TOÁN SẮP XẾP VÀ TÌM KIẾM
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Thuật toán Tìm kiếm tuyến tính (Linear Search)
+- Mô tả: Đây là phương pháp tìm kiếm cơ bản nhất, thực hiện kiểm tra lần lượt từng phần tử từ đầu đến cuối danh sách. Thuật toán này thường được dùng khi dữ liệu chưa được sắp xếp hoặc kích thước dữ liệu nhỏ, không yêu cầu cấu trúc phức tạp.
+- Yêu cầu: Viết hàm tìm kiếm một giá trị số nguyên x trong mảng n phần tử. Hàm trả về vị trí (chỉ số) đầu tiên tìm thấy x, nếu không thấy thì trả về -1.
+- Tiêu chí chấm điểm:
+  1. Cài đặt đúng vòng lặp duyệt toàn bộ mảng từ chỉ số 0 đến n-1.
+  2. Thực hiện so sánh chính xác và thoát vòng lặp ngay khi tìm thấy kết quả.
+  3. Xử lý đúng trường hợp mảng rỗng hoặc giá trị x không tồn tại.
+  4. Đạt độ phức tạp thời gian O(n) cho trường hợp xấu nhất.
+
+Bài 2: Thuật toán Sắp xếp đổi chỗ trực tiếp (Interchange Sort)
+- Mô tả: Thuật toán này hoạt động bằng cách so sánh phần tử đang xét với tất cả các phần tử đứng sau nó. Nếu chúng không đúng thứ tự (tăng dần hoặc giảm dần), ta thực hiện hoán đổi ngay lập tức để dần đưa phần tử đúng về vị trí hiện tại.
+- Yêu cầu: Cài đặt hàm sắp xếp một dãy số nguyên theo thứ tự tăng dần. Sử dụng hai vòng lặp lồng nhau để thực hiện việc so sánh và hoán vị trực tiếp.
+- Tiêu chí chấm điểm:
+  1. Cấu trúc hai vòng lặp for lồng nhau với chỉ số i chạy từ 0 và j chạy từ i+1 chính xác.
+  2. Thực hiện hàm hoán vị (swap) đúng kỹ thuật để không làm mất dữ liệu.
+  3. Đảm bảo mảng kết quả được sắp xếp đúng thứ tự yêu cầu.
+  4. Xác định đúng độ phức tạp thời gian là O(n^2).
+
+Bài 3: Thuật toán Sắp xếp nổi bọt (Bubble Sort)
+- Mô tả: Tên gọi của thuật toán bắt nguồn từ việc các phần tử lớn nhất sẽ "nổi" dần về phía cuối mảng giống như các bọt khí. Quá trình này thực hiện thông qua việc so sánh và hoán đổi liên tục các cặp phần tử kề nhau nếu chúng sai thứ tự.
+- Yêu cầu: Viết chương trình sắp xếp mảng tăng dần. Sau mỗi lượt lặp lớn, hãy in trạng thái của mảng ra màn hình để quan sát quá trình phần tử lớn nhất di chuyển về cuối.
+- Tiêu chí chấm điểm:
+  1. Cài đặt đúng vòng lặp so sánh cặp phần tử a[j] và a[j+1].
+  2. Giảm dần phạm vi xét của vòng lặp bên trong sau mỗi lần lặp bên ngoài để tối ưu.
+  3. Thực hiện hoán vị đúng điều kiện khi phần tử đứng trước lớn hơn phần tử đứng sau.
+  4. Mô phỏng được các bước trung gian của mảng một cách logic.
+
+Bài 4: Thuật toán Sắp xếp chọn (Selection Sort)
+- Mô tả: Thay vì hoán đổi liên tục, thuật toán này chỉ tìm phần tử nhỏ nhất trong đoạn chưa sắp xếp, sau đó mới thực hiện một phép hoán đổi duy nhất để đưa nó về đúng vị trí đầu đoạn đó. Cách này giúp giảm thiểu tối đa số lần ghi vào bộ nhớ.
+- Yêu cầu: Cài đặt hàm sắp xếp tăng dần. Sử dụng một biến tạm để lưu chỉ số của phần tử nhỏ nhất (minIndex) trong mỗi lượt duyệt.
+- Tiêu chí chấm điểm:
+  1. Tìm chính xác vị trí của phần tử nhỏ nhất trong mỗi lượt lặp.
+  2. Chỉ thực hiện hoán vị bên ngoài vòng lặp tìm kiếm (tối đa n-1 lần hoán vị).
+  3. Đảm bảo tính ổn định của thuật toán trên các bộ dữ liệu mẫu.
+  4. Chứng minh được số lần hoán đổi ít hơn so với Interchange Sort.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 5: Thuật toán Tìm kiếm nhị phân (Binary Search)
+- Mô tả: Đây là giải thuật tìm kiếm cực nhanh dựa trên chiến lược "chia để trị". Bằng cách luôn so sánh giá trị x với phần tử ở giữa mảng đã sắp xếp, phạm vi tìm kiếm sẽ bị thu hẹp đi một nửa sau mỗi bước thực hiện.
+- Yêu cầu: Viết hàm tìm kiếm x trên một mảng đã được sắp xếp tăng dần. Sử dụng vòng lặp while để cập nhật hai đầu mảng (left, right) và vị trí giữa (mid).
+- Tiêu chí chấm điểm:
+  1. Xác định đúng điều kiện dừng của vòng lặp là khi left vượt quá right.
+  2. Cập nhật chỉ số left và right chính xác sau mỗi lần so sánh giá trị tại mid.
+  3. Xử lý được trường hợp giá trị tìm thấy nằm ở ngay các đầu mảng hoặc chính giữa.
+  4. Đạt độ phức tạp thời gian O(log n).
+
+Bài 6: Thuật toán Sắp xếp chèn (Insertion Sort)
+- Mô tả: Thuật toán này mô phỏng cách một người sắp xếp các quân bài trên tay. Ta lấy từng phần tử mới và chèn nó vào đúng vị trí trong dãy các phần tử đã được sắp xếp trước đó bằng cách dời các phần tử lớn hơn sang phải.
+- Yêu cầu: Cài đặt hàm sắp xếp tăng dần. Sử dụng vòng lặp để tìm vị trí thích hợp cho phần tử đang xét và thực hiện dời chỗ các phần tử khác để tạo khoảng trống.
+- Tiêu chí chấm điểm:
+  1. Sử dụng biến tạm để lưu giá trị phần tử đang được "chèn".
+  2. Thực hiện dời chỗ (shift) các phần tử phía trước một cách chính xác mà không ghi đè mất dữ liệu.
+  3. Xử lý đúng điều kiện dừng của vòng lặp tìm vị trí chèn (khi gặp phần tử nhỏ hơn hoặc chạm đầu mảng).
+  4. Phân tích được ưu điểm O(n) khi mảng đầu vào đã gần như được sắp xếp.
+
+Bài 7: Tìm kiếm nhị phân bằng kỹ thuật Đệ quy
+- Mô tả: Thay vì dùng vòng lặp, việc sử dụng đệ quy giúp mã nguồn của tìm kiếm nhị phân trở nên gọn gàng và thể hiện rõ tư duy chia để trị. Mỗi lời gọi hàm sẽ giải quyết một bài toán con trên một nửa phạm vi của mảng ban đầu.
+- Yêu cầu: Viết hàm đệ quy BinarySearch nhận vào mảng, giá trị x, chỉ số left và right. Thực hiện gọi lại chính hàm đó với phạm vi đã thu hẹp.
+- Tiêu chí chấm điểm:
+  1. Thiết lập đúng điều kiện cơ sở (điểm dừng) để tránh đệ quy vô tận.
+  2. Truyền tham số chỉ số mảng chính xác trong các lời gọi đệ quy nhánh trái/phải.
+  3. Hàm trả về đúng kết quả từ các tầng đệ quy sâu nhất lên gốc.
+  4. Đánh giá được độ phức tạp không gian O(log n) do sử dụng Stack đệ quy.
+
+Bài 8: Sắp xếp nổi bọt cải tiến (Bubble Sort with Flag)
+- Mô tả: Nhược điểm của Bubble Sort là vẫn chạy đủ số vòng lặp ngay cả khi mảng đã sắp xếp xong. Cải tiến này sử dụng một biến "cờ hiệu" để nhận biết nếu trong một lượt lặp không có bất kỳ phép hoán vị nào xảy ra, nghĩa là mảng đã có thứ tự và có thể dừng ngay lập tức.
+- Yêu cầu: Viết hàm sắp xếp tăng dần tích hợp biến kiểm tra (bool swapped). Thực hiện kiểm chứng tốc độ với một mảng đã sắp xếp sẵn.
+- Tiêu chí chấm điểm:
+  1. Đặt biến cờ hiệu ở đầu mỗi lượt lặp lớn một cách chính xác.
+  2. Cập nhật trạng thái cờ hiệu ngay khi có phép hoán vị xảy ra.
+  3. Thoát khỏi chương trình sắp xếp ngay sau lượt lặp không có hoán vị.
+  4. Chứng minh được thời gian chạy thực tế giảm đáng kể trên dữ liệu gần như đã sắp xếp.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 9: Thuật toán Sắp xếp nhanh (Quick Sort)
+- Mô tả: Quick Sort là thuật toán sắp xếp nhanh nhất trên thực tế trong nhiều trường hợp. Nó chọn một phần tử làm "chốt" (pivot) và phân chia mảng thành hai phần: một phần nhỏ hơn chốt và một phần lớn hơn chốt, sau đó tiếp tục đệ quy trên hai phần đó.
+- Yêu cầu: Cài đặt hàm phân hoạch (Partition) theo phương pháp Lomuto hoặc Hoare và hàm đệ quy QuickSort để sắp xếp mảng số nguyên.
+- Tiêu chí chấm điểm:
+  1. Thực hiện đúng logic phân hoạch để đưa chốt về đúng vị trí cuối cùng của nó.
+  2. Gọi đệ quy chính xác cho các mảng con trái và phải của chốt.
+  3. Đảm bảo tính chất: mọi phần tử bên trái chốt nhỏ hơn chốt, bên phải chốt lớn hơn chốt.
+  4. Phân tích được trường hợp xấu nhất O(n^2) và cách khắc phục bằng việc chọn chốt ngẫu nhiên.
+
+Bài 10: Thuật toán Sắp xếp trộn (Merge Sort)
+- Mô tả: Dựa trên nguyên lý chia để trị, Merge Sort chia mảng thành các mảng con cho đến khi mỗi mảng chỉ còn một phần tử, sau đó "trộn" chúng lại theo thứ tự. Đây là thuật toán ổn định và luôn đảm bảo hiệu suất tốt nhất trong mọi tình huống.
+- Yêu cầu: Viết hàm Merge để trộn hai mảng con đã sắp xếp và hàm đệ quy MergeSort để phân tách mảng ban đầu.
+- Tiêu chí chấm điểm:
+  1. Cài đặt hàm trộn (Merge) chính xác, xử lý tốt các phần tử còn dư của hai mảng con.
+  2. Quản lý bộ nhớ mảng tạm hợp lý, đảm bảo giải phóng sau khi sử dụng.
+  3. Thực hiện chia đôi mảng chính xác tại vị trí mid để gọi đệ quy.
+  4. Xác định đúng độ phức tạp thời gian luôn là O(n log n).
+
+Bài 11: Thuật toán Sắp xếp vun đống (Heap Sort)
+- Mô tả: Thuật toán này sử dụng cấu trúc dữ liệu "đống" (Heap) - một cây nhị phân gần hoàn chỉnh. Ta xây dựng một Max-Heap để phần tử lớn nhất luôn nằm ở gốc, sau đó đổi chỗ nó về cuối mảng và tái cấu trúc lại đống.
+- Yêu cầu: Viết hàm Heapify để duy trì tính chất của đống và hàm HeapSort để thực hiện việc sắp xếp mảng thông qua cây nhị phân.
+- Tiêu chí chấm điểm:
+  1. Xây dựng đúng cấu trúc Max-Heap từ mảng ban đầu.
+  2. Thực hiện chính xác quy trình: hoán đổi gốc với phần tử cuối và gọi lại Heapify.
+  3. Quản lý các chỉ số nút cha, nút con trên mảng một cách chính xác.
+  4. Đánh giá được ưu điểm không tốn thêm bộ nhớ O(n) như Merge Sort nhưng vẫn đạt O(n log n).
+
+Bài 12: Tìm phần tử lớn thứ k (Sử dụng Partition của Quick Sort)
+- Mô tả: Thay vì sắp xếp toàn bộ mảng (mất O(n log n)), ta có thể tìm phần tử lớn thứ k chỉ với thời gian O(n) bằng cách sử dụng logic phân hoạch của Quick Sort. Ta chỉ quan tâm đến phân đoạn chứa chỉ số k sau mỗi lần chia.
+- Yêu cầu: Cài đặt thuật toán Quick Select để tìm giá trị lớn thứ k trong một mảng số nguyên chưa sắp xếp.
+- Tiêu chí chấm điểm:
+  1. Tái sử dụng thành công hàm phân hoạch (Partition).
+  2. Chỉ thực hiện lời gọi đệ quy vào một bên của mảng dựa trên so sánh giữa vị trí chốt và k.
+  3. Kết quả trả về phải chính xác so với việc sắp xếp mảng rồi lấy phần tử ở vị trí k.
+  4. Giải thích được tại sao độ phức tạp trung bình của phương pháp này là O(n).
+
+
+DANH SÁCH BÀI TẬP CẤU TRÚC DỮ LIỆU VÀ GIẢI THUẬT
+DẠNG 3: NGĂN XẾP (STACK) VÀ HÀNG ĐỢI (QUEUE)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Cài đặt Stack lưu trữ số nguyên bằng mảng tĩnh
+- Mô tả: Ngăn xếp là một cấu trúc dữ liệu hoạt động theo nguyên lý "Vào sau - Ra trước" (LIFO). Trong các hệ thống máy tính, Stack được dùng để quản lý các lệnh thực thi hoặc lưu trữ tạm thời các biến cục bộ. Việc cài đặt bằng mảng giúp quản lý bộ nhớ tập trung và truy cập nhanh chóng.
+- Yêu cầu: Định nghĩa một cấu trúc Stack gồm mảng tĩnh có kích thước MAX và một biến chỉ số để quản lý đỉnh. Viết đầy đủ các hàm cơ bản: push (thêm), pop (lấy ra), peek (xem phần tử đỉnh) và isEmpty (kiểm tra rỗng). Viết chương trình chính để thử nghiệm việc đẩy một dãy số vào và lấy ra.
+- Tiêu chí chấm điểm:
+  1. Khai báo cấu trúc và khởi tạo chỉ số đỉnh (Top) ở giá trị -1 chính xác.
+  2. Xử lý ngăn chặn lỗi tràn ngăn xếp (Stack Overflow) khi thực hiện push.
+  3. Xử lý ngăn chặn lỗi lấy dữ liệu từ ngăn xếp rỗng (Stack Underflow) khi thực hiện pop.
+  4. Đảm bảo các thao tác push/pop hoạt động với độ phức tạp thời gian O(1).
+
+Bài 2: Quản lý hàng đợi (Queue) bằng mảng tĩnh
+- Mô tả: Hàng đợi hoạt động theo nguyên lý "Vào trước - Ra trước" (FIFO), giống như việc xếp hàng chờ thanh toán. Trong kỹ thuật lập trình, Queue thường được dùng để quản lý luồng dữ liệu truyền tin hoặc lịch trình in ấn của máy in, nơi lệnh nào đến trước phải được phục vụ trước.
+- Yêu cầu: Cài đặt cấu trúc Queue sử dụng mảng tĩnh. Viết các hàm chức năng: enqueue (thêm vào cuối), dequeue (lấy ra từ đầu), front (xem phần tử đầu) và kiểm tra đầy/rỗng. Thực hiện mô phỏng việc nhận 5 mã số lệnh và xử lý 2 mã số để chứng minh thứ tự.
+- Tiêu chí chấm điểm:
+  1. Quản lý đúng hai chỉ số Front (đầu) và Rear (cuối) trên mảng.
+  2. Thực hiện chính xác việc dịch chuyển các chỉ số khi thêm hoặc lấy phần tử.
+  3. Đảm bảo nguyên tắc FIFO được thực thi nghiêm ngặt trong mọi tình huống.
+  4. Kiểm soát tốt các điều kiện biên khi hàng đợi rỗng hoặc đầy.
+
+Bài 3: Đảo ngược chuỗi ký tự bằng Stack
+- Mô tả: Việc đảo ngược một chuỗi văn bản là bài toán cơ bản trong xử lý dữ liệu. Nhờ đặc tính vào sau ra trước của Stack, ta có thể dễ dàng đảo ngược thứ tự các ký tự mà không cần sử dụng các thuật toán hoán vị phức tạp trên mảng.
+- Yêu cầu: Nhập một chuỗi ký tự bất kỳ từ bàn phím. Sử dụng một Stack kiểu ký tự (char) để đẩy lần lượt từng ký tự của chuỗi vào. Sau đó, thực hiện lấy toàn bộ các ký tự ra khỏi Stack và nối chúng lại để tạo thành chuỗi đã được đảo ngược.
+- Tiêu chí chấm điểm:
+  1. Xử lý nhập liệu tốt, bao gồm cả các chuỗi có khoảng trắng.
+  2. Đẩy và lấy đúng, đủ toàn bộ ký tự vào/ra khỏi Stack.
+  3. Chuỗi kết quả phải đảo ngược hoàn toàn so với chuỗi ban đầu và có ký tự kết thúc chuỗi hợp lệ.
+  4. Đạt hiệu suất thời gian O(n) với n là chiều dài chuỗi.
+
+Bài 4: Kiểm tra chuỗi đối xứng (Palindrome)
+- Mô tả: Một chuỗi được gọi là đối xứng khi đọc từ trái sang phải hay từ phải sang trái đều giống hệt nhau. Bằng cách kết hợp Stack (LIFO) và Queue (FIFO), ta có thể dễ dàng so sánh hai chiều của chuỗi để đưa ra kết luận về tính đối xứng.
+- Yêu cầu: Cho một chuỗi ký tự đầu vào. Đẩy đồng thời các ký tự vào một Stack và một Queue. Sau đó, thực hiện vòng lặp lấy từng ký tự từ cả hai cấu trúc ra để so sánh cặp một. Nếu tất cả các cặp đều giống nhau, chuỗi đó là đối xứng.
+- Tiêu chí chấm điểm:
+  1. Cài đặt thành công cả hai cấu trúc dữ liệu trong cùng một bài toán.
+  2. Thực hiện việc đẩy và lấy dữ liệu đồng bộ giữa Stack và Queue.
+  3. Đưa ra kết luận chính xác cho nhiều loại chuỗi khác nhau (độ dài chẵn, lẻ).
+  4. Đánh giá được độ phức tạp không gian O(n) do sử dụng thêm bộ nhớ phụ.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 5: Kiểm tra tính hợp lệ của các dấu ngoặc
+- Mô tả: Trình biên dịch mã nguồn cần một cơ chế để kiểm tra xem các cặp dấu ngoặc lồng nhau như (), [], {} có đóng mở đúng thứ tự hay không. Stack là công cụ lý tưởng vì dấu ngoặc mở gần nhất phải được đóng trước tiên.
+- Yêu cầu: Nhập một biểu thức chứa nhiều loại dấu ngoặc. Duyệt biểu thức: nếu gặp dấu mở thì đẩy vào Stack; nếu gặp dấu đóng thì kiểm tra xem nó có khớp với dấu mở ở đỉnh Stack hay không. Nếu khớp thì lấy dấu mở ra, nếu không khớp hoặc Stack rỗng thì biểu thức không hợp lệ.
+- Tiêu chí chấm điểm:
+  1. Phân loại đúng các loại dấu ngoặc và chỉ đẩy dấu ngoặc mở vào Stack.
+  2. So khớp chính xác cặp dấu ngoặc tương ứng (ví dụ: '[' phải đi với ']').
+  3. Xử lý được trường hợp Stack còn dư phần tử sau khi đã duyệt hết biểu thức.
+  4. Giải thuật xử lý được biểu thức có độ dài lớn với thời gian O(n).
+
+Bài 6: Cài đặt Hàng đợi vòng (Circular Queue)
+- Mô tả: Hàng đợi cài đặt bằng mảng tĩnh thông thường sẽ bị lãng phí không gian ở phía trước sau nhiều lần lấy phần tử ra. Hàng đợi vòng cho phép chỉ số cuối quay trở lại đầu mảng khi mảng chưa đầy, giúp tối ưu hóa việc sử dụng bộ nhớ.
+- Yêu cầu: Cài đặt Queue bằng mảng với cơ chế quay vòng các chỉ số Front và Rear bằng toán tử chia lấy dư. Viết các hàm thêm và xóa sao cho khi các chỉ số chạm ngưỡng MAX, chúng sẽ quay về vị trí 0 nếu ô đó đã được giải phóng.
+- Tiêu chí chấm điểm:
+  1. Sử dụng công thức toán học (index + 1) % MAX để dịch chuyển các chỉ số.
+  2. Xử lý chính xác logic để phân biệt giữa trạng thái "Hàng đợi đầy" và "Hàng đợi rỗng".
+  3. Đảm bảo dữ liệu cũ không bị ghi đè khi hàng đợi thực sự đã đầy.
+  4. Chứng minh được việc tiết kiệm không gian bộ nhớ so với Queue thông thường.
+
+Bài 7: Chuyển đổi hệ thập phân sang hệ nhị phân
+- Mô tả: Trong toán học, để chuyển một số sang hệ nhị phân, ta chia liên tiếp cho 2 và lấy số dư theo thứ tự ngược lại. Stack với tính chất vào sau ra trước giúp ta lưu trữ các số dư này và in chúng ra theo đúng thứ tự cần thiết.
+- Yêu cầu: Viết chương trình nhận vào một số nguyên dương n. Thực hiện phép chia cho 2 lấy dư và đẩy phần dư vào Stack. Tiếp tục cho đến khi thương bằng 0. Cuối cùng, lấy toàn bộ các phần tử trong Stack ra để hiển thị dãy nhị phân hoàn chỉnh.
+- Tiêu chí chấm điểm:
+  1. Thực hiện đúng thuật toán chia lấy dư và cập nhật giá trị n.
+  2. Lưu trữ đầy đủ các bit nhị phân vào Stack.
+  3. Kết quả in ra màn hình phải đúng định dạng số nhị phân.
+  4. Xử lý thành công trường hợp đầu vào là số 0.
+
+Bài 8: Cài đặt Stack động bằng Danh sách liên kết
+- Mô tả: Mảng tĩnh có nhược điểm là kích thước cố định, dễ gây tràn bộ nhớ. Việc cài đặt Stack dựa trên danh sách liên kết đơn giúp cấu trúc này có thể mở rộng hoặc thu nhỏ linh hoạt theo nhu cầu thực tế của dữ liệu trên bộ nhớ Heap.
+- Yêu cầu: Xây dựng Stack dựa trên cấu trúc Node. Thực hiện các thao tác push và pop tại vị trí đầu danh sách (Head) để đảm bảo tốc độ xử lý nhanh nhất. Viết hàm giải phóng toàn bộ danh sách khi không còn sử dụng.
+- Tiêu chí chấm điểm:
+  1. Thao tác thêm và lấy phần tử đạt độ phức tạp O(1).
+  2. Quản lý con trỏ pTop chính xác, không làm mất dấu địa chỉ đỉnh Stack.
+  3. Cấp phát và giải phóng bộ nhớ động đúng cách, không để xảy ra rò rỉ bộ nhớ.
+  4. Xử lý an toàn khi người dùng cố gắng lấy phần tử từ Stack rỗng.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 9: Chuyển đổi biểu thức Trung tố sang Hậu tố (Infix to Postfix)
+- Mô tả: Biểu thức toán học dạng trung tố (ví dụ: A+B) dễ đọc với con người nhưng khó xử lý với máy tính do quy tắc ưu tiên. Chuyển sang dạng hậu tố (AB+) giúp máy tính tính toán tuần tự từ trái sang phải mà không cần quan tâm đến độ ưu tiên toán tử hay dấu ngoặc.
+- Yêu cầu: Sử dụng Stack để lưu trữ các toán tử trong quá trình duyệt biểu thức trung tố. Dựa vào bảng độ ưu tiên (nhân chia > cộng trừ), thực hiện đẩy toán tử vào Stack hoặc lấy ra đưa vào chuỗi kết quả theo đúng thuật toán Shunting-yard.
+- Tiêu chí chấm điểm:
+  1. Xây dựng đúng hàm xác định độ ưu tiên cho các toán tử phổ biến.
+  2. Xử lý chính xác sự xuất hiện của các dấu ngoặc đơn lồng nhau.
+  3. Kết quả chuỗi hậu tố phải đúng quy tắc toán học.
+  4. Giải thích được luồng dữ liệu của Stack trong quá trình chuyển đổi.
+
+Bài 10: Tính giá trị biểu thức Hậu tố
+- Mô tả: Sau khi biểu thức đã ở dạng hậu tố, việc tính toán giá trị trở nên đơn giản nhờ Stack. Khi gặp một số, ta đưa vào Stack; khi gặp một toán tử, ta lấy hai số gần nhất ra để tính và đẩy kết quả trở lại.
+- Yêu cầu: Nhận đầu vào là một chuỗi biểu thức hậu tố hợp lệ. Duyệt chuỗi và thực hiện các thao tác push toán hạng vào Stack. Khi gặp toán tử, thực hiện phép tính tương ứng và đẩy kết quả trở lại cho đến khi chỉ còn một phần tử duy nhất trong Stack.
+- Tiêu chí chấm điểm:
+  1. Xác định đúng thứ tự các toán hạng khi lấy ra từ Stack (phần tử lấy ra trước là toán hạng thứ hai).
+  2. Thực hiện chính xác các phép toán cơ bản (+, -, *, /).
+  3. Xử lý được các biểu thức có giá trị số lớn hoặc số có nhiều chữ số.
+  4. Chứng minh thuật toán hoạt động với độ phức tạp O(n).
+
+Bài 11: Cài đặt Hàng đợi ưu tiên (Priority Queue)
+- Mô tả: Trong thực tế, không phải mọi phần tử trong hàng đợi đều bình đẳng. Một số phần tử có mức độ ưu tiên cao hơn cần được xử lý trước (ví dụ: cấp cứu trong bệnh viện). Hàng đợi ưu tiên cho phép thêm phần tử bất kỳ nhưng luôn lấy ra phần tử có ưu tiên cao nhất.
+- Yêu cầu: Cài đặt Queue lưu trữ các đối tượng bao gồm giá trị và một con số đại diện cho độ ưu tiên. Viết hàm enqueue sao cho danh sách luôn được sắp xếp theo độ ưu tiên, hoặc hàm dequeue thực hiện tìm kiếm phần tử có ưu tiên lớn nhất để lấy ra.
+- Tiêu chí chấm điểm:
+  1. Thiết kế cấu trúc dữ liệu lưu trữ được cả giá trị và độ ưu tiên.
+  2. Đảm bảo phần tử có độ ưu tiên cao nhất luôn được lấy ra đầu tiên.
+  3. Duy trì tính ổn định (FIFO) cho các phần tử có cùng độ ưu tiên.
+  4. Đánh giá được hiệu suất thời gian của thao tác thêm/xóa.
+
+Bài 12: Mô phỏng Hàng đợi bằng hai Ngăn xếp
+- Mô tả: Đây là một bài toán tư duy kinh điển: Làm thế nào để tạo ra cơ chế "Vào trước - Ra trước" chỉ bằng cách sử dụng các cấu trúc "Vào sau - Ra trước". Giải pháp là sử dụng một Stack để nhận dữ liệu và một Stack khác để đảo ngược lại thứ tự dữ liệu đó.
+- Yêu cầu: Cài đặt Queue thông qua việc sử dụng hai đối tượng Stack. Thao tác thêm phần tử sẽ đẩy vào Stack 1. Thao tác lấy phần tử sẽ lấy từ Stack 2; nếu Stack 2 rỗng, thực hiện chuyển toàn bộ dữ liệu từ Stack 1 sang Stack 2 trước khi lấy ra.
+- Tiêu chí chấm điểm:
+  1. Thực hiện đúng cơ chế đảo ngược dữ liệu giữa hai Stack để đạt được tính chất FIFO.
+  2. Đảm bảo tính nhất quán của dữ liệu trong suốt quá trình chuyển đổi qua lại.
+  3. Xử lý tốt các tình huống hàng đợi rỗng.
+  4. Phân tích được tại sao chi phí cho mỗi phần tử khi tính trung bình (Amortized) vẫn là O(1).
+
+
+
+DANH SÁCH BÀI TẬP CẤU TRÚC DỮ LIỆU VÀ GIẢI THUẬT
+DẠNG 4: CÂY NHỊ PHÂN TÌM KIẾM (BST)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Khởi tạo và Thêm Node vào cây BST
+- Mô tả: Cây nhị phân tìm kiếm là cấu trúc dữ liệu mà mọi Node bên trái đều nhỏ hơn Node cha và mọi Node bên phải đều lớn hơn Node cha. Nhiệm vụ của bạn là xây dựng nền móng cho cấu trúc này.
+- Yêu cầu: Định nghĩa cấu trúc một Node gồm dữ liệu và hai con trỏ trái, phải. Viết hàm khởi tạo cây rỗng và hàm chèn một giá trị x vào cây sao cho vẫn giữ đúng tính chất của BST.
+- Tiêu chí chấm điểm:
+  1. Khai báo đúng cấu trúc Node và con trỏ gốc (Root).
+  2. Thực hiện chính xác việc so sánh giá trị để quyết định chèn vào bên trái hay bên phải.
+  3. Xử lý đúng trường hợp cây đang rỗng.
+  4. Đảm bảo các Node mới luôn được thêm vào vị trí lá (leaf).
+
+Bài 2: Duyệt cây theo thứ tự giữa (In-order Traversal)
+- Mô tả: Duyệt cây theo thứ tự LNR (Trái - Gốc - Phải) là cách để xuất ra các giá trị trong cây theo thứ tự tăng dần. Đây là cách kiểm tra tính chính xác của cây BST hiệu quả nhất.
+- Yêu cầu: Viết hàm đệ quy thực hiện duyệt cây theo thứ tự In-order. In kết quả ra màn hình sau khi đã chèn một dãy số vào cây.
+- Tiêu chí chấm điểm:
+  1. Xác định đúng điểm dừng đệ quy khi gặp Node NULL.
+  2. Thực hiện đúng thứ tự gọi hàm đệ quy cho nhánh trái, xử lý gốc, rồi đến nhánh phải.
+  3. Kết quả in ra phải là một dãy số tăng dần.
+  4. Đạt độ phức tạp thời gian O(n) với n là số Node.
+
+Bài 3: Duyệt cây theo thứ tự trước và sau (Pre-order & Post-order)
+- Mô tả: Ngoài cách duyệt In-order, việc duyệt NLR (Trước) và LRN (Sau) giúp ta hiểu được cấu trúc phân cấp và thứ tự giải phóng bộ nhớ của cây.
+- Yêu cầu: Viết hai hàm đệ quy để thực hiện duyệt cây theo thứ tự Pre-order và Post-order. Giải thích ứng dụng của từng cách duyệt.
+- Tiêu chí chấm điểm:
+  1. Thực hiện đúng thứ tự các bước duyệt cho cả hai hàm.
+  2. Phân biệt được sự khác nhau về vị trí của Node gốc trong kết quả xuất ra.
+  3. Xử lý tốt các cây có cấu trúc lệch về một phía.
+  4. Đánh giá được độ phức tạp không gian dựa trên chiều cao của cây.
+
+Bài 4: Tìm kiếm một giá trị trên cây BST
+- Mô tả: Ưu điểm lớn nhất của BST là tốc độ tìm kiếm. Bạn cần xây dựng một hàm để xác định xem một giá trị x có tồn tại trong hệ thống dữ liệu cây hay không.
+- Yêu cầu: Viết hàm tìm kiếm trả về địa chỉ của Node chứa giá trị x. Nếu không tìm thấy, hàm trả về NULL.
+- Tiêu chí chấm điểm:
+  1. Tận dụng tính chất của BST để loại bỏ một nửa số Node cần xét sau mỗi bước so sánh.
+  2. Cài đặt đúng bằng phương pháp đệ quy hoặc vòng lặp.
+  3. Trả về kết quả chính xác trong mọi trường hợp (có hoặc không tìm thấy).
+  4. Phân tích độ phức tạp thời gian đạt mức O(log n) trong trường hợp cây cân bằng.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 5: Tìm giá trị nhỏ nhất và lớn nhất trên cây
+- Mô tả: Do đặc thù sắp xếp của BST, các giá trị cực trị luôn nằm ở các vị trí biên của cây. Việc tìm kiếm chúng rất đơn giản nhưng cực kỳ hữu ích.
+- Yêu cầu: Viết hàm tìm Node có giá trị nhỏ nhất (cực trái) và hàm tìm Node có giá trị lớn nhất (cực phải) của cây.
+- Tiêu chí chấm điểm:
+  1. Duyệt liên tục về phía bên trái để tìm giá trị Min.
+  2. Duyệt liên tục về phía bên phải để tìm giá trị Max.
+  3. Xử lý trường hợp cây chỉ có một Node hoặc cây rỗng.
+  4. Thực hiện thuật toán với độ phức tạp thời gian phụ thuộc vào chiều cao cây h.
+
+Bài 6: Đếm số lượng Node và số lượng lá (Leaf Nodes)
+- Mô tả: Việc thống kê quy mô của cây giúp đánh giá dung lượng bộ nhớ và cấu trúc hiện tại của cây dữ liệu.
+- Yêu cầu: Viết hàm đếm tổng số Node trên cây và hàm đếm số lượng Node lá (Node không có con).
+- Tiêu chí chấm điểm:
+  1. Sử dụng đệ quy để tổng hợp kết quả từ các cây con.
+  2. Xác định đúng điều kiện của Node lá (left == NULL và right == NULL).
+  3. Kết quả đếm phải chính xác cho mọi hình dạng cây.
+  4. Đảm bảo duyệt qua mỗi Node đúng một lần (O(n)).
+
+Bài 7: Tính chiều cao của cây nhị phân
+- Mô tả: Chiều cao của cây quyết định hiệu năng của các thao tác tìm kiếm và thêm xóa. Cây càng cao (lệch), hiệu năng càng giảm.
+- Yêu cầu: Viết hàm trả về chiều cao (chiều sâu lớn nhất) của cây tính từ gốc đến lá xa nhất.
+- Tiêu chí chấm điểm:
+  1. Sử dụng hàm trả về giá trị lớn nhất (Max) giữa chiều cao nhánh trái và nhánh phải.
+  2. Công thức tính chiều cao tại một Node phải bằng 1 + Max(H_trái, H_phải).
+  3. Xác định đúng chiều cao của cây rỗng là 0 (hoặc -1 tùy quy ước).
+  4. Phân tích được tầm quan trọng của chiều cao đối với độ phức tạp thuật toán.
+
+Bài 8: Kiểm tra một cây nhị phân có phải là BST không
+- Mô tả: Không phải cây nhị phân nào cũng là cây nhị phân tìm kiếm. Bạn cần viết một công cụ kiểm định lại tính chất của cây sau khi có sự can thiệp từ bên ngoài.
+- Yêu cầu: Viết hàm kiểm tra xem một cây nhị phân cho trước có thỏa mãn mọi điều kiện của BST tại mọi Node hay không.
+- Tiêu chí chấm điểm:
+  1. Kiểm tra điều kiện ràng buộc về khoảng giá trị (min, max) cho từng Node.
+  2. Đảm bảo kiểm tra đệ quy xuống tận các Node lá.
+  3. Không mắc lỗi chỉ kiểm tra quan hệ cha-con trực tiếp mà quên mất các tổ tiên phía trên.
+  4. Trả về kết quả Boolean chính xác.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 9: Xóa một Node trên cây BST
+- Mô tả: Xóa Node là thao tác phức tạp nhất trên BST vì phải đảm bảo sau khi xóa, các liên kết vẫn duy trì đúng tính chất của cây.
+- Yêu cầu: Viết hàm xóa một Node có giá trị x. Xử lý đầy đủ 3 trường hợp: Node lá, Node có một con, và Node có hai con.
+- Tiêu chí chấm điểm:
+  1. Giải phóng bộ nhớ đúng cách sau khi xóa.
+  2. Với trường hợp Node có hai con, phải tìm được Node thay thế (thường là Node cực trái của cây con phải).
+  3. Duy trì được tính chất BST của cây sau khi thực hiện thao tác xóa.
+  4. Xử lý chính xác việc cập nhật con trỏ của Node cha.
+
+Bài 10: Tìm Node kế tiếp (In-order Successor)
+- Mô tả: Trong một dãy đã sắp xếp, việc tìm phần tử đứng ngay sau một phần tử cho trước là rất quan trọng cho các giải thuật duyệt và xử lý kế tiếp.
+- Yêu cầu: Cho một Node trên cây, hãy tìm Node có giá trị lớn nhất tiếp theo (phần tử xuất hiện ngay sau nó nếu duyệt In-order).
+- Tiêu chí chấm điểm:
+  1. Xử lý trường hợp Node có cây con phải (tìm Min của cây con phải).
+  2. Xử lý trường hợp Node không có cây con phải (truy ngược về các tổ tiên).
+  3. Thuật toán không được duyệt lại từ gốc để đảm bảo hiệu suất.
+  4. Trả về NULL nếu Node đó là giá trị lớn nhất trong cây.
+
+Bài 11: Chuyển mảng đã sắp xếp thành cây BST cân bằng
+- Mô tả: Nếu chèn mảng đã sắp xếp vào cây theo cách thông thường, cây sẽ bị lệch thành một danh sách liên kết. Bạn cần một giải thuật để tạo ra cây có chiều cao tối ưu log(n).
+- Yêu cầu: Cho một mảng tăng dần, hãy xây dựng một cây BST có độ cao nhỏ nhất có thể.
+- Tiêu chí chấm điểm:
+  1. Sử dụng kỹ thuật chia để trị, chọn phần tử giữa mảng làm gốc.
+  2. Gọi đệ quy cho hai nửa mảng còn lại để làm cây con trái và phải.
+  3. Cây kết quả phải có sự cân bằng về chiều cao giữa các nhánh.
+  4. Đạt độ phức tạp O(n) cho quá trình xây dựng.
+
+Bài 12: Tìm tổ tiên chung gần nhất (Lowest Common Ancestor - LCA)
+- Mô tả: Tìm điểm hội tụ đầu tiên của hai Node khi đi ngược lên gốc. Đây là bài toán ứng dụng nhiều trong hệ thống phân cấp và mạng xã hội.
+- Yêu cầu: Viết hàm tìm Node là tổ tiên chung gần nhất của hai Node p và q trên cây BST.
+- Tiêu chí chấm điểm:
+  1. Tận dụng tính chất BST để hướng con trỏ duyệt về phía chứa cả hai Node p và q.
+  2. Xác định điểm dừng khi p và q nằm ở hai phía của Node hiện tại (hoặc Node hiện tại trùng với p hoặc q).
+  3. Thuật toán hoạt động hiệu quả mà không cần dùng thêm bộ nhớ phụ.
+  4. Giải thích được logic tìm kiếm dựa trên so sánh giá trị.
+
+
+DANH SÁCH BÀI TẬP CẤU TRÚC DỮ LIỆU VÀ GIẢI THUẬT
+DẠNG 5: ĐỒ THỊ (GRAPH)
+------------------------------------------------------------
+
+PHẦN 1: MỨC ĐỘ DỄ (EASY)
+
+Bài 1: Biểu diễn đồ thị bằng Ma trận kề (Adjacency Matrix)
+- Mô tả: Ma trận kề là cách đơn giản nhất để lưu trữ thông tin về các mối quan hệ giữa các đỉnh trong một mạng lưới. Cách biểu diễn này cho phép kiểm tra nhanh chóng xem hai đỉnh bất kỳ có kết nối trực tiếp với nhau hay không.
+- Yêu cầu: Định nghĩa cấu trúc đồ thị sử dụng ma trận vuông n x n. Viết các hàm: khởi tạo đồ thị rỗng, thêm một cạnh (edge) giữa hai đỉnh và in ma trận kề ra màn hình.
+- Tiêu chí chấm điểm:
+  1. Khai báo đúng mảng hai chiều và quản lý số lượng đỉnh chính xác.
+  2. Xử lý đúng tính chất đối xứng nếu là đồ thị vô hướng (gán cả A[i][j] và A[j][i]).
+  3. Kiểm tra điều kiện chỉ số đỉnh hợp lệ trước khi thao tác trên ma trận.
+  4. Đạt độ phức tạp không gian O(n^2).
+
+Bài 2: Chuyển đổi từ Ma trận kề sang Danh sách cạnh (Edge List)
+- Mô tả: Trong nhiều thuật toán, việc quản lý danh sách các cạnh (gồm đỉnh đầu, đỉnh cuối và trọng số) sẽ hiệu quả hơn việc duyệt qua toàn bộ ma trận. Đây là bước đệm để hiểu cách tối ưu bộ nhớ khi đồ thị có ít cạnh.
+- Yêu cầu: Đọc dữ liệu từ một ma trận kề cho trước và trích xuất tất cả các cặp đỉnh có kết nối để lưu vào một danh sách các cấu trúc Edge.
+- Tiêu chí chấm điểm:
+  1. Duyệt qua ma trận kề mà không bỏ sót hoặc lặp lại cạnh (đối với đồ thị vô hướng).
+  2. Lưu trữ thông tin cạnh vào mảng hoặc danh sách liên kết một cách khoa học.
+  3. Xuất kết quả danh sách cạnh theo đúng định dạng (u, v).
+  4. Phân tích được khi nào nên dùng danh sách cạnh thay vì ma trận kề.
+
+Bài 3: Tính bậc của các đỉnh trong đồ thị
+- Mô tả: Bậc của một đỉnh phản ánh mức độ kết nối của nó trong mạng lưới (ví dụ: số lượng bạn bè của một tài khoản trên mạng xã hội). Việc tính toán này giúp xác định các điểm quan trọng trong đồ thị.
+- Yêu cầu: Viết hàm tính bậc của một đỉnh bất kỳ trong đồ thị vô hướng và hàm tính bán bậc vào/ra trong đồ thị có hướng.
+- Tiêu chí chấm điểm:
+  1. Duyệt đúng hàng hoặc cột tương ứng trên ma trận kề để đếm số cạnh.
+  2. Phân biệt chính xác giữa bậc vào (in-degree) và bậc ra (out-degree) đối với đồ thị có hướng.
+  3. Xử lý đúng trường hợp đỉnh cô lập (bậc bằng 0).
+  4. Đạt độ phức tạp thời gian O(n) cho mỗi đỉnh cần tính.
+
+Bài 4: Biểu diễn đồ thị bằng Danh sách kề (Adjacency List)
+- Mô tả: Với các đồ thị lớn nhưng có ít cạnh (đồ thị thưa), ma trận kề gây lãng phí bộ nhớ. Danh sách kề sử dụng một mảng các danh sách liên kết để chỉ lưu trữ các đỉnh thực sự có kết nối, giúp tối ưu tài nguyên hệ thống.
+- Yêu cầu: Cài đặt đồ thị bằng danh sách kề. Viết hàm thêm cạnh và hàm in danh sách các đỉnh kề của từng đỉnh trong đồ thị.
+- Tiêu chí chấm điểm:
+  1. Sử dụng mảng các con trỏ (Head) để quản lý danh sách liên kết cho từng đỉnh.
+  2. Thêm Node mới vào danh sách liên kết một cách chính xác (thường thêm vào đầu để đạt O(1)).
+  3. Đảm bảo giải phóng bộ nhớ động của các danh sách liên kết khi kết thúc.
+  4. Đánh giá được ưu điểm về bộ nhớ O(n + e) so với ma trận kề.
+
+------------------------------------------------------------
+
+PHẦN 2: MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+
+Bài 5: Duyệt đồ thị theo chiều rộng (BFS - Breadth First Search)
+- Mô tả: Thuật toán BFS mô phỏng việc lan tỏa như sóng nước, thăm tất cả các đỉnh gần gốc trước khi đi xa hơn. Đây là nền tảng để tìm đường đi ngắn nhất trong đồ thị không có trọng số.
+- Yêu cầu: Sử dụng Queue để cài đặt thuật toán BFS. In ra thứ tự các đỉnh được thăm bắt đầu từ một đỉnh s cho trước.
+- Tiêu chí chấm điểm:
+  1. Sử dụng mảng đánh dấu (Visited) để không thăm lại các đỉnh đã xử lý.
+  2. Quản lý đúng thứ tự đưa vào và lấy ra khỏi Queue theo nguyên tắc FIFO.
+  3. Đảm bảo thăm hết các đỉnh trong cùng một thành phần liên thông.
+  4. Đạt độ phức tạp thời gian O(n + e).
+
+
+
+Bài 6: Duyệt đồ thị theo chiều sâu (DFS - Depth First Search)
+- Mô tả: DFS ưu tiên đi sâu nhất có thể theo một nhánh trước khi quay lui (backtrack). Thuật toán này thường được dùng để kiểm tra tính liên thông hoặc tìm các chu trình trong đồ thị.
+- Yêu cầu: Cài đặt thuật toán DFS bằng phương pháp đệ quy hoặc sử dụng Stack. In ra thứ tự thăm các đỉnh của đồ thị.
+- Tiêu chí chấm điểm:
+  1. Thực hiện đúng cơ chế đệ quy hoặc quản lý Stack để quay lui chính xác.
+  2. Sử dụng mảng Visited để tránh lặp vô hạn trong đồ thị có chu trình.
+  3. Xử lý thăm được toàn bộ các đỉnh ngay cả khi đồ thị không liên thông.
+  4. Giải thích được sự khác biệt về thứ tự thăm đỉnh so với BFS.
+
+
+
+Bài 7: Kiểm tra tính liên thông của đồ thị vô hướng
+- Mô tả: Một đồ thị được gọi là liên thông nếu luôn có đường đi giữa hai đỉnh bất kỳ. Việc kiểm tra này giúp xác định xem một mạng lưới giao thông hay viễn thông có bị đứt gãy ở đâu không.
+- Yêu cầu: Sử dụng BFS hoặc DFS để đếm số thành phần liên thông của đồ thị. Nếu số thành phần bằng 1, kết luận đồ thị liên thông.
+- Tiêu chí chấm điểm:
+  1. Chạy thuật toán duyệt nhiều lần cho đến khi tất cả các đỉnh đều được đánh dấu thăm.
+  2. Đếm chính xác số lần gọi hàm duyệt (mỗi lần gọi tương ứng một thành phần liên thông).
+  3. Đưa ra kết luận đúng về tính liên thông của đồ thị đầu vào.
+  4. Đạt hiệu suất O(n + e) cho toàn bộ quá trình kiểm tra.
+
+Bài 8: Tìm đường đi giữa hai đỉnh bằng BFS
+- Mô tả: Trong bản đồ số, việc tìm đường đi qua ít trạm trung chuyển nhất tương đương với bài toán tìm đường ngắn nhất trên đồ thị không trọng số bằng BFS.
+- Yêu cầu: Sử dụng BFS để tìm đường đi từ đỉnh u đến đỉnh v. In ra dãy các đỉnh trên đường đi nếu tồn tại, ngược lại thông báo không có đường đi.
+- Tiêu chí chấm điểm:
+  1. Sử dụng mảng lưu vết (Parent) để ghi nhớ đỉnh trước đó của mỗi đỉnh khi duyệt.
+  2. Truy ngược từ v về u dựa trên mảng Parent để tìm đường đi.
+  3. Đảm bảo đường đi tìm được là ngắn nhất (về số cạnh).
+  4. Xử lý tốt trường hợp u và v nằm ở hai thành phần liên thông khác nhau.
+
+------------------------------------------------------------
+
+PHẦN 3: MỨC ĐỘ KHÓ (HARD)
+
+Bài 9: Thuật toán Dijkstra tìm đường đi ngắn nhất
+- Mô tả: Đây là thuật toán quan trọng nhất trong các ứng dụng bản đồ (như Google Maps). Dijkstra tìm đường đi có tổng trọng số các cạnh là nhỏ nhất giữa một đỉnh nguồn và tất cả các đỉnh còn lại.
+- Yêu cầu: Cài đặt thuật toán Dijkstra trên đồ thị có trọng số dương. In ra khoảng cách ngắn nhất và lộ trình từ đỉnh nguồn đến một đỉnh đích.
+- Tiêu chí chấm điểm:
+  1. Quản lý đúng mảng khoảng cách (Distance) và mảng đánh dấu các đỉnh đã tối ưu.
+  2. Thực hiện chính xác bước "Thư giãn cạnh" (Relaxation) để cập nhật khoảng cách nhỏ hơn.
+  3. Tìm được đỉnh có khoảng cách nhỏ nhất trong số các đỉnh chưa xét ở mỗi bước (sử dụng mảng hoặc Priority Queue).
+  4. Đạt độ phức tạp O(n^2) hoặc O(e log n).
+
+
+
+Bài 10: Tìm cây khung nhỏ nhất bằng thuật toán Prim
+- Mô tả: Bài toán đặt ra là kết nối tất cả các đỉnh của đồ thị sao cho tổng trọng số các cạnh là nhỏ nhất và không tạo thành chu trình (ví dụ: thiết kế mạng lưới cáp quang nối các thành phố với chi phí thấp nhất).
+- Yêu cầu: Cài đặt thuật toán Prim để tìm cây khung nhỏ nhất (Minimum Spanning Tree - MST). In ra danh sách các cạnh của cây khung và tổng trọng số của chúng.
+- Tiêu chí chấm điểm:
+  1. Bắt đầu từ một đỉnh bất kỳ và luôn chọn cạnh nhỏ nhất nối từ tập đỉnh đã xét ra tập đỉnh chưa xét.
+  2. Đảm bảo cây khung tìm được có đúng (n-1) cạnh và liên thông.
+  3. Cập nhật đúng mảng trọng số nhỏ nhất kết nối tới từng đỉnh.
+  4. Giải thích được sự khác biệt giữa MST và bài toán đường đi ngắn nhất.
+
+Bài 11: Phát hiện chu trình trong đồ thị (Cycle Detection)
+- Mô tả: Chu trình trong đồ thị có thể gây ra các lỗi lặp vô hạn trong hệ thống hoặc xung đột trong quản lý tài nguyên. Việc phát hiện chu trình là yêu cầu bắt buộc trong nhiều bài toán logic.
+- Yêu cầu: Viết hàm kiểm tra xem đồ thị (vô hướng hoặc có hướng) có chứa chu trình hay không bằng cách sử dụng DFS.
+- Tiêu chí chấm điểm:
+  1. Đối với đồ thị có hướng: Sử dụng mảng đánh dấu trạng thái (trắng, xám, đen) để phát hiện cạnh ngược (back edge).
+  2. Đối với đồ thị vô hướng: Kiểm tra nếu thăm lại một đỉnh đã đánh dấu mà đỉnh đó không phải là cha trực tiếp.
+  3. Kết luận chính xác sự tồn tại của chu trình.
+  4. Đạt độ phức tạp thời gian O(n + e).
+
+Bài 12: Sắp xếp cấu trúc (Topological Sort)
+- Mô tả: Trong quản lý dự án, một số công việc chỉ được thực hiện sau khi công việc khác hoàn thành. Sắp xếp tô-pô giúp đưa ra một thứ tự thực hiện các công việc sao cho mọi ràng buộc về trình tự đều được thỏa mãn.
+- Yêu cầu: Thực hiện sắp xếp tô-pô cho một đồ thị có hướng không chu trình (DAG). In ra thứ tự các đỉnh sau khi sắp xếp.
+- Tiêu chí chấm điểm:
+  1. Sử dụng thuật toán xóa dần các đỉnh có bán bậc vào bằng 0 (Thuật toán Kahn) hoặc dựa trên DFS.
+  2. Đảm bảo thứ tự xuất ra thỏa mãn: nếu có cạnh từ u đến v thì u luôn đứng trước v.
+  3. Phát hiện và thông báo nếu đồ thị có chu trình (không thể sắp xếp tô-pô).
+  4. Đánh giá ứng dụng của thuật toán trong việc lập lịch trình.
