@@ -13,13 +13,12 @@ services:
       - key: DB_HOST
       - key: DB_NAME
       - key: PORT
-services:
   - type: web
     name: ptud-backend
     env: node
     plan: free
     branch: main
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
     autoDeploy: true
     envVars:
