@@ -124,40 +124,45 @@ const sqlConfig = {
 };
 
 async function queryExternalExercises(prefix) {
-  const pool = await sql.connect(sqlConfig);
+  if (!process.env.USE_EXTERNAL_DB) {
+    return [];
+  }
+  
   try {
-    const req = pool.request();
-    // Query BAITAP with optional joins to lookup labels
-    // Map results to a normalized shape used by frontend
-    let q = `SELECT b.Id, b.MaBaiTap, b.TenBaiTap, b.MaDoKho, d.TenDoKho AS DoKho, b.MaDangBai, b.MaDinhDang, dn.TenDinhDang AS DinhDang, b.MoTa, b.YeuCau, b.TieuChiChamDiem, b.MaMon
-               FROM dbo.BAITAP b
-               LEFT JOIN dbo.DOKHO d ON b.MaDoKho = d.MaDoKho
-               LEFT JOIN dbo.DINHDANG_NOPBAI dn ON b.MaDinhDang = dn.MaDinhDang`;
+    const pool = await sql.connect(sqlConfig);
+    try {
+      const req = pool.request();
+      // Query BAITAP with optional joins to lookup labels
+      // Map results to a normalized shape used by frontend
+      let q = `SELECT b.Id, b.MaBaiTap, b.TenBaiTap, b.MaDoKho, d.TenDoKho AS DoKho, b.MaDangBai, b.MaDinhDang, dn.TenDinhDang AS DinhDang, b.MoTa, b.YeuCau, b.TieuChiChamDiem, b.MaMon
+                 FROM dbo.BAITAP b
+                 LEFT JOIN dbo.DOKHO d ON b.MaDoKho = d.MaDoKho
+                 LEFT JOIN dbo.DINHDANG_NOPBAI dn ON b.MaDinhDang = dn.MaDinhDang`;
 
-    if (prefix) {
-      req.input('prefix', sql.NVarChar, prefix + '%');
-      q += ' WHERE b.MaBaiTap LIKE @prefix';
-    }
-    q += ' ORDER BY b.Id';
-
-    const r = await req.query(q);
-    // normalize
-    return r.recordset.map(row => {
-      // parse tieu chi if it's JSON-like
-      let grading = row.TieuChiChamDiem;
-      try {
-        if (grading && typeof grading === 'string') {
-          grading = JSON.parse(grading);
-        }
-      } catch (e) {
-        // leave as-is
+      if (prefix) {
+        req.input('prefix', sql.NVarChar, prefix + '%');
+        q += ' WHERE b.MaBaiTap LIKE @prefix';
       }
+      q += ' ORDER BY b.Id';
 
-      // if MaMon is empty, extract from MaBaiTap prefix (e.g. NMLT_D1_01 -> NMLT)
-      let subjectCode = row.MaMon;
-      if (!subjectCode || subjectCode.trim() === '') {
-        const match = (row.MaBaiTap || '').match(/^([A-Z]+)/);
-        subjectCode = match ? match[1] : 'EXTERNAL';
+      const r = await req.query(q);
+      // normalize
+      return r.recordset.map(row => {
+        // parse tieu chi if it's JSON-like
+        let grading = row.TieuChiChamDiem;
+        try {
+          if (grading && typeof grading === 'string') {
+            grading = JSON.parse(grading);
+          }
+        } catch (e) {
+          // leave as-is
+        }
+
+        // if MaMon is empty, extract from MaBaiTap prefix (e.g. NMLT_D1_01 -> NMLT)
+        let subjectCode = row.MaMon;
+        if (!subjectCode || subjectCode.trim() === '') {
+          const match = (row.MaBaiTap || '').match(/^([A-Z]+)/);
+          subjectCode = match ? match[1] : 'EXTERNAL';
       }
 
       // normalize requirements to array
@@ -198,22 +203,26 @@ async function queryExternalExercises(prefix) {
 
 // SQL write helpers (INSERT/UPDATE/DELETE BAITAP)
 async function insertExerciseToSQL(exercise, subjectCode) {
-  const pool = await sql.connect(sqlConfig);
   try {
-    const req = pool.request();
-    req.input('MaBaiTap', sql.NVarChar, exercise.id);
-    req.input('TenBaiTap', sql.NVarChar, exercise.title || '');
-    req.input('MaMon', sql.NVarChar, subjectCode || '');
-    req.input('MoTa', sql.NVarChar, exercise.description || '');
-    req.input('YeuCau', sql.NVarChar, Array.isArray(exercise.requirements) ? exercise.requirements.join('\n') : '');
-    req.input('TieuChiChamDiem', sql.NVarChar, JSON.stringify(exercise.grading_criteria || []));
-    req.input('MaDinhDang', sql.NVarChar, exercise.submission_format || '');
-    req.input('MaDoKho', sql.NVarChar, exercise.difficulty || 'Dễ');
-    
-    const q = `INSERT INTO dbo.BAITAP (MaBaiTap, TenBaiTap, MaMon, MoTa, YeuCau, TieuChiChamDiem, MaDinhDang, MaDoKho)
-               VALUES (@MaBaiTap, @TenBaiTap, @MaMon, @MoTa, @YeuCau, @TieuChiChamDiem, @MaDinhDang, @MaDoKho)`;
-    await req.query(q);
-    return true;
+    const pool = await sql.connect(sqlConfig);
+    try {
+      const req = pool.request();
+      req.input('MaBaiTap', sql.NVarChar, exercise.id);
+      req.input('TenBaiTap', sql.NVarChar, exercise.title || '');
+      req.input('MaMon', sql.NVarChar, subjectCode || '');
+      req.input('MoTa', sql.NVarChar, exercise.description || '');
+      req.input('YeuCau', sql.NVarChar, Array.isArray(exercise.requirements) ? exercise.requirements.join('\n') : '');
+      req.input('TieuChiChamDiem', sql.NVarChar, JSON.stringify(exercise.grading_criteria || []));
+      req.input('MaDinhDang', sql.NVarChar, exercise.submission_format || '');
+      req.input('MaDoKho', sql.NVarChar, exercise.difficulty || 'Dễ');
+      
+      const q = `INSERT INTO dbo.BAITAP (MaBaiTap, TenBaiTap, MaMon, MoTa, YeuCau, TieuChiChamDiem, MaDinhDang, MaDoKho)
+                 VALUES (@MaBaiTap, @TenBaiTap, @MaMon, @MoTa, @YeuCau, @TieuChiChamDiem, @MaDinhDang, @MaDoKho)`;
+      await req.query(q);
+      return true;
+    } finally {
+      await sql.close();
+    }
   } catch (err) {
     console.error('SQL INSERT failed:', err.message);
     return false;
