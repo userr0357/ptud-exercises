@@ -745,5 +745,18 @@ module.exports = app;
 // ==================================================
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+  const server = app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+    console.log(`Environment: USE_EXTERNAL_DB=${process.env.USE_EXTERNAL_DB || 'not set'}`);
+  });
+  
+  // Handle errors
+  server.on('error', (err) => {
+    console.error('Server error:', err);
+    process.exit(1);
+  });
+  
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  });
 }
