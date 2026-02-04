@@ -1,0 +1,3459 @@
+[
+  {
+    "subject_id": "CTDLGT",
+    "subject_name": "Cấu trúc dữ liệu và Giải thuật",
+    "description": "",
+    "total_exercises": 59,
+    "forms": [
+      {
+        "form_id": "401",
+        "name": "Phân tích độ phức tạp thuật toán (Big O)",
+        "difficulty": "Khó",
+        "exercise_count": 11,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "330",
+            "title": "Phân tích đệ quy tuyến tính – Giai thừa",
+            "difficulty": "Khó",
+            "description": "Cho hàm đệ quy tính giai thừa với công thức truy hồi T(n) = T(n−1) + O(1).",
+            "requirements": [
+              "Thiết lập phương trình truy hồi và phân tích độ phức tạp thời gian và không gian."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng Time Complexity là O(n)",
+                "Xác định đúng Space Complexity là O(n)",
+                "Giải thích vai trò của Stack Frame trong đệ quy",
+                "So sánh với phương pháp dùng vòng lặp có không gian O(1)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "329",
+            "title": "Phân tích độ phức tạp của thuật toán sắp xếp cơ bản",
+            "difficulty": "Trung bình",
+            "description": "Phân tích thuật toán Bubble Sort hoặc Selection Sort gồm hai vòng lặp lồng nhau dùng để sắp xếp mảng.",
+            "requirements": [
+              "Đếm số phép so sánh, số phép hoán vị và đánh giá bộ nhớ sử dụng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng độ phức tạp thời gian O(n^2)",
+                "Phân tích số phép so sánh giữa các phần tử",
+                "Đánh giá số phép hoán vị",
+                "Xác định độ phức tạp không gian O(1) do sắp xếp tại chỗ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "333",
+            "title": "Phân tích Quick Sort – Trường hợp xấu nhất",
+            "difficulty": "Khó",
+            "description": "Phân tích thuật toán Quick Sort khi phần tử chốt (pivot) luôn là phần tử nhỏ nhất hoặc lớn nhất.",
+            "requirements": [
+              "Thiết lập phương trình truy hồi và phân tích sự mất cân bằng của cây đệ quy."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Chỉ ra phương trình T(n) = T(n−1) + O(n)",
+                "Kết luận Worst Case là O(n^2)",
+                "Phân tích độ phức tạp không gian O(n)",
+                "Đề xuất giải pháp Randomized Quick Sort để đạt O(n log n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "332",
+            "title": "Phân tích thuật toán tìm kiếm nhị phân",
+            "difficulty": "Khó",
+            "description": "Phân tích thuật toán Binary Search theo phương trình T(n) = T(n/2) + O(1).",
+            "requirements": [
+              "Sử dụng phương pháp thế (Substitution Method) để chứng minh độ phức tạp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kết luận chính xác độ phức tạp O(log n)",
+                "Giải thích cơ chế loại bỏ một nửa dữ liệu sau mỗi bước",
+                "So sánh Space Complexity giữa đệ quy và vòng lặp",
+                "Đánh giá ưu nhược điểm của từng cách cài đặt"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "325",
+            "title": "Phân tích thuật toán tìm kiếm tuyến tính",
+            "difficulty": "Dễ",
+            "description": "Cho thuật toán Linear Search dùng để tìm một giá trị x trong mảng gồm n phần tử bằng cách duyệt lần lượt từ đầu đến cuối.",
+            "requirements": [
+              "Phân tích đầy đủ các trường hợp tốt nhất, xấu nhất và trung bình của thuật toán. Đánh giá ảnh hưởng của dữ liệu đầu vào đến hiệu năng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng Best Case là O(1)",
+                "Xác định đúng Worst Case là O(n)",
+                "Phân tích được Average Case khi giả sử x xuất hiện ngẫu nhiên",
+                "Đánh giá ảnh hưởng của việc mảng đã sắp xếp hay chưa đối với thuật toán"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "323",
+            "title": "Phân tích vòng lặp đơn tính tổng",
+            "difficulty": "Dễ",
+            "description": "Cho đoạn chương trình sử dụng một vòng lặp for hoặc while để duyệt từ 1 đến n nhằm tính tổng S = 1 + 2 + ... + n. Chương trình chỉ sử dụng một biến lặp và một biến tích lũy tổng.",
+            "requirements": [
+              "Xác định độ phức tạp thời gian của chương trình dựa trên số lần thực thi câu lệnh trong vòng lặp. Chỉ ra câu lệnh chủ chốt (dominant operation) quyết định thời gian chạy của thuật toán."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng độ phức tạp thời gian là O(n)",
+                "Chỉ ra chính xác câu lệnh được lặp lại n lần",
+                "Giải thích rõ mối quan hệ tuyến tính giữa kích thước đầu vào n và số bước thực thi",
+                "Đánh giá bộ nhớ sử dụng không phụ thuộc vào n nên Space Complexity là O(1)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "327",
+            "title": "Phân tích vòng lặp lồng nhau dạng tam giác",
+            "difficulty": "Trung bình",
+            "description": "Cho đoạn chương trình trong đó vòng lặp ngoài chạy từ 1 đến n và vòng lặp trong chạy từ 1 đến i. Số lần lặp của vòng trong phụ thuộc vào vòng ngoài.",
+            "requirements": [
+              "Thiết lập công thức tổng số lần lặp bằng tổng cấp số cộng. Từ đó suy ra độ phức tạp thuật toán."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Chứng minh được tổng số lần lặp là n(n+1)/2",
+                "Kết luận bậc cao nhất của thuật toán là O(n^2)",
+                "Giải thích quy tắc loại bỏ các thành phần bậc thấp và hệ số",
+                "So sánh hiệu năng thực tế với vòng lặp n × n"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "326",
+            "title": "Phân tích vòng lặp lồng nhau độc lập",
+            "difficulty": "Trung bình",
+            "description": "Xét đoạn chương trình có hai vòng lặp lồng nhau trong đó vòng ngoài chạy từ 1 đến n và vòng trong cũng chạy từ 1 đến n. Hai vòng lặp hoạt động độc lập với nhau.",
+            "requirements": [
+              "Sử dụng quy tắc nhân để phân tích tổng số lần thực thi câu lệnh bên trong hai vòng lặp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng độ phức tạp thời gian là O(n^2)",
+                "Giải thích được quy tắc nhân (n lần của n bước)",
+                "Vẽ được mô hình lưới n × n thể hiện số lần lặp",
+                "Phân tích hiện tượng bùng nổ thời gian khi n tăng gấp đôi"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "328",
+            "title": "Phân tích vòng lặp nhân đôi (logarithm)",
+            "difficulty": "Trung bình",
+            "description": "Cho vòng lặp for (int i = 1; i < n; i *= 2). Biến lặp được nhân đôi sau mỗi lần lặp.",
+            "requirements": [
+              "Phân tích số lần lặp của vòng lặp bằng cách thiết lập bất phương trình toán học."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Giải thích vì sao số lần lặp là log2(n)",
+                "Kết luận độ phức tạp là O(log n)",
+                "Chỉ ra tốc độ tăng trưởng rất chậm của hàm logarit",
+                "Xác định chính xác điều kiện dừng của vòng lặp"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "324",
+            "title": "Phân tích vòng lặp với bước nhảy hằng số",
+            "difficulty": "Dễ",
+            "description": "Cho vòng lặp for (int i = 0; i < n; i += 5). Vòng lặp không tăng i lên từng đơn vị mà tăng theo bước nhảy cố định là 5.",
+            "requirements": [
+              "Phân tích số lần lặp thực tế của vòng lặp. Thiết lập biểu thức toán học để tính chính xác số bước thực thi. Từ đó suy ra độ phức tạp Big O của thuật toán."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng độ phức tạp là O(n)",
+                "Thiết lập được số lần lặp chính xác là n/5",
+                "Giải thích rõ quy tắc loại bỏ hằng số nhân trong Big O",
+                "Phân biệt được sự khác nhau giữa số lần lặp thực tế và bậc tăng trưởng thuật toán"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "322",
+            "title": "Xác định độ phức tạp của câu lệnh gán và điều kiện",
+            "difficulty": "Dễ",
+            "description": "Cho một đoạn mã chương trình chỉ bao gồm các phép gán số học, phép so sánh và một cấu trúc điều kiện if–else đơn giản. Đoạn chương trình không chứa bất kỳ vòng lặp nào và không gọi hàm đệ quy. Sinh viên cần phân tích toàn bộ số bước thực thi của chương trình để xác định độ phức tạp thời gian và không gian.",
+            "requirements": [
+              "Phân tích chi tiết độ phức tạp thời gian của đoạn mã. Giải thích vì sao các phép toán cơ bản như gán, so sánh, cộng, trừ được xem là các phép toán có thời gian hằng số. Trình bày rõ nguyên tắc xác định thời gian chạy của cấu trúc if–else."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định chính xác độ phức tạp thời gian là O(1)",
+                "Giải thích được vì sao các phép toán cơ bản đều có thời gian thực thi hằng số",
+                "Chứng minh được tổng thời gian thực thi là Max(thời gian nhánh if, thời gian nhánh else)",
+                "Xác định đúng độ phức tạp không gian (Space Complexity) là O(1)"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "402",
+        "name": "Thuật toán sắp xếp và tìm kiếm",
+        "difficulty": "Trung bình",
+        "exercise_count": 12,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "341",
+            "title": "Sắp xếp nổi bọt cải tiến (Bubble Sort with Flag)",
+            "difficulty": "Trung bình",
+            "description": "Phiên bản cải tiến của Bubble Sort sử dụng biến cờ hiệu để phát hiện mảng đã được sắp xếp hoàn chỉnh nhằm dừng thuật toán sớm.",
+            "requirements": [
+              "Viết chương trình Bubble Sort có sử dụng biến swapped để kiểm tra có hoán vị xảy ra hay không."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khởi tạo biến cờ ở đầu mỗi lượt lặp ngoài",
+                "Cập nhật cờ khi có hoán vị xảy ra",
+                "Thoát vòng lặp sớm khi mảng đã có thứ tự",
+                "Chứng minh thời gian chạy cải thiện rõ rệt",
+                "Best Case đạt O(n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "339",
+            "title": "Thuật toán sắp xếp chèn (Insertion Sort)",
+            "difficulty": "Trung bình",
+            "description": "Insertion Sort mô phỏng cách con người sắp xếp bài trên tay. Mỗi phần tử mới được chèn vào đúng vị trí trong dãy con đã được sắp xếp trước đó.",
+            "requirements": [
+              "Viết chương trình sắp xếp tăng dần bằng cách dời các phần tử lớn hơn sang phải để tạo chỗ trống."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng biến tạm lưu giá trị cần chèn",
+                "Dời chỗ các phần tử đúng thứ tự",
+                "Không ghi đè mất dữ liệu",
+                "Xử lý đúng điều kiện dừng vòng lặp",
+                "Phân tích ưu điểm O(n) khi mảng gần sắp xếp"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "337",
+            "title": "Thuật toán sắp xếp chọn (Selection Sort)",
+            "difficulty": "Dễ",
+            "description": "Selection Sort không hoán đổi liên tục mà chỉ tìm phần tử nhỏ nhất trong đoạn chưa sắp xếp, sau đó thực hiện đúng một phép đổi chỗ để đưa phần tử này về vị trí đầu đoạn.",
+            "requirements": [
+              "Viết chương trình sắp xếp mảng tăng dần bằng cách sử dụng biến lưu vị trí phần tử nhỏ nhất (minIndex)."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định chính xác vị trí phần tử nhỏ nhất trong mỗi lượt duyệt",
+                "Chỉ thực hiện hoán đổi một lần sau khi kết thúc vòng tìm kiếm",
+                "Mảng kết quả được sắp xếp đúng thứ tự",
+                "Chứng minh số lần hoán vị ít hơn Interchange Sort"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "335",
+            "title": "Thuật toán sắp xếp đổi chỗ trực tiếp (Interchange Sort)",
+            "difficulty": "Dễ",
+            "description": "Thuật toán Interchange Sort hoạt động bằng cách so sánh phần tử đang xét với toàn bộ các phần tử đứng sau nó. Nếu phát hiện sai thứ tự, chương trình thực hiện hoán đổi trực tiếp để đưa phần tử nhỏ hơn về phía trước.",
+            "requirements": [
+              "Cài đặt hàm sắp xếp mảng số nguyên theo thứ tự tăng dần bằng hai vòng lặp lồng nhau."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Hai vòng lặp lồng nhau đúng cấu trúc với i chạy từ 0 và j chạy từ i+1",
+                "Thực hiện thao tác hoán vị (swap) chính xác",
+                "Sau khi kết thúc, mảng được sắp xếp tăng dần hoàn toàn",
+                "Xác định đúng độ phức tạp thời gian là O(n^2)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "342",
+            "title": "Thuật toán sắp xếp nhanh (Quick Sort)",
+            "difficulty": "Khó",
+            "description": "Quick Sort là thuật toán sắp xếp nhanh dựa trên chia để trị. Thuật toán chọn một phần tử làm chốt (pivot), phân hoạch mảng thành hai phần rồi tiếp tục sắp xếp đệ quy.",
+            "requirements": [
+              "Cài đặt hàm Partition theo Lomuto hoặc Hoare và hàm QuickSort đệ quy."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thực hiện đúng logic phân hoạch",
+                "Đưa pivot về đúng vị trí cuối cùng",
+                "Gọi đệ quy đúng hai mảng con",
+                "Đảm bảo tính chất phân hoạch",
+                "Phân tích worst case O(n^2) và cách chọn pivot ngẫu nhiên"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "336",
+            "title": "Thuật toán sắp xếp nổi bọt (Bubble Sort)",
+            "difficulty": "Dễ",
+            "description": "Tên gọi Bubble Sort xuất phát từ việc các phần tử lớn nhất sẽ dần dần “nổi” lên cuối mảng giống như các bọt khí. Thuật toán thực hiện so sánh và hoán đổi liên tục các cặp phần tử kề nhau.",
+            "requirements": [
+              "Viết chương trình sắp xếp mảng theo thứ tự tăng dần. Sau mỗi lượt lặp ngoài, in trạng thái mảng ra màn hình để quan sát quá trình sắp xếp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "So sánh đúng cặp phần tử a[j] và a[j+1]",
+                "Hoán đổi khi phần tử trước lớn hơn phần tử sau",
+                "Giảm phạm vi xét của vòng lặp trong sau mỗi lượt",
+                "Hiển thị được các trạng thái trung gian của mảng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "343",
+            "title": "Thuật toán sắp xếp trộn (Merge Sort)",
+            "difficulty": "Khó",
+            "description": "Merge Sort là thuật toán chia để trị ổn định, chia mảng thành các mảng con rồi trộn lại theo thứ tự tăng dần.",
+            "requirements": [
+              "Viết hàm Merge và hàm MergeSort đệ quy để sắp xếp mảng số nguyên."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Chia mảng chính xác tại vị trí mid",
+                "Hàm Merge trộn đúng thứ tự",
+                "Xử lý phần tử dư ở hai mảng con",
+                "Quản lý bộ nhớ mảng tạm an toàn",
+                "Độ phức tạp thời gian luôn là O(n log n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "344",
+            "title": "Thuật toán sắp xếp vun đống (Heap Sort)",
+            "difficulty": "Khó",
+            "description": "Heap Sort sử dụng cấu trúc Max Heap để đưa phần tử lớn nhất về cuối mảng sau mỗi lần xử lý.",
+            "requirements": [
+              "Viết hàm Heapify và HeapSort để sắp xếp mảng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xây dựng đúng cấu trúc Max Heap",
+                "Tính toán chính xác chỉ số nút cha và con",
+                "Hoán đổi và tái cấu trúc Heap đúng quy trình",
+                "Không sử dụng mảng phụ lớn",
+                "Đạt độ phức tạp O(n log n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "338",
+            "title": "Thuật toán tìm kiếm nhị phân (Binary Search)",
+            "difficulty": "Trung bình",
+            "description": "Binary Search là thuật toán tìm kiếm hiệu quả dựa trên chiến lược chia để trị. Sau mỗi phép so sánh, phạm vi tìm kiếm bị thu hẹp còn một nửa.",
+            "requirements": [
+              "Viết hàm tìm kiếm nhị phân bằng vòng lặp while trên mảng đã sắp xếp tăng dần."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng điều kiện dừng khi left > right",
+                "Tính chính xác chỉ số mid",
+                "Cập nhật left và right đúng logic",
+                "Tìm được phần tử ở đầu, giữa và cuối mảng",
+                "Đạt độ phức tạp thời gian O(log n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "334",
+            "title": "Thuật toán tìm kiếm tuyến tính (Linear Search)",
+            "difficulty": "Dễ",
+            "description": "Đây là phương pháp tìm kiếm cơ bản nhất, thực hiện kiểm tra lần lượt từng phần tử từ đầu đến cuối danh sách. Thuật toán này thường được sử dụng khi dữ liệu chưa được sắp xếp hoặc kích thước tập dữ liệu nhỏ và không yêu cầu cấu trúc dữ liệu phức tạp.",
+            "requirements": [
+              "Viết hàm tìm kiếm một giá trị số nguyên x trong mảng gồm n phần tử. Hàm trả về vị trí (chỉ số) đầu tiên tìm thấy x, nếu không tìm thấy thì trả về -1."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cài đặt đúng vòng lặp duyệt mảng từ chỉ số 0 đến n-1",
+                "So sánh chính xác từng phần tử với giá trị cần tìm",
+                "Thoát vòng lặp ngay khi tìm thấy kết quả",
+                "Xử lý đúng trường hợp mảng rỗng hoặc không tồn tại x",
+                "Đạt độ phức tạp thời gian O(n) trong trường hợp xấu nhất"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "340",
+            "title": "Tìm kiếm nhị phân bằng đệ quy",
+            "difficulty": "Trung bình",
+            "description": "Phiên bản đệ quy của Binary Search giúp thể hiện rõ tư duy chia để trị khi mỗi lời gọi hàm giải quyết một nửa bài toán.",
+            "requirements": [
+              "Viết hàm BinarySearch đệ quy với các tham số mảng, left, right và giá trị x."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thiết lập đúng điều kiện cơ sở của đệ quy",
+                "Truyền chính xác các chỉ số biên",
+                "Giá trị trả về được truyền ngược chính xác",
+                "Không xảy ra đệ quy vô hạn",
+                "Space Complexity O(log n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "345",
+            "title": "Tìm phần tử lớn thứ k (Quick Select)",
+            "difficulty": "Khó",
+            "description": "Thuật toán Quick Select sử dụng ý tưởng phân hoạch của Quick Sort để tìm phần tử lớn thứ k mà không cần sắp xếp toàn bộ mảng.",
+            "requirements": [
+              "Tái sử dụng hàm Partition và chỉ tiếp tục đệ quy ở phía chứa phần tử thứ k."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng lại thành công hàm Partition",
+                "Không sắp xếp toàn bộ mảng",
+                "Xác định đúng vị trí k cần tìm",
+                "Kết quả chính xác như khi sắp xếp đầy đủ",
+                "Phân tích được độ phức tạp trung bình O(n)"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "403",
+        "name": "Ngăn xếp (Stack) và Hàng đợi (Queue)",
+        "difficulty": "Khó",
+        "exercise_count": 12,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "356",
+            "title": "Cài đặt hàng đợi ưu tiên (Priority Queue)",
+            "difficulty": "Khó",
+            "description": "Hàng đợi ưu tiên cho phép phần tử có mức độ ưu tiên cao hơn được xử lý trước, phổ biến trong hệ điều hành và mô phỏng sự kiện.",
+            "requirements": [
+              "Thiết kế Queue chứa giá trị và độ ưu tiên, đảm bảo FIFO cho phần tử cùng mức."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thiết kế cấu trúc dữ liệu đầy đủ",
+                "Luôn lấy phần tử ưu tiên cao nhất",
+                "Giữ FIFO khi cùng độ ưu tiên",
+                "Đánh giá được độ phức tạp thuật toán"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "351",
+            "title": "Cài đặt hàng đợi vòng (Circular Queue)",
+            "difficulty": "Trung bình",
+            "description": "Hàng đợi vòng khắc phục nhược điểm lãng phí bộ nhớ của Queue tuyến tính bằng cách cho phép chỉ số Rear quay lại đầu mảng khi còn ô trống.",
+            "requirements": [
+              "Cài đặt Queue bằng mảng với công thức (index + 1) % MAX."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Áp dụng đúng phép chia lấy dư",
+                "Phân biệt chính xác Queue đầy và rỗng",
+                "Không ghi đè dữ liệu chưa xử lý",
+                "Tiết kiệm bộ nhớ so với Queue thường"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "347",
+            "title": "Cài đặt Queue bằng mảng tĩnh",
+            "difficulty": "Dễ",
+            "description": "Hàng đợi (Queue) hoạt động theo nguyên lý Vào trước – Ra trước (FIFO). Queue được sử dụng phổ biến trong mô phỏng hệ thống xử lý tác vụ, hàng in, truyền dữ liệu và lập lịch CPU.",
+            "requirements": [
+              "Cài đặt Queue sử dụng mảng tĩnh. Viết các hàm enqueue, dequeue, front và kiểm tra rỗng/đầy. Mô phỏng việc thêm 5 phần tử và lấy ra 2 phần tử."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Quản lý chính xác chỉ số Front và Rear",
+                "Đảm bảo đúng nguyên tắc FIFO",
+                "Không truy xuất vượt chỉ số mảng",
+                "Xử lý tốt Queue rỗng và Queue đầy"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "346",
+            "title": "Cài đặt Stack bằng mảng tĩnh",
+            "difficulty": "Dễ",
+            "description": "Ngăn xếp (Stack) là cấu trúc dữ liệu hoạt động theo nguyên lý Vào sau – Ra trước (LIFO). Stack thường được sử dụng trong hệ thống máy tính để quản lý lời gọi hàm, biến cục bộ và các thao tác tạm thời. Việc cài đặt Stack bằng mảng tĩnh cho phép truy xuất nhanh và quản lý bộ nhớ tập trung.",
+            "requirements": [
+              "Định nghĩa cấu trúc Stack gồm mảng tĩnh kích thước MAX và biến Top quản lý đỉnh. Viết các hàm push, pop, peek và isEmpty. Viết chương trình chính để kiểm tra các thao tác."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai báo Stack và khởi tạo Top = -1 chính xác",
+                "Xử lý đúng thao tác push và pop",
+                "Ngăn chặn lỗi Stack Overflow khi đầy",
+                "Ngăn chặn lỗi Stack Underflow khi rỗng",
+                "Các thao tác đạt độ phức tạp O(1)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "353",
+            "title": "Cài đặt Stack động bằng danh sách liên kết",
+            "difficulty": "Trung bình",
+            "description": "Mảng tĩnh có kích thước cố định gây hạn chế. Stack cài đặt bằng danh sách liên kết cho phép cấp phát động linh hoạt trên Heap.",
+            "requirements": [
+              "Thiết kế Node, thao tác push/pop tại đầu danh sách và giải phóng bộ nhớ."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Push và pop đạt O(1)",
+                "Quản lý con trỏ Top chính xác",
+                "Cấp phát và giải phóng bộ nhớ đúng",
+                "Không xảy ra rò rỉ bộ nhớ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "354",
+            "title": "Chuyển biểu thức trung tố sang hậu tố",
+            "difficulty": "Khó",
+            "description": "Biểu thức trung tố dễ đọc nhưng khó xử lý do phụ thuộc ưu tiên toán tử. Biểu thức hậu tố cho phép máy tính tính toán tuần tự.",
+            "requirements": [
+              "Sử dụng Stack và bảng độ ưu tiên để chuyển biểu thức theo thuật toán Shunting-yard."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xây dựng đúng bảng độ ưu tiên",
+                "Xử lý chính xác dấu ngoặc",
+                "Đưa toán tử vào Stack hợp lý",
+                "Chuỗi hậu tố hợp lệ toán học"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "352",
+            "title": "Chuyển số thập phân sang nhị phân bằng Stack",
+            "difficulty": "Trung bình",
+            "description": "Để chuyển một số sang hệ nhị phân, ta chia liên tiếp cho 2 và lấy số dư theo thứ tự ngược lại. Stack giúp lưu trữ phần dư để đảo chiều chính xác.",
+            "requirements": [
+              "Chia liên tiếp cho 2, push số dư vào Stack, sau đó pop để in kết quả."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Áp dụng đúng thuật toán chia lấy dư",
+                "Lưu trữ đầy đủ các bit",
+                "In ra đúng thứ tự nhị phân",
+                "Xử lý được trường hợp n = 0"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "348",
+            "title": "Đảo ngược chuỗi ký tự bằng Stack",
+            "difficulty": "Dễ",
+            "description": "Đảo chuỗi là bài toán cơ bản trong xử lý văn bản. Nhờ đặc tính LIFO của Stack, ta có thể đảo ngược chuỗi một cách trực quan mà không cần thuật toán hoán vị phức tạp.",
+            "requirements": [
+              "Nhập chuỗi ký tự bất kỳ. Đẩy từng ký tự vào Stack, sau đó pop lần lượt để tạo chuỗi đảo ngược."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý đúng chuỗi có khoảng trắng",
+                "Đẩy đủ toàn bộ ký tự vào Stack",
+                "Lấy ký tự theo đúng thứ tự ngược",
+                "Chuỗi kết quả đảo ngược hoàn toàn",
+                "Độ phức tạp thời gian O(n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "349",
+            "title": "Kiểm tra chuỗi đối xứng (Palindrome)",
+            "difficulty": "Dễ",
+            "description": "Một chuỗi được gọi là đối xứng nếu đọc từ trái sang phải hay từ phải sang trái đều giống nhau. Việc kết hợp Stack và Queue giúp so sánh hai chiều của chuỗi một cách hiệu quả.",
+            "requirements": [
+              "Đưa ký tự của chuỗi vào Stack và Queue. Lấy từng cặp ký tự ra để so sánh."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cài đặt đồng thời Stack và Queue",
+                "So sánh chính xác từng cặp ký tự",
+                "Xử lý đúng chuỗi chẵn và lẻ",
+                "Đưa ra kết luận chính xác",
+                "Space Complexity O(n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "350",
+            "title": "Kiểm tra tính hợp lệ của dấu ngoặc",
+            "difficulty": "Trung bình",
+            "description": "Kiểm tra dấu ngoặc là bài toán quan trọng trong trình biên dịch. Stack được sử dụng để đảm bảo các cặp ngoặc (), [], {} được mở và đóng đúng thứ tự lồng nhau.",
+            "requirements": [
+              "Duyệt biểu thức: gặp dấu mở thì push, gặp dấu đóng thì kiểm tra đỉnh Stack. Nếu không khớp hoặc Stack rỗng thì biểu thức không hợp lệ."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Phân biệt đúng dấu mở và dấu đóng",
+                "So khớp chính xác từng cặp ngoặc",
+                "Xử lý Stack rỗng đúng thời điểm",
+                "Kiểm tra Stack còn dư sau khi duyệt",
+                "Thời gian thực thi O(n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "357",
+            "title": "Mô phỏng Queue bằng hai Stack",
+            "difficulty": "Khó",
+            "description": "Bài toán tư duy kinh điển: tạo cơ chế FIFO chỉ bằng hai Stack LIFO.",
+            "requirements": [
+              "Sử dụng Stack1 để enqueue, Stack2 để dequeue. Khi Stack2 rỗng, chuyển toàn bộ dữ liệu từ Stack1 sang."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Đảm bảo đúng nguyên tắc FIFO",
+                "Chuyển dữ liệu giữa hai Stack chính xác",
+                "Xử lý Queue rỗng an toàn",
+                "Phân tích được Amortized Time O(1)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "355",
+            "title": "Tính giá trị biểu thức hậu tố",
+            "difficulty": "Khó",
+            "description": "Sau khi chuyển sang hậu tố, việc tính toán trở nên đơn giản nhờ Stack. Toán hạng được đưa vào Stack, toán tử lấy hai phần tử trên cùng để tính.",
+            "requirements": [
+              "Duyệt biểu thức hậu tố và thực hiện push/pop tương ứng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Lấy đúng thứ tự toán hạng",
+                "Thực hiện chính xác phép toán",
+                "Xử lý số nhiều chữ số",
+                "Độ phức tạp O(n)"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "404",
+        "name": "Cây nhị phân tìm kiếm (BST)",
+        "difficulty": "Khó",
+        "exercise_count": 12,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "368",
+            "title": "Chuyển mảng đã sắp xếp thành cây BST cân bằng",
+            "difficulty": "Khó",
+            "description": "Nếu chèn mảng đã sắp xếp vào cây theo cách thông thường, cây sẽ bị lệch thành một danh sách liên kết. Bạn cần một giải thuật để tạo ra cây có chiều cao tối ưu log(n).",
+            "requirements": [
+              "Cho một mảng tăng dần, hãy xây dựng một cây BST có độ cao nhỏ nhất có thể."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng kỹ thuật chia để trị, chọn phần tử giữa mảng làm gốc",
+                "Gọi đệ quy cho hai nửa mảng còn lại để làm cây con trái và phải",
+                "Cây kết quả phải có sự cân bằng về chiều cao giữa các nhánh",
+                "Đạt độ phức tạp O(n) cho quá trình xây dựng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "363",
+            "title": "Đếm số lượng Node và số lượng lá (Leaf Nodes)",
+            "difficulty": "Trung bình",
+            "description": "Việc thống kê quy mô của cây giúp đánh giá dung lượng bộ nhớ và cấu trúc hiện tại của cây dữ liệu.",
+            "requirements": [
+              "Viết hàm đếm tổng số Node trên cây và hàm đếm số lượng Node lá (Node không có con)."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng đệ quy để tổng hợp kết quả từ các cây con",
+                "Xác định đúng điều kiện của Node lá (left == NULL và right == NULL)",
+                "Kết quả đếm phải chính xác cho mọi hình dạng cây",
+                "Đảm bảo duyệt qua mỗi Node đúng một lần (O(n))"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "359",
+            "title": "Duyệt cây theo thứ tự giữa (In-order Traversal)",
+            "difficulty": "Dễ",
+            "description": "Duyệt cây theo thứ tự LNR (Trái - Gốc - Phải) là cách để xuất ra các giá trị trong cây theo thứ tự tăng dần. Đây là cách kiểm tra tính chính xác của cây BST hiệu quả nhất.",
+            "requirements": [
+              "Viết hàm đệ quy thực hiện duyệt cây theo thứ tự In-order. In kết quả ra màn hình sau khi đã chèn một dãy số vào cây."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng điểm dừng đệ quy khi gặp Node NULL",
+                "Thực hiện đúng thứ tự gọi hàm đệ quy cho nhánh trái, xử lý gốc, rồi đến nhánh phải",
+                "Kết quả in ra phải là một dãy số tăng dần",
+                "Đạt độ phức tạp thời gian O(n) với n là số Node"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "360",
+            "title": "Duyệt cây theo thứ tự trước và sau (Pre-order & Post-order)",
+            "difficulty": "Dễ",
+            "description": "Ngoài cách duyệt In-order, việc duyệt NLR (Trước) và LRN (Sau) giúp ta hiểu được cấu trúc phân cấp và thứ tự giải phóng bộ nhớ của cây.",
+            "requirements": [
+              "Viết hai hàm đệ quy để thực hiện duyệt cây theo thứ tự Pre-order và Post-order. Giải thích ứng dụng của từng cách duyệt."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thực hiện đúng thứ tự các bước duyệt cho cả hai hàm",
+                "Phân biệt được sự khác nhau về vị trí của Node gốc trong kết quả xuất ra",
+                "Xử lý tốt các cây có cấu trúc lệch về một phía",
+                "Đánh giá được độ phức tạp không gian dựa trên chiều cao của cây"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "358",
+            "title": "Khởi tạo và Thêm Node vào cây BST",
+            "difficulty": "Dễ",
+            "description": "Cây nhị phân tìm kiếm là cấu trúc dữ liệu mà mọi Node bên trái đều nhỏ hơn Node cha và mọi Node bên phải đều lớn hơn Node cha. Nhiệm vụ của bạn là xây dựng nền móng cho cấu trúc này.",
+            "requirements": [
+              "Định nghĩa cấu trúc một Node gồm dữ liệu và hai con trỏ trái, phải. Viết hàm khởi tạo cây rỗng và hàm chèn một giá trị x vào cây sao cho vẫn giữ đúng tính chất của BST."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai báo đúng cấu trúc Node và con trỏ gốc (Root)",
+                "Thực hiện chính xác việc so sánh giá trị để quyết định chèn vào bên trái hay bên phải",
+                "Xử lý đúng trường hợp cây đang rỗng",
+                "Đảm bảo các Node mới luôn được thêm vào vị trí lá (leaf)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "365",
+            "title": "Kiểm tra một cây nhị phân có phải là BST không",
+            "difficulty": "Trung bình",
+            "description": "Không phải cây nhị phân nào cũng là cây nhị phân tìm kiếm. Bạn cần viết một công cụ kiểm định lại tính chất của cây sau khi có sự can thiệp từ bên ngoài.",
+            "requirements": [
+              "Viết hàm kiểm tra xem một cây nhị phân cho trước có thỏa mãn mọi điều kiện của BST tại mọi Node hay không."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kiểm tra điều kiện ràng buộc về khoảng giá trị (min, max) cho từng Node",
+                "Đảm bảo kiểm tra đệ quy xuống tận các Node lá",
+                "Không mắc lỗi chỉ kiểm tra quan hệ cha-con trực tiếp mà quên mất các tổ tiên phía trên",
+                "Trả về kết quả Boolean chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "362",
+            "title": "Tìm giá trị nhỏ nhất và lớn nhất trên cây",
+            "difficulty": "Trung bình",
+            "description": "Do đặc thù sắp xếp của BST, các giá trị cực trị luôn nằm ở các vị trí biên của cây. Việc tìm kiếm chúng rất đơn giản nhưng cực kỳ hữu ích.",
+            "requirements": [
+              "Viết hàm tìm Node có giá trị nhỏ nhất (cực trái) và hàm tìm Node có giá trị lớn nhất (cực phải) của cây."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Duyệt liên tục về phía bên trái để tìm giá trị Min",
+                "Duyệt liên tục về phía bên phải để tìm giá trị Max",
+                "Xử lý trường hợp cây chỉ có một Node hoặc cây rỗng",
+                "Thực hiện thuật toán với độ phức tạp thời gian phụ thuộc vào chiều cao cây h"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "361",
+            "title": "Tìm kiếm một giá trị trên cây BST",
+            "difficulty": "Dễ",
+            "description": "Ưu điểm lớn nhất của BST là tốc độ tìm kiếm. Bạn cần xây dựng một hàm để xác định xem một giá trị x có tồn tại trong hệ thống dữ liệu cây hay không.",
+            "requirements": [
+              "Viết hàm tìm kiếm trả về địa chỉ của Node chứa giá trị x. Nếu không tìm thấy, hàm trả về NULL."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Tận dụng tính chất của BST để loại bỏ một nửa số Node cần xét sau mỗi bước so sánh",
+                "Cài đặt đúng bằng phương pháp đệ quy hoặc vòng lặp",
+                "Trả về kết quả chính xác trong mọi trường hợp (có hoặc không tìm thấy)",
+                "Phân tích độ phức tạp thời gian đạt mức O(log n) trong trường hợp cây cân bằng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "367",
+            "title": "Tìm Node kế tiếp (In-order Successor)",
+            "difficulty": "Khó",
+            "description": "Trong một dãy đã sắp xếp, việc tìm phần tử đứng ngay sau một phần tử cho trước là rất quan trọng cho các giải thuật duyệt và xử lý kế tiếp.",
+            "requirements": [
+              "Cho một Node trên cây, hãy tìm Node có giá trị lớn nhất tiếp theo (phần tử xuất hiện ngay sau nó nếu duyệt In-order)."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý trường hợp Node có cây con phải (tìm Min của cây con phải)",
+                "Xử lý trường hợp Node không có cây con phải (truy ngược về các tổ tiên)",
+                "Thuật toán không được duyệt lại từ gốc để đảm bảo hiệu suất",
+                "Trả về NULL nếu Node đó là giá trị lớn nhất trong cây"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "369",
+            "title": "Tìm tổ tiên chung gần nhất (Lowest Common Ancestor - LCA)",
+            "difficulty": "Khó",
+            "description": "Tìm điểm hội tụ đầu tiên của hai Node khi đi ngược lên gốc. Đây là bài toán ứng dụng nhiều trong hệ thống phân cấp và mạng xã hội.",
+            "requirements": [
+              "Viết hàm tìm Node là tổ tiên chung gần nhất của hai Node p và q trên cây BST."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Tận dụng tính chất BST để hướng con trỏ duyệt về phía chứa cả hai Node p và q",
+                "Xác định điểm dừng khi p và q nằm ở hai phía của Node hiện tại (hoặc Node hiện tại trùng với p hoặc q)",
+                "Thuật toán hoạt động hiệu quả mà không cần dùng thêm bộ nhớ phụ",
+                "Giải thích được logic tìm kiếm dựa trên so sánh giá trị"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "364",
+            "title": "Tính chiều cao của cây nhị phân",
+            "difficulty": "Trung bình",
+            "description": "Chiều cao của cây quyết định hiệu năng của các thao tác tìm kiếm và thêm xóa. Cây càng cao (lệch), hiệu năng càng giảm.",
+            "requirements": [
+              "Viết hàm trả về chiều cao (chiều sâu lớn nhất) của cây tính từ gốc đến lá xa nhất."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng hàm trả về giá trị lớn nhất (Max) giữa chiều cao nhánh trái và nhánh phải",
+                "Công thức tính chiều cao tại một Node phải bằng 1 + Max(H_trái, H_phải)",
+                "Xác định đúng chiều cao của cây rỗng là 0 (hoặc -1 tùy quy ước)",
+                "Phân tích được tầm quan trọng của chiều cao đối với độ phức tạp thuật toán"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "366",
+            "title": "Xóa một Node trên cây BST",
+            "difficulty": "Khó",
+            "description": "Xóa Node là thao tác phức tạp nhất trên BST vì phải đảm bảo sau khi xóa, các liên kết vẫn duy trì đúng tính chất của cây.",
+            "requirements": [
+              "Viết hàm xóa một Node có giá trị x. Xử lý đầy đủ 3 trường hợp: Node lá, Node có một con, và Node có hai con."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Giải phóng bộ nhớ đúng cách sau khi xóa",
+                "Với trường hợp Node có hai con, phải tìm được Node thay thế (thường là Node cực trái của cây con phải)",
+                "Duy trì được tính chất BST của cây sau khi thực hiện thao tác xóa",
+                "Xử lý chính xác việc cập nhật con trỏ của Node cha"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "405",
+        "name": "Đồ thị (Graph)",
+        "difficulty": "Dễ",
+        "exercise_count": 12,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "373",
+            "title": "Biểu diễn đồ thị bằng Danh sách kề (Adjacency List)",
+            "difficulty": "Dễ",
+            "description": "Với các đồ thị lớn nhưng có ít cạnh (đồ thị thưa), ma trận kề gây lãng phí bộ nhớ. Danh sách kề sử dụng một mảng các danh sách liên kết để chỉ lưu trữ các đỉnh thực sự có kết nối, giúp tối ưu tài nguyên hệ thống.",
+            "requirements": [
+              "Cài đặt đồ thị bằng danh sách kề. Viết hàm thêm cạnh và hàm in danh sách các đỉnh kề của từng đỉnh trong đồ thị."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng mảng các con trỏ (Head) để quản lý danh sách liên kết cho từng đỉnh",
+                "Thêm Node mới vào danh sách liên kết một cách chính xác (thường thêm vào đầu để đạt O(1))",
+                "Đảm bảo giải phóng bộ nhớ động của các danh sách liên kết khi kết thúc",
+                "Đánh giá được ưu điểm về bộ nhớ O(n + e) so với ma trận kề"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "370",
+            "title": "Biểu diễn đồ thị bằng Ma trận kề (Adjacency Matrix)",
+            "difficulty": "Dễ",
+            "description": "Ma trận kề là cách đơn giản nhất để lưu trữ thông tin về các mối quan hệ giữa các đỉnh trong một mạng lưới. Cách biểu diễn này cho phép kiểm tra nhanh chóng xem hai đỉnh bất kỳ có kết nối trực tiếp với nhau hay không.",
+            "requirements": [
+              "Định nghĩa cấu trúc đồ thị sử dụng ma trận vuông n x n. Viết các hàm: khởi tạo đồ thị rỗng, thêm một cạnh (edge) giữa hai đỉnh và in ma trận kề ra màn hình."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai báo đúng mảng hai chiều và quản lý số lượng đỉnh chính xác",
+                "Xử lý đúng tính chất đối xứng nếu là đồ thị vô hướng (gán cả A[i][j] và A[j][i])",
+                "Kiểm tra điều kiện chỉ số đỉnh hợp lệ trước khi thao tác trên ma trận",
+                "Đạt độ phức tạp không gian O(n^2)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "371",
+            "title": "Chuyển đổi từ Ma trận kề sang Danh sách cạnh (Edge List)",
+            "difficulty": "Dễ",
+            "description": "Trong nhiều thuật toán, việc quản lý danh sách các cạnh (gồm đỉnh đầu, đỉnh cuối và trọng số) sẽ hiệu quả hơn việc duyệt qua toàn bộ ma trận. Đây là bước đệm để hiểu cách tối ưu bộ nhớ khi đồ thị có ít cạnh.",
+            "requirements": [
+              "Đọc dữ liệu từ một ma trận kề cho trước và trích xuất tất cả các cặp đỉnh có kết nối để lưu vào một danh sách các cấu trúc Edge."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Duyệt qua ma trận kề mà không bỏ sót hoặc lặp lại cạnh (đối với đồ thị vô hướng)",
+                "Lưu trữ thông tin cạnh vào mảng hoặc danh sách liên kết một cách khoa học",
+                "Xuất kết quả danh sách cạnh theo đúng định dạng (u, v)",
+                "Phân tích được khi nào nên dùng danh sách cạnh thay vì ma trận kề"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "374",
+            "title": "Duyệt đồ thị theo chiều rộng (BFS - Breadth First Search)",
+            "difficulty": "Trung bình",
+            "description": "Thuật toán BFS mô phỏng việc lan tỏa như sóng nước, thăm tất cả các đỉnh gần gốc trước khi đi xa hơn. Đây là nền tảng để tìm đường đi ngắn nhất trong đồ thị không có trọng số.",
+            "requirements": [
+              "Sử dụng Queue để cài đặt thuật toán BFS. In ra thứ tự các đỉnh được thăm bắt đầu từ một đỉnh s cho trước."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng mảng đánh dấu (Visited) để không thăm lại các đỉnh đã xử lý",
+                "Quản lý đúng thứ tự đưa vào và lấy ra khỏi Queue theo nguyên tắc FIFO",
+                "Đảm bảo thăm hết các đỉnh trong cùng một thành phần liên thông",
+                "Đạt độ phức tạp thời gian O(n + e)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "375",
+            "title": "Duyệt đồ thị theo chiều sâu (DFS - Depth First Search)",
+            "difficulty": "Trung bình",
+            "description": "DFS ưu tiên đi sâu nhất có thể theo một nhánh trước khi quay lui (backtrack). Thuật toán này thường được dùng để kiểm tra tính liên thông hoặc tìm các chu trình trong đồ thị.",
+            "requirements": [
+              "Cài đặt thuật toán DFS bằng phương pháp đệ quy hoặc sử dụng Stack. In ra thứ tự thăm các đỉnh của đồ thị."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thực hiện đúng cơ chế đệ quy hoặc quản lý Stack để quay lui chính xác",
+                "Sử dụng mảng Visited để tránh lặp vô hạn trong đồ thị có chu trình",
+                "Xử lý thăm được toàn bộ các đỉnh ngay cả khi đồ thị không liên thông",
+                "Giải thích được sự khác biệt về thứ tự thăm đỉnh so với BFS"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "376",
+            "title": "Kiểm tra tính liên thông của đồ thị vô hướng",
+            "difficulty": "Trung bình",
+            "description": "Một đồ thị được gọi là liên thông nếu luôn có đường đi giữa hai đỉnh bất kỳ. Việc kiểm tra này giúp xác định xem một mạng lưới giao thông hay viễn thông có bị đứt gãy ở đâu không.",
+            "requirements": [
+              "Sử dụng BFS hoặc DFS để đếm số thành phần liên thông của đồ thị. Nếu số thành phần bằng 1, kết luận đồ thị liên thông."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Chạy thuật toán duyệt nhiều lần cho đến khi tất cả các đỉnh đều được đánh dấu thăm",
+                "Đếm chính xác số lần gọi hàm duyệt (mỗi lần gọi tương ứng một thành phần liên thông)",
+                "Đưa ra kết luận đúng về tính liên thông của đồ thị đầu vào",
+                "Đạt hiệu suất O(n + e) cho toàn bộ quá trình kiểm tra"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "380",
+            "title": "Phát hiện chu trình trong đồ thị (Cycle Detection)",
+            "difficulty": "Khó",
+            "description": "Chu trình trong đồ thị có thể gây ra các lỗi lặp vô hạn trong hệ thống hoặc xung đột trong quản lý tài nguyên.",
+            "requirements": [
+              "Viết hàm kiểm tra xem đồ thị vô hướng hoặc có hướng có chứa chu trình hay không bằng cách sử dụng DFS."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Đồ thị có hướng: dùng mảng trạng thái trắng xám đen",
+                "Đồ thị vô hướng: kiểm tra đỉnh cha trực tiếp",
+                "Kết luận chính xác sự tồn tại chu trình",
+                "Đạt độ phức tạp thời gian O(n + e)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "381",
+            "title": "Sắp xếp cấu trúc (Topological Sort)",
+            "difficulty": "Khó",
+            "description": "Sắp xếp tô-pô đưa ra một thứ tự thực hiện các công việc sao cho mọi ràng buộc về trình tự đều được thỏa mãn.",
+            "requirements": [
+              "Thực hiện sắp xếp tô-pô cho đồ thị có hướng không chu trình (DAG) bằng thuật toán Kahn hoặc DFS."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Đảm bảo nếu có cạnh u → v thì u đứng trước v",
+                "Phát hiện và thông báo đồ thị có chu trình",
+                "Cài đặt đúng Kahn hoặc DFS-based topo sort",
+                "Đánh giá được ứng dụng trong lập lịch trình"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "378",
+            "title": "Thuật toán Dijkstra tìm đường đi ngắn nhất",
+            "difficulty": "Khó",
+            "description": "Đây là thuật toán quan trọng nhất trong các ứng dụng bản đồ (như Google Maps). Dijkstra tìm đường đi có tổng trọng số các cạnh là nhỏ nhất giữa một đỉnh nguồn và tất cả các đỉnh còn lại.",
+            "requirements": [
+              "Cài đặt thuật toán Dijkstra trên đồ thị có trọng số dương. In ra khoảng cách ngắn nhất và lộ trình từ đỉnh nguồn đến một đỉnh đích."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Quản lý đúng mảng khoảng cách (Distance) và mảng đánh dấu các đỉnh đã tối ưu",
+                "Thực hiện chính xác bước thư giãn cạnh (Relaxation) để cập nhật khoảng cách nhỏ hơn",
+                "Tìm được đỉnh có khoảng cách nhỏ nhất trong số các đỉnh chưa xét ở mỗi bước",
+                "Đạt độ phức tạp O(n^2) hoặc O(e log n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "379",
+            "title": "Tìm cây khung nhỏ nhất bằng thuật toán Prim",
+            "difficulty": "Khó",
+            "description": "Bài toán đặt ra là kết nối tất cả các đỉnh của đồ thị sao cho tổng trọng số các cạnh là nhỏ nhất và không tạo thành chu trình.",
+            "requirements": [
+              "Cài đặt thuật toán Prim để tìm cây khung nhỏ nhất (Minimum Spanning Tree - MST). In ra danh sách các cạnh của cây khung và tổng trọng số của chúng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Luôn chọn cạnh nhỏ nhất nối từ tập đỉnh đã xét ra tập đỉnh chưa xét",
+                "Đảm bảo cây khung có đúng n-1 cạnh và liên thông",
+                "Cập nhật chính xác mảng trọng số nhỏ nhất",
+                "Phân biệt được MST và bài toán đường đi ngắn nhất"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "377",
+            "title": "Tìm đường đi giữa hai đỉnh bằng BFS",
+            "difficulty": "Trung bình",
+            "description": "Trong bản đồ số, việc tìm đường đi qua ít trạm trung chuyển nhất tương đương với bài toán tìm đường ngắn nhất trên đồ thị không trọng số bằng BFS.",
+            "requirements": [
+              "Sử dụng BFS để tìm đường đi từ đỉnh u đến đỉnh v. In ra dãy các đỉnh trên đường đi nếu tồn tại, ngược lại thông báo không có đường đi."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng mảng lưu vết (Parent) để ghi nhớ đỉnh trước đó của mỗi đỉnh khi duyệt",
+                "Truy ngược từ v về u dựa trên mảng Parent để tìm đường đi",
+                "Đảm bảo đường đi tìm được là ngắn nhất (về số cạnh)",
+                "Xử lý tốt trường hợp u và v nằm ở hai thành phần liên thông khác nhau"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "372",
+            "title": "Tính bậc của các đỉnh trong đồ thị",
+            "difficulty": "Dễ",
+            "description": "Bậc của một đỉnh phản ánh mức độ kết nối của nó trong mạng lưới (ví dụ: số lượng bạn bè của một tài khoản trên mạng xã hội). Việc tính toán này giúp xác định các điểm quan trọng trong đồ thị.",
+            "requirements": [
+              "Viết hàm tính bậc của một đỉnh bất kỳ trong đồ thị vô hướng và hàm tính bán bậc vào/ra trong đồ thị có hướng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Duyệt đúng hàng hoặc cột tương ứng trên ma trận kề để đếm số cạnh",
+                "Phân biệt chính xác giữa bậc vào (in-degree) và bậc ra (out-degree) đối với đồ thị có hướng",
+                "Xử lý đúng trường hợp đỉnh cô lập (bậc bằng 0)",
+                "Đạt độ phức tạp thời gian O(n) cho mỗi đỉnh cần tính"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "subject_id": "KTLT",
+    "subject_name": "Kỹ thuật lập trình",
+    "description": "",
+    "total_exercises": 50,
+    "forms": [
+      {
+        "form_id": "101",
+        "name": "Con trỏ và quản lý bộ nhớ động",
+        "difficulty": "Trung bình",
+        "exercise_count": 10,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "79",
+            "title": "Cấp phát động mảng 1 chiều",
+            "difficulty": "Trung bình",
+            "description": "Nhập số lượng n từ bàn phím. \r\nCấp phát bộ nhớ động cho mảng n số nguyên. \r\nSau khi tính tổng các phần tử, phải giải phóng bộ nhớ.",
+            "requirements": [
+              "Sử dụng malloc/calloc (C) hoặc new (C++)."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Ép kiểu đúng cho hàm cấp phát",
+                "Có bước kiểm tra cấp phát thành công (p != NULL)",
+                "Sử dụng free() hoặc delete[] đúng quy định"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "83",
+            "title": "Cấp phát động mảng 2 chiều",
+            "difficulty": "Khó",
+            "description": "Nhập số hàng r và số cột c. \r\nCấp phát động cho một ma trận r x c. \r\nNhập dữ liệu và tính tổng các phần tử trên đường chéo chính.",
+            "requirements": [
+              "Hiểu khái niệm con trỏ cấp 2."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cấp phát đúng mảng các con trỏ trước, sau đó cấp phát từng dòng",
+                "Giải phóng từng dòng trước rồi mới giải phóng mảng con trỏ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "85",
+            "title": "Con trỏ hàm",
+            "difficulty": "Khó",
+            "description": "Viết hai hàm Tăng(int a, int b) và Giảm(int a, int b). \r\nViết hàm ThucThi(int a, int b, int (*p)(int,int)) để gọi hàm thông qua con trỏ.",
+            "requirements": [
+              "Sử dụng Function Pointer."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai báo đúng cú pháp con trỏ hàm",
+                "Giải thích được ứng dụng của con trỏ hàm (Callback function)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "81",
+            "title": "Đảo ngược mảng dùng hai con trỏ",
+            "difficulty": "Trung bình",
+            "description": "Sử dụng một con trỏ trỏ vào đầu mảng và một con trỏ trỏ vào cuối mảng. \r\nHoán đổi giá trị của chúng rồi dịch chuyển hai con trỏ lại gần nhau cho đến khi gặp nhau.",
+            "requirements": [
+              "Kỹ thuật Two Pointers."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Không sử dụng mảng phụ",
+                "Điều kiện dừng vòng lặp (pLeft < pRight) chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "77",
+            "title": "Hàm hoán vị sử dụng con trỏ",
+            "difficulty": "Dễ",
+            "description": "Viết hàm swap(int *a, int *b) để hoán đổi giá trị của hai biến số thực sự trong bộ nhớ.",
+            "requirements": [
+              "Truyền tham số bằng con trỏ."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng biến tạm bên trong hàm",
+                "Khi gọi hàm trong main(), phải truyền vào địa chỉ của biến (&x, &y)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "84",
+            "title": "Mảng con trỏ quản lý danh sách chuỗi",
+            "difficulty": "Khó",
+            "description": "Nhập vào n cái tên sinh viên có độ dài khác nhau. \r\nCấp phát bộ nhớ vừa đủ cho mỗi tên và lưu vào mảng con trỏ char*.",
+            "requirements": [
+              "Quản lý bộ nhớ không đồng nhất."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng mảng tạm để nhập dữ liệu",
+                "Mỗi tên chỉ chiếm đúng số byte cần thiết"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "78",
+            "title": "Nhập xuất mảng qua con trỏ",
+            "difficulty": "Dễ",
+            "description": "Viết chương trình nhập mảng n phần tử. \r\nSử dụng con trỏ để duyệt và in ra các phần tử trong mảng thay vì dùng chỉ số a[i].",
+            "requirements": [
+              "Sử dụng ký hiệu con trỏ để duyệt mảng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng phép toán cộng con trỏ (p + i) hoặc *(p + i)",
+                "Không dùng toán tử [] trong quá trình xuất mảng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "82",
+            "title": "Quản lý chuỗi ký tự bằng con trỏ",
+            "difficulty": "Trung bình",
+            "description": "Viết hàm tự định nghĩa strlen(char *s) để đếm độ dài chuỗi mà không dùng thư viện string.h.",
+            "requirements": [
+              "Thao tác với con trỏ kiểu char*."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Duyệt chuỗi cho đến khi gặp ký tự kết thúc \\0",
+                "Không dùng biến đếm i, chỉ dùng phép toán trên con trỏ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "80",
+            "title": "Tìm phần tử lớn nhất bằng con trỏ",
+            "difficulty": "Trung bình",
+            "description": "Viết hàm int* timMax(int *a, int n) trả về địa chỉ của phần tử lớn nhất trong mảng.",
+            "requirements": [
+              "Kết hợp hàm và con trỏ."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kiểu trả về của hàm là con trỏ (int*)",
+                "In được giá trị lớn nhất và vị trí dựa trên địa chỉ trả về"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "76",
+            "title": "Truy xuất giá trị và địa chỉ qua con trỏ",
+            "difficulty": "Dễ",
+            "description": "Khai báo một biến nguyên x và một con trỏ p. \r\nGán địa chỉ của x cho p. \r\nThay đổi giá trị của x thông qua p. \r\nIn ra địa chỉ của x, giá trị của p và giá trị mà p đang trỏ tới.",
+            "requirements": [
+              "Hiểu các toán tử & (lấy địa chỉ) và * (lấy giá trị)."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng đúng toán tử &x và *p",
+                "Hiển thị đúng địa chỉ ô nhớ (thường là hệ thập lục phân)"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "102",
+        "name": "Đệ quy",
+        "difficulty": "Khó",
+        "exercise_count": 10,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "94",
+            "title": "Bài toán n-Hậu",
+            "difficulty": "Khó",
+            "description": "Tìm cách đặt n quân hậu trên bàn cờ n x n sao cho không quân nào ăn được quân nào.\r\nIn ra một phương án bất kỳ.",
+            "requirements": [
+              "Đệ quy quay lui (Backtracking)."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Hàm kiểm tra điều kiện an toàn đúng (hàng, cột, đường chéo)",
+                "Cơ chế quay lui hoàn trả đúng trạng thái bàn cờ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "93",
+            "title": "Bài toán Tháp Hà Nội",
+            "difficulty": "Khó",
+            "description": "Có n tầng đĩa và 3 cọc A, B, C.\r\nViết hàm đệ quy moTaDiChuyen(int n, char nguon, char dich, char trung_gian)\r\nđể in ra các bước di chuyển đĩa từ cọc A sang cọc C.",
+            "requirements": [
+              "Tư duy đệ quy phức tạp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Hiểu đúng 3 bước cốt lõi của bài toán Tháp Hà Nội",
+                "Các bước di chuyển in ra phải logic và khả thi"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "89",
+            "title": "Chuyển đổi thập phân sang nhị phân",
+            "difficulty": "Trung bình",
+            "description": "Viết hàm đệ quy decToBin(int n) để in ra mã nhị phân của số nguyên dương n.",
+            "requirements": [
+              "Đệ quy xử lý luồng ra (Output)."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Gọi đệ quy (n / 2) trước khi in (n % 2)",
+                "Không sử dụng mảng phụ hoặc chuỗi lưu trữ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "91",
+            "title": "Đếm số chữ số của số nguyên dương",
+            "difficulty": "Trung bình",
+            "description": "Viết hàm đệ quy countDigits(int n) trả về số lượng chữ số của n.",
+            "requirements": [
+              "Đệ quy xử lý trên chữ số."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Điều kiện dừng: n < 10 trả về 1",
+                "Bước đệ quy: 1 + countDigits(n / 10)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "92",
+            "title": "Tìm giá trị lớn nhất trong mảng bằng đệ quy",
+            "difficulty": "Trung bình",
+            "description": "Viết hàm findMax(int a[], int n) sử dụng đệ quy để tìm phần tử lớn nhất.",
+            "requirements": [
+              "Đệ quy trên cấu trúc dữ liệu mảng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "So sánh phần tử cuối với max của mảng n-1 phần tử đầu",
+                "Không sử dụng vòng lặp for hoặc while"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "88",
+            "title": "Tìm số Fibonacci thứ n",
+            "difficulty": "Dễ",
+            "description": "Dãy Fibonacci có:\r\nF(0) = 0\r\nF(1) = 1\r\nF(n) = F(n - 1) + F(n - 2).\r\nViết hàm tìm số Fibonacci thứ n.",
+            "requirements": [
+              "Sử dụng đệ quy nhị phân."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý đúng hai trường hợp cơ sở (n = 0 và n = 1)",
+                "Hiểu được cơ chế gọi hàm lồng nhau của đệ quy nhị phân"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "90",
+            "title": "Tìm ước chung lớn nhất (UCLN)",
+            "difficulty": "Trung bình",
+            "description": "Viết hàm đệ quy tìm UCLN của hai số a và b.\r\nGợi ý: UCLN(a, b) = UCLN(b, a % b).",
+            "requirements": [
+              "Áp dụng thuật toán Euclid."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng điều kiện dừng khi số dư bằng 0",
+                "Code ngắn gọn, tối ưu"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "95",
+            "title": "Tính giá trị đa thức bằng công thức Horner",
+            "difficulty": "Khó",
+            "description": "Cho mảng a chứa các hệ số của đa thức bậc n.\r\nViết hàm đệ quy tính giá trị đa thức P(x) tại điểm x0.",
+            "requirements": [
+              "Tối ưu hóa biểu thức toán học."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Áp dụng đúng công thức truy hồi Horner",
+                "Hàm chạy hiệu quả với bộ dữ liệu lớn"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "86",
+            "title": "Tính giai thừa của n",
+            "difficulty": "Dễ",
+            "description": "Viết hàm đệ quy tinhGiaiThua(int n).\r\nBiết rằng 0! = 1 và n! = n * (n - 1)!.\r\n",
+            "requirements": [
+              "Xây dựng hàm đệ quy tuyến tính cơ bản."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xác định đúng điều kiện dừng (n == 0 hoặc n == 1)",
+                "Công thức gọi đệ quy chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "87",
+            "title": "Tính tổng dãy số S = 1 + 2 + ... + n",
+            "difficulty": "Dễ",
+            "description": "Viết hàm đệ quy tinhTong(int n) trả về tổng các số từ 1 đến n.",
+            "requirements": [
+              "Chuyển đổi từ vòng lặp sang đệ quy."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Điều kiện dừng đúng (n == 1)",
+                "Hàm trả về kết quả chính xác cho n > 0"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "103",
+        "name": "Kiểu dữ liệu có cấu trúc",
+        "difficulty": "Dễ",
+        "exercise_count": 10,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "96",
+            "title": "Định nghĩa Struct Phân số",
+            "difficulty": "Dễ",
+            "description": "Định nghĩa cấu trúc PHANSO gồm Tử số và Mẫu số (số nguyên).\r\nViết hàm Nhập và Xuất một phân số.",
+            "requirements": [
+              "Khai báo và truy xuất thành phần của Struct."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai báo đúng kiểu dữ liệu cho các thành phần",
+                "Truy xuất thành phần thông qua toán tử dấu chấm (.)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "99",
+            "title": "Mảng các Phân số",
+            "difficulty": "Trung bình",
+            "description": "Nhập vào danh sách n phân số.\r\nTìm phân số có giá trị lớn nhất trong danh sách.",
+            "requirements": [
+              "Kết hợp mảng và Struct."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Duyệt mảng các Struct đúng kỹ thuật",
+                "Quy đồng hoặc chuyển sang số thực để so sánh giá trị phân số"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "100",
+            "title": "Quản lý danh sách Sinh viên (Cơ bản)",
+            "difficulty": "Trung bình",
+            "description": "Định nghĩa Struct SINHVIEN gồm: MSSV, Họ tên, Điểm Toán, Điểm Lý, Điểm Hóa.\r\nTính điểm trung bình và xếp loại cho n sinh viên.",
+            "requirements": [
+              "Xử lý dữ liệu hỗn hợp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Công thức tính điểm trung bình chính xác",
+                "In danh sách sinh viên dưới dạng bảng rõ ràng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "104",
+            "title": "Quản lý Đơn thức và Đa thức",
+            "difficulty": "Khó",
+            "description": "Định nghĩa Struct DONTHUC (hệ số, số mũ).\r\nĐịnh nghĩa Struct DATHUC gồm mảng các đơn thức.\r\nViết hàm tính đạo hàm và tính giá trị đa thức tại x0.",
+            "requirements": [
+              "Mảng động của các Struct."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Quản lý đúng số lượng đơn thức trong đa thức",
+                "Thực hiện đúng quy tắc toán học của đạo hàm"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "103",
+            "title": "Quản lý Hình chữ nhật (Struct lồng Struct)",
+            "difficulty": "Khó",
+            "description": "Định nghĩa Struct DIEM (x, y).\r\nĐịnh nghĩa Struct HINHCHUNHAT gồm hai điểm:\r\ndiemTrenTrai và diemDuoiPhai.\r\nViết hàm tính chu vi và diện tích hình chữ nhật.",
+            "requirements": [
+              "Cấu trúc lồng nhau (Nested Struct)."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai báo Struct lồng nhau đúng cú pháp",
+                "Tính độ dài cạnh từ tọa độ trước khi tính chu vi và diện tích"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "98",
+            "title": "Quản lý một quyển sách",
+            "difficulty": "Dễ",
+            "description": "Định nghĩa cấu trúc SACH gồm: Mã sách, Tên sách, Tác giả, Năm xuất bản.\r\nViết chương trình nhập thông tin cho một quyển sách và in ra màn hình.",
+            "requirements": [
+              "Thao tác với kiểu chuỗi trong Struct."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng đúng kiểu char[] hoặc string cho các thuộc tính văn bản",
+                "Xử lý được vấn đề trôi lệnh khi nhập chuỗi sau khi nhập số"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "101",
+            "title": "Sắp xếp danh sách sản phẩm",
+            "difficulty": "Trung bình",
+            "description": "Định nghĩa Struct SANPHAM gồm: Mã, Tên, Đơn giá, Số lượng.\r\nNhập danh sách n sản phẩm và sắp xếp giảm dần theo Đơn giá.",
+            "requirements": [
+              "Thuật toán sắp xếp trên Struct."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Hoán vị toàn bộ Struct khi sắp xếp",
+                "Kết quả danh sách sau sắp xếp chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "102",
+            "title": "Tìm kiếm thông tin nhân viên",
+            "difficulty": "Trung bình",
+            "description": "Cho danh sách n nhân viên.\r\nNhập Mã nhân viên và tìm kiếm thông tin tương ứng.",
+            "requirements": [
+              "Tìm kiếm theo thuộc tính chuỗi."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng strcmp() hoặc toán tử == để so sánh chuỗi",
+                "Xử lý đúng trường hợp không tìm thấy dữ liệu"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "97",
+            "title": "Tính khoảng cách giữa hai điểm (2D)",
+            "difficulty": "Dễ",
+            "description": "Định nghĩa cấu trúc DIEM gồm hoành độ x và tung độ y.\r\nViết hàm tính khoảng cách giữa hai điểm A và B theo công thức Euclide.",
+            "requirements": [
+              "Sử dụng Struct làm tham số cho hàm."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng hàm sqrt() và pow() từ thư viện math.h",
+                "Truyền tham số kiểu Struct vào hàm hợp lý"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "105",
+            "title": "Tổng hợp: Quản lý danh sách Học sinh (Nâng cao)",
+            "difficulty": "Khó",
+            "description": "Viết chương trình có Menu:\r\na. Thêm học sinh vào vị trí bất kỳ\r\nb. Xóa học sinh theo Mã số\r\nc. Tìm học sinh có điểm trung bình cao nhất.",
+            "requirements": [
+              "Thêm, Xóa, Sửa trên mảng Struct."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cấu trúc Menu (switch-case) rõ ràng",
+                "Logic dời phần tử khi thêm hoặc xóa chính xác tuyệt đối"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "104",
+        "name": "Thao tác với tập tin",
+        "difficulty": "Dễ",
+        "exercise_count": 10,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "107",
+            "title": "Đọc dữ liệu từ File và in ra màn hình",
+            "difficulty": "Dễ",
+            "description": "Tạo file \"input.txt\" chứa một số nguyên n.\r\nViết chương trình đọc số n từ file, tính n*n và in kết quả ra màn hình.",
+            "requirements": [
+              "Đọc file văn bản."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng đúng hàm fscanf (C) hoặc ifstream (C++)",
+                "Xử lý đúng trường hợp file không tồn tại"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "109",
+            "title": "Đọc mảng số nguyên từ File",
+            "difficulty": "Trung bình",
+            "description": "File \"data.txt\" có cấu trúc:\r\nDòng đầu là số phần tử n,\r\ndòng sau là n số nguyên.\r\nĐọc mảng và tính tổng.",
+            "requirements": [
+              "Xử lý mảng kết hợp File."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Đọc đúng số lượng n trước khi đọc mảng",
+                "Cấp phát mảng đủ dung lượng chứa dữ liệu"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "110",
+            "title": "Ghi bảng cửu chương vào File",
+            "difficulty": "Trung bình",
+            "description": "Viết chương trình ghi bảng cửu chương từ 2 đến 9\r\nvào file \"cuuchuong.txt\" trình bày rõ ràng, dễ đọc.",
+            "requirements": [
+              "Định dạng dữ liệu ghi vào file."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng fprintf hoặc setw để căn chỉnh cột",
+                "Nội dung bảng cửu chương đầy đủ và chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "112",
+            "title": "Ghi và đọc Struct vào File văn bản",
+            "difficulty": "Trung bình",
+            "description": "Định nghĩa Struct SINHVIEN.\r\nNhập danh sách 3 sinh viên và ghi thông tin\r\n(MSSV, Họ tên, Điểm) vào file \"sinhvien.txt\".\r\nSau đó đọc ngược lại và in ra màn hình.",
+            "requirements": [
+              "Lưu trữ cấu trúc dữ liệu."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thông tin ghi theo quy tắc rõ ràng (phân cách hoặc xuống dòng)",
+                "Đọc lại đúng dữ liệu ban đầu"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "106",
+            "title": "Ghi văn bản đơn giản vào File",
+            "difficulty": "Dễ",
+            "description": "Viết chương trình nhập vào một chuỗi ký tự từ bàn phím\r\nvà ghi chuỗi đó vào file có tên \"output.txt\".",
+            "requirements": [
+              "Mở và ghi file văn bản cơ bản."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng đúng hàm fopen/fclose (C) hoặc ofstream (C++)",
+                "Kiểm tra file có mở thành công hay không trước khi ghi"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "115",
+            "title": "Quản lý cơ sở dữ liệu nhân viên bằng File",
+            "difficulty": "Khó",
+            "description": "Xây dựng chương trình có Menu:\r\na. Thêm nhân viên mới (ghi nối tiếp cuối file)\r\nb. Tìm kiếm nhân viên theo mã\r\nc. Xuất báo cáo danh sách nhân viên ra file.",
+            "requirements": [
+              "Xây dựng hệ thống quản lý dựa trên File."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng chế độ append (a) để thêm dữ liệu",
+                "Quản lý con trỏ file và đóng file đúng lúc"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "108",
+            "title": "Sao chép nội dung File",
+            "difficulty": "Dễ",
+            "description": "Viết chương trình đọc nội dung từ file \"source.txt\"\r\nvà sao chép toàn bộ nội dung đó sang file \"dest.txt\".",
+            "requirements": [
+              "Đọc và ghi đồng thời."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Đọc từng ký tự (fgetc) hoặc từng dòng (fgets) đến EOF",
+                "File đích có nội dung giống hệt file nguồn"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "114",
+            "title": "Sắp xếp dữ liệu trong File",
+            "difficulty": "Khó",
+            "description": "File \"input.txt\" chứa các số nguyên chưa sắp xếp.\r\nĐọc dữ liệu, sắp xếp tăng dần và ghi kết quả vào \"output.txt\".",
+            "requirements": [
+              "Kết hợp File, Struct và sắp xếp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý được số lượng phần tử không biết trước",
+                "Thuật toán sắp xếp hoạt động chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "113",
+            "title": "Thao tác với File nhị phân",
+            "difficulty": "Khó",
+            "description": "Ghi mảng 100 số thực vào file \"data.bin\" ở dạng nhị phân.\r\nSau đó đọc phần tử thứ 50 mà không đọc toàn bộ file.",
+            "requirements": [
+              "Sử dụng file nhị phân."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng đúng fwrite, fread và fseek",
+                "Truy cập đúng vị trí byte của phần tử thứ 50"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "111",
+            "title": "Thống kê ký tự trong File",
+            "difficulty": "Trung bình",
+            "description": "Đọc một file văn bản bất kỳ\r\nvà đếm số chữ cái, chữ số và khoảng trắng.",
+            "requirements": [
+              "Duyệt file và xử lý logic."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Duyệt hết file không tràn bộ nhớ",
+                "Phân loại đúng chữ cái, chữ số và khoảng trắng"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "105",
+        "name": "Danh sách liên kết đơn",
+        "difficulty": "Khó",
+        "exercise_count": 10,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "125",
+            "title": "Đảo ngược danh sách liên kết đơn",
+            "difficulty": "Khó",
+            "description": "Viết hàm đảo ngược thứ tự các Node trong danh sách liên kết đơn\r\nchỉ bằng cách thay đổi các liên kết next.",
+            "requirements": [
+              "Tư duy con trỏ nâng cao."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng kỹ thuật 3 con trỏ (previous, current, next)",
+                "Cập nhật lại con trỏ Head đúng Node mới"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "118",
+            "title": "Đếm số lượng phần tử trong danh sách",
+            "difficulty": "Dễ",
+            "description": "Viết hàm đếm số Node hiện có trong danh sách liên kết đơn.",
+            "requirements": [
+              "Kỹ thuật duyệt và đếm."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Duyệt từ đầu đến cuối cho đến NULL",
+                "Biến đếm hoạt động chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "116",
+            "title": "Khởi tạo và duyệt danh sách liên kết",
+            "difficulty": "Dễ",
+            "description": "Định nghĩa một Node chứa số nguyên.\r\nViết hàm khởi tạo danh sách rỗng, tạo Node mới\r\nvà in toàn bộ các giá trị trong danh sách ra màn hình.",
+            "requirements": [
+              "Định nghĩa cấu trúc Node và thao tác duyệt cơ bản."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai báo đúng cấu trúc Node gồm data và con trỏ next",
+                "Hàm duyệt dùng con trỏ tạm không làm mất Head"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "123",
+            "title": "Sắp xếp danh sách liên kết đơn",
+            "difficulty": "Khó",
+            "description": "Sắp xếp các phần tử trong danh sách liên kết đơn\r\ntheo thứ tự tăng dần bằng Selection Sort hoặc Interchange Sort.",
+            "requirements": [
+              "Thuật toán sắp xếp trên con trỏ."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Hoán vị dữ liệu giữa các Node, không làm đứt liên kết",
+                "Sử dụng hai vòng lặp con trỏ chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "119",
+            "title": "Thêm Node vào cuối danh sách (AddTail)",
+            "difficulty": "Trung bình",
+            "description": "Viết hàm thêm một Node mới vào cuối danh sách liên kết đơn.",
+            "requirements": [
+              "Kỹ thuật tìm Node cuối."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý đúng trường hợp danh sách rỗng (Head == NULL)",
+                "Duyệt đến Node cuối trước khi liên kết"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "117",
+            "title": "Thêm Node vào đầu danh sách (AddHead)",
+            "difficulty": "Dễ",
+            "description": "Viết hàm thêm một Node chứa giá trị x\r\nvào đầu danh sách liên kết đơn.",
+            "requirements": [
+              "Thao tác thay đổi con trỏ Head."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cập nhật con trỏ Head chính xác",
+                "Node mới trỏ đúng vào Head cũ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "120",
+            "title": "Tìm kiếm giá trị trong danh sách",
+            "difficulty": "Trung bình",
+            "description": "Viết hàm tìm kiếm số nguyên x trong danh sách.\r\nNếu thấy trả về địa chỉ Node, nếu không trả về NULL.",
+            "requirements": [
+              "Tìm kiếm tuyến tính trên danh sách liên kết."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Hàm trả về kiểu Node*",
+                "Xử lý đúng logic tìm kiếm"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "121",
+            "title": "Tính tổng các số nguyên tố trong danh sách",
+            "difficulty": "Trung bình",
+            "description": "Duyệt danh sách liên kết các số nguyên\r\nvà tính tổng các số là số nguyên tố.",
+            "requirements": [
+              "Kết hợp điều kiện khi duyệt danh sách."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng lại hàm kiểm tra số nguyên tố",
+                "Logic cộng dồn chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "124",
+            "title": "Xóa một Node có giá trị x bất kỳ",
+            "difficulty": "Khó",
+            "description": "Tìm giá trị x trong danh sách và xóa Node tương ứng.\r\nPhải nối Node đứng trước với Node đứng sau.",
+            "requirements": [
+              "Kỹ thuật liên kết lại các Node."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý đúng trường hợp x ở đầu, giữa và cuối",
+                "Danh sách không bị ngắt quãng sau khi xóa"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "122",
+            "title": "Xóa Node đầu tiên trong danh sách (RemoveHead)",
+            "difficulty": "Trung bình",
+            "description": "Viết hàm xóa phần tử đầu tiên của danh sách liên kết đơn.\r\nPhải giải phóng bộ nhớ Node bị xóa.",
+            "requirements": [
+              "Quản lý bộ nhớ khi xóa."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Dùng biến tạm giữ Node đầu",
+                "Sử dụng free() hoặc delete đúng quy định"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "subject_id": "LTHDT",
+    "subject_name": "Lập trình hướng đối tượng",
+    "description": "",
+    "total_exercises": 59,
+    "forms": [
+      {
+        "form_id": "301",
+        "name": "Lớp, đối tượng và tính đóng gói",
+        "difficulty": "Khó",
+        "exercise_count": 11,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "297",
+            "title": "Hệ thống quản lý nhân sự với mã hóa bảo mật",
+            "difficulty": "Khó",
+            "description": "Thông tin lương và mật khẩu cần được bảo vệ tuyệt đối bằng tính đóng gói.",
+            "requirements": [
+              "Thiết kế lớp NhanVien bảo mật và phương thức đổi mật khẩu."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Ẩn hoàn toàn dữ liệu nhạy cảm",
+                "Xác thực mật khẩu cũ",
+                "Tính lương nhiều thành phần",
+                "Chỉ hiển thị thông tin không nhạy cảm"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "295",
+            "title": "Lớp Đa thức và quản lý mảng động",
+            "difficulty": "Khó",
+            "description": "Đa thức bậc n cần lưu trữ mảng hệ số động. Việc quản lý bộ nhớ cần chặt chẽ để tránh rò rỉ.",
+            "requirements": [
+              "Xây dựng lớp DaThuc dùng con trỏ, constructor, destructor và copy constructor."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cấp phát bộ nhớ động chính xác",
+                "Giải phóng bộ nhớ trong destructor",
+                "Áp dụng thuật toán Horner",
+                "Copy constructor tránh dùng chung vùng nhớ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "237",
+            "title": "Lớp Hình chữ nhật và tính toán diện tích",
+            "difficulty": "Dễ",
+            "description": "Hình chữ nhật cần quản lý chiều dài và chiều rộng. Việc đóng gói giúp ngăn chặn dữ liệu âm.",
+            "requirements": [
+              "Tạo lớp HinhChuNhat kiểm tra dữ liệu đầu vào và tính chu vi, diện tích."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Chiều dài và chiều rộng phải lớn hơn 0",
+                "Hàm tính toán trả về giá trị",
+                "Hiển thị thông tin rõ ràng",
+                "Thuộc tính được đóng gói hoàn toàn"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "292",
+            "title": "Lớp quản lý Sản phẩm và thuế VAT",
+            "difficulty": "Trung bình",
+            "description": "Mỗi sản phẩm có tên, đơn giá và số lượng. Hệ thống cần tự động tính tiền hàng và thuế giá trị gia tăng trước khi xuất hóa đơn.",
+            "requirements": [
+              "Thiết kế lớp SanPham có hàm tính VAT 10 phần trăm và tổng tiền cuối cùng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Đóng gói đơn giá và số lượng không âm",
+                "Tính thuế VAT chính xác",
+                "Tính tổng tiền đúng công thức",
+                "Constructor gán giá trị mặc định"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "293",
+            "title": "Lớp Thời gian Giờ – Phút – Giây",
+            "difficulty": "Trung bình",
+            "description": "Dữ liệu thời gian cần đảm bảo phút và giây không vượt quá 60. Lớp thời gian giúp tự động chuẩn hóa dữ liệu nhập vào.",
+            "requirements": [
+              "Xây dựng lớp ThoiGian với hàm chuanHoa() và hàm cộng thêm số giây."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Ràng buộc dữ liệu giờ phút giây",
+                "Chuẩn hóa chính xác thời gian",
+                "In đúng định dạng hh:mm:ss",
+                "Cộng giây không sai logic"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "238",
+            "title": "Mô phỏng tài khoản ngân hàng đơn giản",
+            "difficulty": "Dễ",
+            "description": "Tài khoản ngân hàng cần bảo mật số dư.",
+            "requirements": [
+              "Xây dựng lớp TaiKhoan với các hàm nạp tiền và rút tiền."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Số dư khai báo private",
+                "Không cho rút vượt số dư",
+                "Cập nhật số dư chính xác",
+                "Có hàm truy vấn số dư"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "296",
+            "title": "Quản lý danh sách đối tượng bằng lớp bao",
+            "difficulty": "Khó",
+            "description": "Lớp bao giúp quản lý mảng các đối tượng và cung cấp chức năng tìm kiếm, sắp xếp.",
+            "requirements": [
+              "Thiết kế lớp DanhSachSinhVien chứa mảng SinhVien."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Quan hệ lớp bao – lớp thành phần rõ ràng",
+                "Tìm kiếm theo MSSV chính xác",
+                "Sắp xếp theo điểm trung bình",
+                "Không phá vỡ tính đóng gói"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "294",
+            "title": "Quản lý Ngày tháng năm và năm nhuận",
+            "difficulty": "Trung bình",
+            "description": "Ngày tháng có logic phức tạp do số ngày mỗi tháng khác nhau. Lớp này giúp kiểm soát tính hợp lệ của ngày tháng.",
+            "requirements": [
+              "Xây dựng lớp NgayThang với hàm kiểm tra năm nhuận và tìm ngày kế tiếp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kiểm tra ngày hợp lệ theo tháng",
+                "Xử lý đúng năm nhuận",
+                "Tính đúng ngày kế tiếp",
+                "Ngăn nhập ngày sai logic"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "291",
+            "title": "Quản lý thông tin Sinh viên và xếp loại",
+            "difficulty": "Trung bình",
+            "description": "Hệ thống quản lý giáo dục cần lưu trữ MSSV, họ tên và điểm trung bình. Việc đóng gói giúp tự động cập nhật xếp loại học lực mỗi khi điểm số của sinh viên thay đổi.",
+            "requirements": [
+              "Xây dựng lớp SinhVien với phương thức xepLoai() tự động trả về Giỏi, Khá hoặc Trung bình dựa trên thang điểm chuẩn."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Quản lý bộ nhớ họ tên an toàn",
+                "Điểm trung bình nằm trong khoảng 0 đến 10",
+                "Logic xếp loại đầy đủ mọi trường hợp",
+                "Sử dụng constructor khởi tạo dữ liệu"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "236",
+            "title": "Quản lý tọa độ Điểm trong không gian 2D",
+            "difficulty": "Dễ",
+            "description": "Một điểm trên mặt phẳng được xác định bởi hoành độ x và tung độ y. Lớp này là nền tảng để xây dựng các hình học phức tạp hơn.",
+            "requirements": [
+              "Xây dựng lớp Diem với các phương thức set, get và phương thức tính khoảng cách giữa hai điểm."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cài đặt đầy đủ getter và setter",
+                "Sử dụng đúng từ khóa this",
+                "Áp dụng đúng công thức khoảng cách Euclide",
+                "Khởi tạo hai đối tượng và in kết quả"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "235",
+            "title": "Xây dựng lớp Phân số cơ bản",
+            "difficulty": "Dễ",
+            "description": "Trong toán học, phân số gồm tử số và mẫu số. Việc đóng gói chúng vào một lớp giúp quản lý dữ liệu tập trung và đảm bảo mẫu số luôn khác 0 trước khi thực hiện các phép tính.",
+            "requirements": [
+              "Định nghĩa lớp PhanSo với các thuộc tính tử số và mẫu số ở phạm vi private. Viết các hàm: khởi tạo (constructor), nhập phân số, xuất phân số và hàm rút gọn phân số về dạng tối giản."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thuộc tính khai báo private chính xác",
+                "Xử lý mẫu số khác 0 khi khởi tạo và nhập",
+                "Cài đặt thuật toán UCLN để rút gọn",
+                "Không cho sửa tử và mẫu trực tiếp từ bên ngoài"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "302",
+        "name": "Nạp chồng toán tử",
+        "difficulty": "Dễ",
+        "exercise_count": 12,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "242",
+            "title": "Cộng số nguyên vào phân số",
+            "difficulty": "Dễ",
+            "description": "Trong toán học có thể cộng phân số với số nguyên.",
+            "requirements": [
+              "Nạp chồng toán tử + cho phép cộng PhanSo với int."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Chuyển số nguyên thành phân số mẫu 1",
+                "Cài đặt dưới dạng hàm thành viên",
+                "Kết quả trả về phân số mới",
+                "Tử và mẫu chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "249",
+            "title": "Cộng và nhân ma trận",
+            "difficulty": "Khó",
+            "description": "Ma trận là cấu trúc dữ liệu hai chiều phức tạp.",
+            "requirements": [
+              "Nạp chồng toán tử + và * cho lớp MaTran."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kiểm tra kích thước hợp lệ",
+                "Cấp phát mảng động chính xác",
+                "Nhân ma trận đúng công thức",
+                "Xử lý ngoại lệ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "247",
+            "title": "Nạp chồng toán tử gán",
+            "difficulty": "Khó",
+            "description": "Các lớp dùng mảng động cần xử lý sao chép sâu.",
+            "requirements": [
+              "Nạp chồng toán tử = cho lớp dùng con trỏ."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý tự gán",
+                "Giải phóng vùng nhớ cũ",
+                "Sao chép sâu dữ liệu",
+                "Trả về *this"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "239",
+            "title": "Nạp chồng toán tử nhập xuất cho lớp Phân số",
+            "difficulty": "Dễ",
+            "description": "Việc sử dụng các hàm nhập xuất truyền thống làm chương trình rời rạc. Nạp chồng toán tử cho phép nhập xuất trực tiếp thông qua cin và cout.",
+            "requirements": [
+              "Định nghĩa toán tử >> để nhập tử số và mẫu số, toán tử << để xuất phân số dạng tử/mẫu. Kiểm tra mẫu số khác 0 ngay khi nhập."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cài đặt toán tử dưới dạng friend function",
+                "Sử dụng đúng istream và ostream",
+                "Trả về tham chiếu luồng",
+                "Định dạng xuất rõ ràng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "241",
+            "title": "Phép cộng hai phân số",
+            "difficulty": "Dễ",
+            "description": "Toán tử cộng cho phép biểu diễn phép tính phân số một cách tự nhiên như biểu thức toán học.",
+            "requirements": [
+              "Nạp chồng toán tử + cho lớp PhanSo. Kết quả là một phân số mới đã được rút gọn."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Quy đồng mẫu số chính xác",
+                "Tự động rút gọn kết quả",
+                "Không làm thay đổi hai toán hạng",
+                "Trả về đối tượng theo giá trị"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "245",
+            "title": "Phép toán trên số phức",
+            "difficulty": "Trung bình",
+            "description": "Số phức gồm phần thực và phần ảo.",
+            "requirements": [
+              "Nạp chồng các toán tử + - * / và << cho lớp SoPhuc."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Áp dụng đúng công thức toán học",
+                "Xử lý phần ảo âm",
+                "Không thay đổi toán hạng gốc",
+                "Hiển thị chuẩn a + bi"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "240",
+            "title": "So sánh hai tọa độ điểm 2D",
+            "difficulty": "Dễ",
+            "description": "Để xác định hai điểm có trùng nhau hay không cần so sánh cả hoành độ và tung độ.",
+            "requirements": [
+              "Nạp chồng toán tử == và != cho lớp Diem. Hai điểm bằng nhau khi cả x và y bằng nhau."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Toán tử trả về kiểu bool",
+                "So sánh đầy đủ hai thuộc tính",
+                "Sử dụng const cho tham số",
+                "Toán tử != dựa trên toán tử =="
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "246",
+            "title": "So sánh thứ hạng sinh viên",
+            "difficulty": "Trung bình",
+            "description": "So sánh sinh viên phục vụ cho việc sắp xếp danh sách.",
+            "requirements": [
+              "Nạp chồng toán tử > và < dựa trên điểm trung bình và MSSV."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "So sánh đa tiêu chí",
+                "Tính bắc cầu chính xác",
+                "Tham số truyền const",
+                "Sắp xếp danh sách thành công"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "243",
+            "title": "Tăng giảm thời gian với toán tử ++ --",
+            "difficulty": "Trung bình",
+            "description": "Toán tử tăng giảm giúp thao tác thời gian tương tự kiểu int.",
+            "requirements": [
+              "Nạp chồng ++ và -- cho lớp ThoiGian. Chuẩn hóa khi giây hoặc phút vượt giới hạn."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Phân biệt tiền tố và hậu tố",
+                "Xử lý vòng quay 24 giờ",
+                "Trả về đúng kiểu dữ liệu",
+                "Dữ liệu luôn hợp lệ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "250",
+            "title": "Toán tử chuyển đổi kiểu dữ liệu",
+            "difficulty": "Khó",
+            "description": "Toán tử chuyển đổi cho phép ép kiểu tự động.",
+            "requirements": [
+              "Nạp chồng chuyển đổi PhanSo sang double và ThoiGian sang int."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cú pháp operator type() đúng",
+                "Tính toán chính xác",
+                "Không gây lỗi ép kiểu ngầm",
+                "Sử dụng explicit khi cần"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "248",
+            "title": "Toán tử gọi hàm cho đa thức",
+            "difficulty": "Khó",
+            "description": "Toán tử () cho phép đối tượng hoạt động như một hàm.",
+            "requirements": [
+              "Nạp chồng toán tử () cho lớp DaThuc để tính giá trị tại x."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Áp dụng Horner",
+                "Nhận tham số double",
+                "Hàm const",
+                "Xử lý đa thức bậc 0"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "244",
+            "title": "Truy cập phần tử mảng bằng toán tử chỉ số",
+            "difficulty": "Trung bình",
+            "description": "Toán tử [] giúp truy cập mảng giống mảng thông thường.",
+            "requirements": [
+              "Nạp chồng toán tử [] cho lớp MyVector để đọc và ghi phần tử."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kiểm tra chỉ số hợp lệ",
+                "Trả về tham chiếu phần tử",
+                "Có phiên bản const",
+                "Xử lý lỗi vượt phạm vi"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "303",
+        "name": "Dạng 3 - Tính kế thừa",
+        "difficulty": "Khó",
+        "exercise_count": 12,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "263",
+            "title": "Đa kế thừa và vấn đề kim cương",
+            "difficulty": "Khó",
+            "description": "Đa kế thừa có thể gây xung đột vùng nhớ.",
+            "requirements": [
+              "Sử dụng virtual inheritance để giải quyết Diamond Problem."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kế thừa từ nhiều lớp",
+                "Dùng virtual trong kế thừa",
+                "Không bị ambiguous",
+                "Giải thích được cơ chế"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "262",
+            "title": "Ghi đè phương thức trong kế thừa",
+            "difficulty": "Trung bình",
+            "description": "Lớp con có thể định nghĩa lại phương thức của lớp cha.",
+            "requirements": [
+              "Lớp con ghi đè hàm hienThi() và gọi lại hàm lớp cha bằng ::."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Trùng tên và tham số hàm",
+                "Dùng toán tử ::",
+                "Ưu tiên hàm lớp con",
+                "Không lặp logic hiển thị"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "260",
+            "title": "Hệ thống quản lý cán bộ",
+            "difficulty": "Trung bình",
+            "description": "Một đơn vị quản lý Công nhân, Kỹ sư và Nhân viên với thông tin chung và riêng.",
+            "requirements": [
+              "Thiết kế lớp CanBo và các lớp dẫn xuất tương ứng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cây kế thừa hợp lý",
+                "Tái sử dụng mã lớp cha",
+                "Nhập xuất riêng từng loại",
+                "Quản lý danh sách hỗn hợp"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "266",
+            "title": "Hệ thống quản lý sở thú",
+            "difficulty": "Khó",
+            "description": "Sở thú quản lý nhiều loài động vật với cấu trúc kế thừa nhiều tầng.",
+            "requirements": [
+              "Thiết kế cây kế thừa Động vật → Nhóm → Loài."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cấu trúc kế thừa nhiều tầng",
+                "Ghi đè hành vi từng loài",
+                "Constructor truyền dữ liệu đầy đủ",
+                "Mô phỏng hoạt động sở thú"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "255",
+            "title": "Kế thừa cơ bản từ lớp Người sang Sinh viên",
+            "difficulty": "Dễ",
+            "description": "Một sinh viên về bản chất vẫn là một con người nhưng có thêm các đặc tính riêng như mã số sinh viên và điểm số. Việc kế thừa giúp lớp SinhVien không cần định nghĩa lại các thuộc tính chung như họ tên, ngày sinh hay giới tính.",
+            "requirements": [
+              "Định nghĩa lớp Nguoi với các thuộc tính cơ bản. Xây dựng lớp SinhVien kế thừa public từ Nguoi và bổ sung MSSV. Viết hàm nhập xuất cho cả hai lớp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng đúng cú pháp kế thừa public",
+                "Gọi được hàm xuất của lớp cha",
+                "Thuộc tính lớp cha để protected",
+                "Hiển thị đầy đủ thông tin cha và con"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "259",
+            "title": "Kế thừa đa mức",
+            "difficulty": "Trung bình",
+            "description": "Hệ thống kế thừa nhiều cấp giống mô hình Động vật → Động vật có vú → Con người.",
+            "requirements": [
+              "Xây dựng chuỗi kế thừa 3 lớp liên tiếp và sử dụng được dữ liệu từ tất cả các lớp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thiết lập đúng chuỗi kế thừa",
+                "Constructor truyền dữ liệu qua các lớp",
+                "Không xung đột phương thức",
+                "Thuộc tính protected lan truyền"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "256",
+            "title": "Kế thừa lớp Hình học cho Hình chữ nhật",
+            "difficulty": "Dễ",
+            "description": "Mọi hình học đều có thuộc tính tên hình. Hình chữ nhật là trường hợp cụ thể có thêm chiều dài và chiều rộng.",
+            "requirements": [
+              "Tạo lớp cơ sở HinhHoc và lớp dẫn xuất HinhChuNhat kế thừa thuộc tính tên hình và bổ sung kích thước."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kế thừa đúng thuộc tính lớp cha",
+                "Constructor lớp con gán dữ liệu cho lớp cha",
+                "Hiển thị đúng tên hình",
+                "Phân biệt rõ thuộc tính chung và riêng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "265",
+            "title": "Kế thừa và quản lý bộ nhớ động",
+            "difficulty": "Khó",
+            "description": "Lớp cha và con đều dùng con trỏ nên cần quản lý bộ nhớ cẩn thận.",
+            "requirements": [
+              "Viết destructor, copy constructor cho cả hai lớp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Destructor gọi đúng thứ tự",
+                "Copy constructor đầy đủ",
+                "Không memory leak",
+                "Không truy cập vùng nhớ đã xóa"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "257",
+            "title": "Quản lý Nhân viên và Quản lý",
+            "difficulty": "Dễ",
+            "description": "Quản lý là một loại nhân viên đặc biệt có thêm phụ cấp trách nhiệm.",
+            "requirements": [
+              "Lớp QuanLy kế thừa từ NhanVien, bổ sung phụ cấp và ghi đè hàm tính lương."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thiết lập quan hệ kế thừa đúng",
+                "Gọi hàm lớp cha trong lớp con",
+                "Bảo vệ dữ liệu lương",
+                "Lương lớp cha ảnh hưởng lớp con"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "261",
+            "title": "Quản lý phương tiện giao thông",
+            "difficulty": "Trung bình",
+            "description": "Ô tô, xe máy, xe tải đều có thông tin chung nhưng đặc tính khác nhau.",
+            "requirements": [
+              "Xây dựng lớp PhuongTien và các lớp con với đặc điểm riêng."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thiết kế lớp cơ sở hợp lý",
+                "Thuộc tính riêng từng loại",
+                "Hiển thị đầy đủ thông tin",
+                "Constructor có tham số"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "264",
+            "title": "Quản lý tài khoản ngân hàng đa dạng",
+            "difficulty": "Khó",
+            "description": "Tài khoản tiết kiệm và tín dụng có quy tắc rút tiền khác nhau.",
+            "requirements": [
+              "Lớp con ghi đè phương thức rút tiền và kiểm tra ràng buộc."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Ghi đè đúng phương thức",
+                "Áp dụng quy tắc riêng",
+                "Truyền dữ liệu xuyên tầng",
+                "An toàn dữ liệu"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "258",
+            "title": "Sử dụng từ khóa protected trong kế thừa",
+            "difficulty": "Dễ",
+            "description": "Từ khóa protected cho phép lớp con truy cập dữ liệu nhưng bên ngoài không được phép.",
+            "requirements": [
+              "Tạo lớp cha có thuộc tính protected và lớp con thao tác trực tiếp các thuộc tính đó."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Không truy cập được từ main",
+                "Lớp con truy cập trực tiếp được",
+                "So sánh private và protected",
+                "Giữ được tính đóng gói"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "304",
+        "name": "Tính đa hình và lớp trừu tượng",
+        "difficulty": "Trung bình",
+        "exercise_count": 12,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "304",
+            "title": "Hàm hủy ảo (Virtual Destructor)",
+            "difficulty": "Trung bình",
+            "description": "Xóa đối tượng lớp con thông qua con trỏ lớp cha. Nếu không có virtual destructor sẽ gây rò rỉ bộ nhớ.",
+            "requirements": [
+              "Thiết kế destructor ảo trong lớp cha."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Destructor lớp cha phải là virtual",
+                "Thứ tự hủy đúng",
+                "Không rò rỉ bộ nhớ",
+                "Quan sát được quá trình giải phóng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "308",
+            "title": "Hệ thống quản lý lương thưởng phức tạp",
+            "difficulty": "Khó",
+            "description": "Mỗi loại nhân viên có cơ chế thưởng khác nhau dựa trên đa hình.",
+            "requirements": [
+              "Thiết kế hệ thống lương mở rộng và dễ bảo trì."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kết hợp kế thừa và đa hình",
+                "Tính lương linh hoạt",
+                "Dễ thay đổi chính sách",
+                "Không phá vỡ kiến trúc cũ"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "305",
+            "title": "Liên kết tĩnh và liên kết động",
+            "difficulty": "Trung bình",
+            "description": "Minh họa sự khác nhau giữa static binding và dynamic binding.",
+            "requirements": [
+              "So sánh hàm thường và hàm ảo khi gọi qua con trỏ."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Phân biệt compile-time và runtime",
+                "Hiểu cơ chế V-table",
+                "So sánh kết quả chạy",
+                "Đánh giá chi phí hàm ảo"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "299",
+            "title": "Lớp trừu tượng Hình học",
+            "difficulty": "Dễ",
+            "description": "Tạo lớp trừu tượng HinhHoc với hàm thuần ảo tinhDienTich(). Các lớp HinhTron và HinhChuNhat kế thừa và cài đặt hàm này.",
+            "requirements": [
+              "Sử dụng pure virtual function (=0). Không cho phép khởi tạo đối tượng HinhHoc."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai báo đúng hàm thuần ảo",
+                "Lớp con cài đặt đầy đủ hàm",
+                "Không khởi tạo được lớp trừu tượng",
+                "Tính diện tích chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "301",
+            "title": "Lớp trừu tượng và phương thức thuần ảo",
+            "difficulty": "Dễ",
+            "description": "Thiết kế lớp trừu tượng ThietBiDien với hàm tinhCongSuat(). Các lớp Den và Quat kế thừa và cài đặt.",
+            "requirements": [
+              "Áp dụng đúng vai trò của abstract class trong thiết kế hệ thống."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Hiểu ý nghĩa hàm thuần ảo",
+                "Lớp con phải cài đặt đầy đủ",
+                "Mỗi thiết bị có công suất riêng",
+                "Phân biệt hàm ảo và hàm thuần ảo"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "307",
+            "title": "Mô phỏng trò chơi chiến thuật bằng đa hình",
+            "difficulty": "Khó",
+            "description": "Chiến binh, Pháp sư, Cung thủ đều có hành vi tấn công khác nhau.",
+            "requirements": [
+              "Sử dụng đa hình để xử lý đội quân hỗn hợp."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Ghi đè hàm tanCong()",
+                "Tính sát thương khác nhau",
+                "Quản lý bằng con trỏ lớp cha",
+                "Thiết kế hướng đối tượng rõ ràng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "309",
+            "title": "Quản lý cửa hàng điện tử bằng đa hình",
+            "difficulty": "Khó",
+            "description": "Điện thoại, Laptop, Tivi có cách tính giá và bảo hành khác nhau.",
+            "requirements": [
+              "In hóa đơn thông qua danh sách đa hình."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "TinhGiaBan() là hàm ảo",
+                "In hóa đơn bằng lớp cha",
+                "Giữ đặc tính riêng từng sản phẩm",
+                "Hệ thống mở rộng tốt"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "300",
+            "title": "Quản lý danh sách đối tượng đa hình",
+            "difficulty": "Dễ",
+            "description": "Tạo mảng con trỏ lớp cha trỏ đến nhiều đối tượng lớp con khác nhau và gọi phương thức đa hình trong vòng lặp.",
+            "requirements": [
+              "Sử dụng mảng con trỏ HinhHoc* để quản lý các hình khác nhau."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cấp phát bộ nhớ động đúng",
+                "Gọi hàm đa hình không cần ép kiểu",
+                "Hiển thị đúng hành vi từng lớp con",
+                "Thống nhất giao diện lớp cha"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "302",
+            "title": "Quản lý nhân viên bằng đa hình",
+            "difficulty": "Trung bình",
+            "description": "Nhân viên biên chế và hợp đồng có cách tính lương khác nhau. Hệ thống phải tính tổng lương thông qua con trỏ lớp cha.",
+            "requirements": [
+              "Sử dụng hàm ảo tinhLuong() trong lớp NhanVien."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thiết kế hàm ảo hợp lý",
+                "Duyệt danh sách bằng con trỏ cha",
+                "Không kiểm tra kiểu thủ công",
+                "Tính tổng lương chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "298",
+            "title": "Sử dụng hàm ảo (Virtual Function) cơ bản",
+            "difficulty": "Dễ",
+            "description": "Tạo lớp cha DongVat có hàm keu(). Các lớp con như Cho, Meo ghi đè hàm này. Sử dụng con trỏ lớp cha để gọi hàm keu() và quan sát cơ chế liên kết động.",
+            "requirements": [
+              "Tạo hàm virtual keu() trong lớp cha, override ở lớp con và gọi thông qua con trỏ DongVat."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai báo đúng từ khóa virtual",
+                "Override chính xác ở lớp con",
+                "Gọi hàm thông qua con trỏ lớp cha",
+                "Hiểu cơ chế liên kết động (Late Binding)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "306",
+            "title": "Thiết kế Interface cho hệ thống thanh toán",
+            "difficulty": "Khó",
+            "description": "Thiết kế interface IThanhToan cho các hình thức thanh toán khác nhau.",
+            "requirements": [
+              "Các lớp triển khai phải thực hiện đầy đủ hợp đồng interface."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Interface chỉ chứa hàm thuần ảo",
+                "Không chứa thuộc tính dữ liệu",
+                "Tách biệt giao diện và cài đặt",
+                "Mô phỏng thanh toán đa kênh"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "303",
+            "title": "Tính tổng diện tích các hình hỗn hợp",
+            "difficulty": "Trung bình",
+            "description": "Danh sách gồm nhiều loại hình khác nhau, yêu cầu tính tổng diện tích mà không dùng if-else phân loại.",
+            "requirements": [
+              "Sử dụng đa hình để gọi tinhDienTich() tự động."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Không dùng instanceof hoặc if-else",
+                "Áp dụng đa hình hoàn toàn",
+                "Kết quả chính xác",
+                "Dễ mở rộng thêm hình mới"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "305",
+        "name": "Template và xử lý ngoại lệ",
+        "difficulty": "Dễ",
+        "exercise_count": 12,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "313",
+            "title": "Bat ngoai le nhap du lieu hinh hoc",
+            "difficulty": "Dễ",
+            "description": "Cac kich thuoc hinh hoc khong duoc am. Neu nguoi dung nhap sai, he thong phai chan ngay tu khau nhap.",
+            "requirements": [
+              "Nem ngoai le khi ban kinh hinh tron <= 0 va cho phep nhap lai."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kiem tra du lieu truoc khi gan",
+                "Nem exception hop le",
+                "Bat loi trong main",
+                "Dam bao du lieu luon hop le"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "317",
+            "title": "Bat nhieu loai ngoai le",
+            "difficulty": "Trung bình",
+            "description": "Mot chuong trinh co the phat sinh nhieu loi khac nhau, can bat rieng tung loai.",
+            "requirements": [
+              "Su dung nhieu khoi catch cho tung loai exception."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thu tu catch hop ly",
+                "Phan biet tung loai loi",
+                "Su dung catch(...) tong quat",
+                "Luong chuong trinh chinh xac"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "320",
+            "title": "Danh sach lien ket don tong quat",
+            "difficulty": "Khó",
+            "description": "Cai dat LinkedList bang template co the luu moi kieu du lieu.",
+            "requirements": [
+              "Them, xoa, tim kiem phan tu va quan ly bo nho an toan."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Node template dung chuan",
+                "Quan ly con tro an toan",
+                "Hoat dong voi kieu doi tuong",
+                "Giai phong bo nho hoan toan"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "321",
+            "title": "He thong gio hang ket hop Template va Exception",
+            "difficulty": "Khó",
+            "description": "Ket hop Template de chua nhieu loai san pham va Exception de kiem soat nghiep vu.",
+            "requirements": [
+              "Nem loi khi het hang hoac vuot han muc thanh toan."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Ket hop template va exception",
+                "Kiem soat nghiep vu chat che",
+                "De mo rong loai san pham",
+                "He thong chiu loi tot"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "312",
+            "title": "Kiem soat loi chia cho 0 bang Exception",
+            "difficulty": "Dễ",
+            "description": "Phep chia cho 0 la loi nghiem trong co the lam chuong trinh dung dot ngot. Exception cho phep bat loi va xu ly an toan.",
+            "requirements": [
+              "Nem ngoai le khi mau so bang 0 va bat loi bang try-catch trong ham main."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Su dung throw khi phat hien loi",
+                "Khoi try-catch dat dung vi tri",
+                "Chuong trinh khong bi crash",
+                "Thong bao loi ro rang"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "318",
+            "title": "Lop ma tran tong quat bang Template",
+            "difficulty": "Khó",
+            "description": "Xay dung lop template Matrix cho phep cong va nhan ma tran tren nhieu kieu du lieu.",
+            "requirements": [
+              "Kiem tra kich thuoc va xu ly ngoai le khi khong tuong thich."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Template cho kieu du lieu T",
+                "Cap phat mang 2 chieu dong",
+                "Kiem tra kich thuoc ma tran",
+                "Hieu suat tinh toan tot"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "315",
+            "title": "Lop mang dong tong quat",
+            "difficulty": "Trung bình",
+            "description": "Thiet ke lop template MyArray cho phep tu mo rong kich thuoc khi them phan tu.",
+            "requirements": [
+              "Nap chong toan tu [] va quan ly bo nho dong."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Cap phat va giai phong bo nho chinh xac",
+                "Toan tu [] tra ve T&",
+                "Tu dong tang dung luong",
+                "Destructor hoat dong dung"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "319",
+            "title": "Lop ngoai le tu dinh nghia",
+            "difficulty": "Khó",
+            "description": "Tao lop MyException ke thua std::exception de mang theo thong tin loi chi tiet.",
+            "requirements": [
+              "Nem va bat ngoai le tu dinh nghia."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Ke thua dung std::exception",
+                "Override ham what()",
+                "Mang theo ma loi",
+                "Xu ly loi chuyen nghiep"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "314",
+            "title": "Lop Stack tong quat bang Template",
+            "difficulty": "Trung bình",
+            "description": "Xay dung lop Stack co the luu tru nhieu kieu du lieu khac nhau nhu so thuc hoac chuoi.",
+            "requirements": [
+              "Thiet ke class template Stack voi push() va pop()."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Template cho toan bo lop",
+                "Quan ly mang kieu T",
+                "Thao tac push pop O(1)",
+                "Khong loi khi dung nhieu kieu"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "311",
+            "title": "Template ham hoan vi hai gia tri",
+            "difficulty": "Dễ",
+            "description": "Su dung template de xay dung ham hoan vi tong quat ap dung cho nhieu kieu du lieu khac nhau.",
+            "requirements": [
+              "Xay dung ham swap(T& a, T& b) va thu nghiem voi so thuc va ky tu."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Truyen tham so bang tham chieu",
+                "Su dung bien trung gian kieu T",
+                "Hoan vi thanh cong gia tri",
+                "Khong phu thuoc kieu du lieu"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "316",
+            "title": "Template ham sap xep tong quat",
+            "difficulty": "Trung bình",
+            "description": "Viet ham sap xep hoat dong cho nhieu kieu du lieu, ke ca doi tuong phuc tap.",
+            "requirements": [
+              "Su dung template ket hop toan tu so sanh."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khong phu thuoc kieu du lieu",
+                "Dung toan tu da nap chong",
+                "Sap xep chinh xac",
+                "Kha nang tai su dung cao"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "310",
+            "title": "Template ham tim gia tri lon nhat",
+            "difficulty": "Dễ",
+            "description": "Viec viet nhieu ham tim gia tri lon nhat cho tung kieu du lieu gay du thua. Template ham cho phep xay dung mot logic chung ap dung cho nhieu kieu du lieu khac nhau.",
+            "requirements": [
+              "Viet function template Max(T a, T b) va thu nghiem voi int, float, double va char."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khai bao dung template <typename T>",
+                "Ham hoat dong cho nhieu kieu du lieu",
+                "Su dung dung toan tu so sanh",
+                "Tra ve dung kieu du lieu T"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "subject_id": "NMLT",
+    "subject_name": "Nhập môn lập trình",
+    "description": "",
+    "total_exercises": 20,
+    "forms": [
+      {
+        "form_id": "203",
+        "name": "Hàm",
+        "difficulty": "Khó",
+        "exercise_count": 10,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "143",
+            "title": "Đọc số nguyên có hai chữ số",
+            "difficulty": "Khó",
+            "description": "Nhập số nguyên từ 10 đến 99. In ra cách đọc số đó bằng tiếng Việt.",
+            "requirements": [
+              "Sử dụng switch-case lồng nhau."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Tách hàng chục và hàng đơn vị",
+                "Xử lý mười, mốt, lăm"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "140",
+            "title": "Giải phương trình bậc hai",
+            "difficulty": "Trung bình",
+            "description": "Nhập ba hệ số a, b, c. Giải và biện luận nghiệm của phương trình bậc hai ax² + bx + c = 0.",
+            "requirements": [
+              "Biện luận đầy đủ các trường hợp toán học."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý a = 0",
+                "Tính delta chính xác",
+                "Xét đủ 3 trường hợp"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "138",
+            "title": "Kiểm tra ký tự nguyên âm hoặc phụ âm",
+            "difficulty": "Dễ",
+            "description": "Nhập vào một ký tự chữ cái tiếng Anh. Kiểm tra ký tự đó là nguyên âm hay phụ âm.",
+            "requirements": [
+              "Sử dụng Switch–Case hoặc If–Else kết hợp toán tử logic."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý chữ hoa và chữ thường",
+                "Gom nhóm các nguyên âm trong switch-case"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "142",
+            "title": "Kiểm tra ngày tháng năm hợp lệ",
+            "difficulty": "Trung bình",
+            "description": "Nhập ngày, tháng, năm. Kiểm tra xem ngày đó có tồn tại hợp lệ hay không.",
+            "requirements": [
+              "Kết hợp nhiều điều kiện logic."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Kiểm tra miền giá trị",
+                "Xử lý logic năm nhuận",
+                "Không chấp nhận ngày sai"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "136",
+            "title": "Kiểm tra tính chẵn lẻ và âm dương",
+            "difficulty": "Dễ",
+            "description": "Nhập vào một số nguyên n. Kiểm tra và in ra thông báo n là số chẵn hay số lẻ, đồng thời xác định n là số âm, số dương hay bằng 0.",
+            "requirements": [
+              "Sử dụng cấu trúc If–Else cơ bản để xử lý điều kiện."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Sử dụng toán tử % 2 để kiểm tra chẵn lẻ",
+                "Cấu trúc if-else đầy đủ các trường hợp"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "145",
+            "title": "Máy tính bỏ túi đơn giản",
+            "difficulty": "Khó",
+            "description": "Nhập hai số thực và một toán tử + - * /. In ra kết quả tương ứng.",
+            "requirements": [
+              "Sử dụng switch-case và xử lý lỗi toán học."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Switch-case cho toán tử",
+                "Bắt lỗi chia cho 0",
+                "Thông báo lỗi rõ ràng"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "144",
+            "title": "Tìm ngày kế tiếp",
+            "difficulty": "Khó",
+            "description": "Nhập ngày tháng năm hợp lệ. Xác định ngày kế tiếp.",
+            "requirements": [
+              "Xử lý chính xác chuyển tháng và năm."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Qua tháng đúng",
+                "Qua năm đúng",
+                "Xử lý tháng 2 năm nhuận"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "137",
+            "title": "Tìm số lớn nhất trong 3 số",
+            "difficulty": "Dễ",
+            "description": "Nhập vào ba số thực a, b, c. Xác định và in ra giá trị lớn nhất trong ba số.",
+            "requirements": [
+              "Sử dụng if-else lồng nhau hoặc kỹ thuật lính canh."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Thuật toán ít phép so sánh",
+                "Xử lý đúng khi các số bằng nhau"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "141",
+            "title": "Tính số ngày trong tháng",
+            "difficulty": "Trung bình",
+            "description": "Nhập vào tháng và năm. In ra số ngày tương ứng của tháng đó.",
+            "requirements": [
+              "Sử dụng switch-case kết hợp kiểm tra năm nhuận."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý đúng các tháng 30 và 31 ngày",
+                "Tháng 2 dựa vào năm nhuận"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "139",
+            "title": "Tính tiền điện sinh hoạt",
+            "difficulty": "Trung bình",
+            "description": "Nhập vào số kWh điện tiêu thụ. Tính tiền điện theo các mức lũy tiến được quy định.",
+            "requirements": [
+              "Sử dụng cấu trúc else-if để xử lý nhiều mức giá."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Tính đúng từng bậc",
+                "Không nhân toàn bộ kWh với giá cao nhất",
+                "Không cho nhập số âm"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      },
+      {
+        "form_id": "204",
+        "name": "Mảng một chiều",
+        "difficulty": "Dễ",
+        "exercise_count": 10,
+        "grading_criteria": [],
+        "exercises": [
+          {
+            "id": "150",
+            "title": "In bảng cửu chương",
+            "difficulty": "Dễ",
+            "description": "Nhập một số nguyên n (1 ≤ n ≤ 9). In ra bảng cửu chương của số đó từ 1 đến 10.",
+            "requirements": [
+              "Sử dụng vòng lặp for."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Hiển thị đúng định dạng n x i = kết quả",
+                "In đủ 10 dòng phép nhân"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "149",
+            "title": "In dãy số và tính tổng cơ bản",
+            "difficulty": "Dễ",
+            "description": "Nhập vào số nguyên dương n. In các số từ 1 đến n ra màn hình, mỗi số cách nhau một khoảng trắng. Đồng thời tính tổng S = 1 + 2 + ... + n.",
+            "requirements": [
+              "Sử dụng vòng lặp for để duyệt từ 1 đến n."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Khởi tạo đúng biến chạy i và biến tổng S",
+                "Vòng lặp chạy đúng từ 1 đến n",
+                "Tính tổng chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "158",
+            "title": "In hình sao bằng vòng lặp lồng nhau",
+            "difficulty": "Khó",
+            "description": "Nhập chiều cao h. In ra tam giác vuông cân bằng dấu sao ở bên trái và bên phải.",
+            "requirements": [
+              "Sử dụng vòng lặp lồng nhau."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Vòng lặp ngoài điều khiển số dòng",
+                "Vòng lặp trong điều khiển số dấu sao"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "155",
+            "title": "Kiểm tra số hoàn thiện",
+            "difficulty": "Trung bình",
+            "description": "Số hoàn thiện là số có tổng các ước (không kể chính nó) bằng chính nó. Kiểm tra số n có phải số hoàn thiện không.",
+            "requirements": [
+              "Duyệt các ước số của n."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Duyệt ước đến n/2",
+                "So sánh tổng ước chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "156",
+            "title": "Kiểm tra số nguyên tố tối ưu",
+            "difficulty": "Khó",
+            "description": "Nhập số nguyên n. Kiểm tra n có phải số nguyên tố không bằng thuật toán tối ưu.",
+            "requirements": [
+              "Vòng lặp chỉ chạy từ 2 đến căn bậc hai của n."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Xử lý đúng trường hợp n < 2",
+                "Giới hạn vòng lặp đến sqrt(n)"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "151",
+            "title": "Liệt kê số chẵn",
+            "difficulty": "Dễ",
+            "description": "Nhập số nguyên dương n. In ra tất cả các số chẵn nhỏ hơn hoặc bằng n.",
+            "requirements": [
+              "Sử dụng vòng lặp kết hợp câu lệnh điều kiện."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Không in số lẻ",
+                "Duyệt đúng phạm vi từ 1 đến n"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "153",
+            "title": "Phân tích thừa số nguyên tố",
+            "difficulty": "Trung bình",
+            "description": "Nhập một số nguyên dương n. Phân tích n thành tích các thừa số nguyên tố.",
+            "requirements": [
+              "Sử dụng vòng lặp while và phép chia lấy dư."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Chia triệt để cho từng số nguyên tố",
+                "In đúng thứ tự các thừa số"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "157",
+            "title": "Thao tác chữ số của số nguyên",
+            "difficulty": "Khó",
+            "description": "Nhập số nguyên dương n. Thực hiện: đếm chữ số, tìm chữ số lớn nhất và tính tổng các chữ số.",
+            "requirements": [
+              "Sử dụng vòng lặp while(n > 0)."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Tách chữ số bằng n % 10",
+                "Cập nhật n bằng n / 10",
+                "Kết quả chính xác"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "154",
+            "title": "Tìm UCLN và BCNN",
+            "difficulty": "Trung bình",
+            "description": "Nhập hai số nguyên a và b. Tính ước chung lớn nhất và bội chung nhỏ nhất của hai số.",
+            "requirements": [
+              "Áp dụng thuật toán Euclid."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Tính UCLN chính xác",
+                "BCNN đúng công thức (a*b)/UCLN"
+              ]
+            },
+            "submission_format": ""
+          },
+          {
+            "id": "152",
+            "title": "Tính tổng chuỗi phân số",
+            "difficulty": "Trung bình",
+            "description": "Tính tổng S = 1 + 1/2 + 1/3 + ... + 1/n với n nhập từ bàn phím.",
+            "requirements": [
+              "Sử dụng vòng lặp và kiểu dữ liệu số thực."
+            ],
+            "grading_criteria": {
+              "tieu_chi": [
+                "Biến tổng khai báo kiểu float hoặc double",
+                "Ép kiểu đúng để không mất phần thập phân"
+              ]
+            },
+            "submission_format": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "subject_id": null,
+    "subject_name": null,
+    "description": "",
+    "total_exercises": 0,
+    "forms": []
+  }
+]

@@ -1,0 +1,271 @@
+{
+  "MONHOC": {
+    "columns": [
+      {
+        "COLUMN_NAME": "MaMon",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 10,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "TenMon",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 100,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      }
+    ],
+    "primaryKeys": [
+      "MaMon"
+    ],
+    "uniqueConstraints": [],
+    "foreignKeys": []
+  },
+  "BAITAP": {
+    "columns": [
+      {
+        "COLUMN_NAME": "Id",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "MaBaiTap",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 30,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "TenBaiTap",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 255,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "MaMon",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 10,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "MaDoKho",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "MaDangBai",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "MaDinhDang",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "MoTa",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": -1,
+        "IS_NULLABLE": "YES",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "YeuCau",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": -1,
+        "IS_NULLABLE": "YES",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "TieuChiChamDiem",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": -1,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      }
+    ],
+    "primaryKeys": [
+      "Id"
+    ],
+    "uniqueConstraints": [
+      {
+        "name": "UQ__BAITAP__3AF6A9146338E6CB",
+        "columns": [
+          "MaBaiTap"
+        ]
+      }
+    ],
+    "foreignKeys": [
+      {
+        "name": "FK_BAITAP_MONHOC",
+        "column": "MaMon",
+        "references": {
+          "table": "MONHOC",
+          "column": "MaMon"
+        }
+      },
+      {
+        "name": "FK_BAITAP_DOKHO",
+        "column": "MaDoKho",
+        "references": {
+          "table": "DOKHO",
+          "column": "MaDoKho"
+        }
+      },
+      {
+        "name": "FK_BAITAP_DANGBAI",
+        "column": "MaDangBai",
+        "references": {
+          "table": "DANGBAI",
+          "column": "MaDangBai"
+        }
+      },
+      {
+        "name": "FK_BAITAP_DINHDANG",
+        "column": "MaDinhDang",
+        "references": {
+          "table": "DINHDANG_NOPBAI",
+          "column": "MaDinhDang"
+        }
+      }
+    ]
+  },
+  "DOKHO": {
+    "columns": [
+      {
+        "COLUMN_NAME": "MaDoKho",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "TenDoKho",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 50,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "MoTa",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 200,
+        "IS_NULLABLE": "YES",
+        "COLUMN_DEFAULT": null
+      }
+    ],
+    "primaryKeys": [
+      "MaDoKho"
+    ],
+    "uniqueConstraints": [],
+    "foreignKeys": []
+  },
+  "DANGBAI": {
+    "columns": [
+      {
+        "COLUMN_NAME": "MaDangBai",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "TenDangBai",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 50,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      }
+    ],
+    "primaryKeys": [
+      "MaDangBai"
+    ],
+    "uniqueConstraints": [],
+    "foreignKeys": []
+  },
+  "DINHDANG_NOPBAI": {
+    "columns": [
+      {
+        "COLUMN_NAME": "MaDinhDang",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "TenDinhDang",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 20,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      }
+    ],
+    "primaryKeys": [
+      "MaDinhDang"
+    ],
+    "uniqueConstraints": [],
+    "foreignKeys": []
+  },
+  "GIANGVIEN": {
+    "columns": [
+      {
+        "COLUMN_NAME": "MaGiangVien",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 10,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "TenGiangVien",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 100,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "TenDangNhap",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 50,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "MatKhau",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 255,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      },
+      {
+        "COLUMN_NAME": "Quyen",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 20,
+        "IS_NULLABLE": "NO",
+        "COLUMN_DEFAULT": null
+      }
+    ],
+    "primaryKeys": [
+      "MaGiangVien"
+    ],
+    "uniqueConstraints": [
+      {
+        "name": "UQ__GIANGVIE__55F68FC0CA1FD6F1",
+        "columns": [
+          "TenDangNhap"
+        ]
+      }
+    ],
+    "foreignKeys": []
+  }
+}

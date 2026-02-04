@@ -1,0 +1,452 @@
+[
+  {
+    "schema": "dbo",
+    "table": "BAITAP",
+    "columns": [
+      {
+        "COLUMN_NAME": "Id",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "MaBaiTap",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 30,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "TenBaiTap",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 255,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "MaDoKho",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "MaDangBai",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "MaDinhDang",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "MoTa",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": -1,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "YeuCau",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": -1,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "TieuChiChamDiem",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": -1,
+        "IS_NULLABLE": "NO"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "class",
+    "columns": [
+      {
+        "COLUMN_NAME": "id",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "StudentID",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 20,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "LopID",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 20,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "NganhID",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 20,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "HoTenSV",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 255,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "Phai",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 10,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "created_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "updated_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "DANGBAI",
+    "columns": [
+      {
+        "COLUMN_NAME": "MaDangBai",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "TenDangBai",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 50,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "MaMon",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 10,
+        "IS_NULLABLE": "YES"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "DINHDANG_NOPBAI",
+    "columns": [
+      {
+        "COLUMN_NAME": "MaDinhDang",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "TenDinhDang",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 20,
+        "IS_NULLABLE": "NO"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "DOKHO",
+    "columns": [
+      {
+        "COLUMN_NAME": "MaDoKho",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "TenDoKho",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 50,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "MoTa",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 200,
+        "IS_NULLABLE": "YES"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "GIANGVIEN",
+    "columns": [
+      {
+        "COLUMN_NAME": "MaGiangVien",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 10,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "TenGiangVien",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 100,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "TenDangNhap",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 50,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "MatKhau",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 255,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "Quyen",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 20,
+        "IS_NULLABLE": "NO"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "MONHOC",
+    "columns": [
+      {
+        "COLUMN_NAME": "MaMon",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 10,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "TenMon",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 100,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "MaGiangVien",
+        "DATA_TYPE": "varchar",
+        "CHARACTER_MAXIMUM_LENGTH": 10,
+        "IS_NULLABLE": "NO"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "password_resets",
+    "columns": [
+      {
+        "COLUMN_NAME": "id",
+        "DATA_TYPE": "uniqueidentifier",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "user_id",
+        "DATA_TYPE": "uniqueidentifier",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "token",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 255,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "expires_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "is_used",
+        "DATA_TYPE": "bit",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "created_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "sysdiagrams",
+    "columns": [
+      {
+        "COLUMN_NAME": "name",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 128,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "principal_id",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "diagram_id",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "version",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "definition",
+        "DATA_TYPE": "varbinary",
+        "CHARACTER_MAXIMUM_LENGTH": -1,
+        "IS_NULLABLE": "YES"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "user_sessions",
+    "columns": [
+      {
+        "COLUMN_NAME": "id",
+        "DATA_TYPE": "uniqueidentifier",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "user_id",
+        "DATA_TYPE": "uniqueidentifier",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "access_token",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": -1,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "refresh_token",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": -1,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "token_expires_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "refresh_token_expires_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "created_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "updated_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "is_active",
+        "DATA_TYPE": "bit",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      }
+    ]
+  },
+  {
+    "schema": "dbo",
+    "table": "users",
+    "columns": [
+      {
+        "COLUMN_NAME": "id",
+        "DATA_TYPE": "uniqueidentifier",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "email",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 255,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "mssv",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 10,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "full_name",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 255,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "password",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 255,
+        "IS_NULLABLE": "NO"
+      },
+      {
+        "COLUMN_NAME": "phone",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 20,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "address",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 500,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "class_id",
+        "DATA_TYPE": "int",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "role",
+        "DATA_TYPE": "nvarchar",
+        "CHARACTER_MAXIMUM_LENGTH": 20,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "created_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      },
+      {
+        "COLUMN_NAME": "updated_at",
+        "DATA_TYPE": "datetime2",
+        "CHARACTER_MAXIMUM_LENGTH": null,
+        "IS_NULLABLE": "YES"
+      }
+    ]
+  }
+]

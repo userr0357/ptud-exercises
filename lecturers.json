@@ -1,0 +1,30 @@
+[
+  {
+    "lecturer_id": "ADMIN001",
+    "name": "Admin User",
+    "password": "admin123",
+    "is_admin": true,
+    "allowed_subjects": ["NMLT", "KTLT", "CTDLGT", "LTHDT"]
+  },
+  {
+    "lecturer_id": "GV002",
+    "name": "Đoàn Thiện Minh",
+    "password": "gv002pass",
+    "is_admin": false,
+    "allowed_subjects": ["NMLT", "KTLT"]
+  },
+  {
+    "lecturer_id": "GV003",
+    "name": "Phan Mạnh Thường",
+    "password": "gv003pass",
+    "is_admin": false,
+    "allowed_subjects": ["CTDLGT"]
+  },
+  {
+    "lecturer_id": "GV004",
+    "name": "Nguyễn Minh Phúc",
+    "password": "gv004pass",
+    "is_admin": false,
+    "allowed_subjects": ["LTHDT"]
+  }
+]

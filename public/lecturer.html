@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trang Quản lý (Giảng viên)</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .header-controls{display:flex;gap:8px;align-items:center}
+    #manage-list .item-controls button{margin-left:6px}
+    .small-muted{color:#666;font-size:13px}
+    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}
+    .modal.show{display:flex}
+    .modal-content{background:white;max-width:600px;max-height:90vh;overflow-y:auto;border-radius:8px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.3)}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .modal-header h2{margin:0}
+    .modal-close{background:none;border:none;font-size:24px;cursor:pointer}
+    .modal-close:hover{color:#c00}
+    /* Search and filter */
+    .search-section{margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .search-section input{flex:1;min-width:200px;padding:8px;border:1px solid #ddd;border-radius:4px}
+    /* Subject collapse */
+    .subject-group{margin-bottom:24px}
+    .subject-header{display:flex;align-items:center;gap:8px;padding:12px;background:#f5f5f5;border-radius:4px;cursor:pointer;user-select:none}
+    .subject-header:hover{background:#e8e8e8}
+    .subject-toggle{font-size:18px;width:20px;text-align:center}
+    .subject-toggle.collapsed::before{content:'▶'}
+    .subject-toggle.collapsed::after{content:''}
+    .subject-toggle::before{content:'▼'}
+    .subject-title{flex:1;font-weight:bold}
+    .subject-count{color:#666;font-size:13px}
+    .subject-exercises{margin-top:8px}
+    /* Exercise item styling */
+    .exercise-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border:1px solid #eee;border-radius:4px;margin-bottom:6px;background:#fafafa}
+    .exercise-item:hover{background:#f0f0f0;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+    .exercise-left{flex:1}
+    .exercise-title{font-weight:500}
+    .exercise-badge{display:inline-block;font-size:11px;padding:2px 6px;border-radius:3px;margin-left:8px;font-weight:600}
+    .badge-easy{background:#d4edda;color:#155724}
+    .badge-medium{background:#fff3cd;color:#856404}
+    .badge-hard{background:#f8d7da;color:#721c24}
+    .exercise-controls{display:flex;gap:6px}
+    .exercise-controls button{padding:4px 8px;font-size:12px;border:1px solid #ddd;border-radius:3px;cursor:pointer;background:white}
+    .exercise-controls button:hover{background:#e8e8e8}
+    .exercise-controls .edit{color:#0066cc}
+    .exercise-controls .delete{color:#cc0000}
+    /* Toast notification */
+    .toast{display:none;position:fixed;bottom:20px;right:20px;background:#333;color:white;padding:12px 16px;border-radius:4px;z-index:2000}
+    .toast.show{display:block;animation:slideIn 0.3s ease-out}
+    @keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}
+  </style>
+</head>
+<body>
+  <div class="container" style="padding:20px">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h1>Trang Quản lý (Giảng viên)</h1>
+        <div class="header-controls">
+          <button id="btn-export" class="accent">Xuất Excel</button>
+          <button id="btn-logout">Đăng xuất</button>
+        </div>
+      </div>
+
+      <div id="lecturer-info" style="margin:8px 0 16px" class="small-muted"></div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h3 style="margin:0">Quản lý bài tập</h3>
+        <button id="btn-create-new" class="accent">+ Tạo bài tập mới</button>
+      </div>
+
+      <div class="search-section">
+        <input type="text" id="search-box" placeholder="Tìm kiếm bài tập...">
+        <select id="filter-difficulty">
+          <option value="">Tất cả độ khó</option>
+          <option value="Dễ">Dễ</option>
+          <option value="Trung bình">Trung bình</option>
+          <option value="Khó">Khó</option>
+        </select>
+      </div>
+
+      <h3 style="margin-top:18px">Danh sách bài tập</h3>
+      <div id="manage-list"></div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Modal for exercise form -->
+  <div id="exercise-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Thêm / Sửa bài tập</h2>
+        <button type="button" class="modal-close" id="modal-close">×</button>
+      </div>
+      <form id="exercise-form">
+        <input type="hidden" id="original_id" name="original_id" />
+        <label>Môn</label>
+        <select id="form-subject" name="subject_id" required></select>
+        <label>Dạng</label>
+        <select id="form-form" name="form_id" required></select>
+        <label>Tên bài</label>
+        <input name="title" id="field-title" />
+        <label>Id (unique)</label>
+        <input name="id" id="field-id" />
+        <label>Độ khó</label>
+        <select name="difficulty" id="field-difficulty"><option>Dễ</option><option>Trung bình</option><option>Khó</option></select>
+        <label>Mô tả Markdown</label>
+        <textarea name="description" id="field-description" rows="4"></textarea>
+        <label>Yêu cầu (mỗi dòng 1 yêu cầu)</label>
+        <textarea name="requirements" id="field-requirements" rows="3"></textarea>
+        <label>Tiêu chí chấm (mỗi dòng 1 tiêu chí)</label>
+        <textarea name="grading_criteria" id="field-grading" rows="3"></textarea>
+        <label>Định dạng nộp</label>
+        <input name="submission_format" id="field-submission" />
+        <label>File kèm</label>
+        <input id="field-files" type="file" name="files" multiple />
+        <div style="margin-top:10px">
+          <button type="submit" class="accent">Lưu</button>
+          <button type="button" id="exercise-cancel">Huỷ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/lecturer-new.js"></script>
+</body>
+</html>

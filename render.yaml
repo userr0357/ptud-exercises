@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: ptud-grading-api
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: cd api && npm install
+    startCommand: cd api && npm start
+    disk: 512
+    envVars:
+      - key: DB_USER
+      - key: DB_PASS
+      - key: DB_HOST
+      - key: DB_NAME
+      - key: PORT
+services:
+  - type: web
+    name: ptud-backend
+    env: node
+    plan: free
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://ptud-exercises.onrender.com
+
+  - type: static
+    name: ptud-frontend
+    env: static
+    plan: free
+    branch: main
+    buildCommand: ""
+    publishPath: public
+    autoDeploy: true
