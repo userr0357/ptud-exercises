@@ -7,6 +7,8 @@ const ExcelJS = require('exceljs');
 const jwt = require('jsonwebtoken');
 const sql = require('mssql');
 
+console.log('[init] Dependencies loaded');
+
 const JWT_SECRET = process.env.JWT_SECRET || 'change-me-to-secure-secret';
 
 // ==================================================
@@ -197,8 +199,12 @@ async function queryExternalExercises(prefix) {
         subject_code: subjectCode
       };
     });
-  } finally {
-    // pool is reused by mssql
+    } finally {
+      // pool is reused by mssql
+    }
+  } catch (err) {
+    console.error('MSSQL query error:', err.message);
+    return [];
   }
 }
 
@@ -737,15 +743,21 @@ app.get('/lecturer', auth, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'lecturer.html'));
 });
 
+console.log('[routes] All API routes registered');
+
 // serve login page (friendly URL)
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+console.log('[routes] Login route registered');
+
 // fallback for SPA
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+console.log('[routes] Fallback SPA route registered');
 
 // export app for Vercel (optional)
 module.exports = app;
@@ -755,18 +767,32 @@ module.exports = app;
 // ==================================================
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
-  const server = app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
+  console.log(`[startup] Attempting to listen on port ${PORT}...`);
+  const server = app.listen(PORT, '127.0.0.1', () => {
+    console.log(`[startup] Server LISTENING on http://127.0.0.1:${PORT}`);
     console.log(`Environment: USE_EXTERNAL_DB=${process.env.USE_EXTERNAL_DB || 'not set'}`);
+  });
+  
+  server.on('listening', () => {
+    console.log('[startup] Server event: listening');
+  });
+  
+  server.on('connection', (conn) => {
+    console.log('[connection] New connection');
   });
   
   // Handle errors
   server.on('error', (err) => {
-    console.error('Server error:', err);
+    console.error('[error] Server error:', err);
     process.exit(1);
   });
   
   process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    console.error('[error] Unhandled Rejection:', reason);
+  });
+  
+  process.on('uncaughtException', (err) => {
+    console.error('[error] Uncaught Exception:', err);
+    process.exit(1);
   });
 }
