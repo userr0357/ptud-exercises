@@ -768,8 +768,8 @@ module.exports = app;
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
   console.log(`[startup] Attempting to listen on port ${PORT}...`);
-  const server = app.listen(PORT, '127.0.0.1', () => {
-    console.log(`[startup] Server LISTENING on http://127.0.0.1:${PORT}`);
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[startup] Server LISTENING on port ${PORT}`);
     console.log(`Environment: USE_EXTERNAL_DB=${process.env.USE_EXTERNAL_DB || 'not set'}`);
   });
   
