@@ -124,7 +124,8 @@ const sqlConfig = {
 };
 
 async function queryExternalExercises(prefix) {
-  if (!process.env.USE_EXTERNAL_DB) {
+  // Only attempt external DB connection when USE_EXTERNAL_DB is explicitly set to '1'
+  if (String(process.env.USE_EXTERNAL_DB) !== '1') {
     return [];
   }
   
