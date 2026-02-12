@@ -833,4 +833,85 @@ function showExerciseLecturerDetail(exercise, form, subject) {
 }
 
 // init
-loadSubjects().catch(err=>console.error(err));
+loadSubjects().then(() => {
+  // Check if this is lecturer page or student page
+  const manageList = document.getElementById('manage-list');
+  if (manageList) {
+    // This is lecturer page - render management list after loading subjects
+    renderManageList();
+    
+    // Setup lecturer page handlers
+    const btnCreateNew = document.getElementById('btn-create-new');
+    if (btnCreateNew) {
+      btnCreateNew.onclick = () => {
+        const form = document.getElementById('exercise-form');
+        if (form) form.reset();
+        const originalId = document.getElementById('original_id');
+        if (originalId) originalId.value = '';
+        const modal = document.getElementById('exercise-modal');
+        if (modal) modal.classList.add('show');
+      };
+    }
+    
+    const modalClose = document.getElementById('modal-close');
+    if (modalClose) {
+      modalClose.onclick = () => {
+        const modal = document.getElementById('exercise-modal');
+        if (modal) modal.classList.remove('show');
+      };
+    }
+    
+    const exerciseCancel = document.getElementById('exercise-cancel');
+    if (exerciseCancel) {
+      exerciseCancel.onclick = () => {
+        const modal = document.getElementById('exercise-modal');
+        if (modal) modal.classList.remove('show');
+      };
+    }
+    
+    // Exercise form submit
+    const exerciseForm = document.getElementById('exercise-form');
+    if (exerciseForm) {
+      exerciseForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const formEl = e.target;
+        const fd = new FormData(formEl);
+        const orig = fd.get('original_id');
+        const exercise = {
+          id: fd.get('id'),
+          title: fd.get('title'),
+          difficulty: fd.get('difficulty'),
+          description: fd.get('description'),
+          requirements: (fd.get('requirements')||'').split('\n').map(s=>s.trim()).filter(Boolean),
+          grading_criteria: parseCriteriaText(fd.get('grading_criteria')||''),
+          submission_format: fd.get('submission_format')
+        };
+        const multipart = new FormData();
+        multipart.append('exercise', JSON.stringify(exercise));
+        const fileInput = formEl.querySelector('input[type=file]');
+        if (fileInput && fileInput.files.length) {
+          for (const f of fileInput.files) multipart.append('files', f);
+        }
+        multipart.append('subject_id', fd.get('subject_id'));
+        multipart.append('form_id', fd.get('form_id'));
+
+        try {
+          let res;
+          if (orig) {
+            res = await fetch(`/api/exercise/${encodeURIComponent(orig)}`, { method: 'PUT', credentials: 'include', body: multipart });
+          } else {
+            res = await fetch('/api/exercise', { method: 'POST', credentials: 'include', body: multipart });
+          }
+          if (!res.ok) throw new Error('Failed');
+          await loadSubjects();
+          renderManageList();
+          alert('Lưu thành công');
+          formEl.reset();
+          document.getElementById('original_id').value = '';
+          const modal = document.getElementById('exercise-modal');
+          if (modal) modal.classList.remove('show');
+        } catch (err) { console.error(err); alert('Lỗi lưu bài tập'); }
+      };
+    }
+  }
+}).catch(err=>console.error(err));
