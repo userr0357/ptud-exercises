@@ -743,6 +743,15 @@ function renderManageList() {
             const formSelect = document.getElementById('form-form');
             if (formSelect) formSelect.value = f.form_id;
             try { localStorage.setItem('editTarget', JSON.stringify({ subject_id: s.subject_id, form_id: f.form_id, id: ex.id })); } catch (e) {}
+            // 🔧 Show editor panel after filling form
+            const panelModal = document.getElementById('lecturer-panel');
+            if (panelModal) {
+              panelModal.classList.remove('hidden');
+              setTimeout(() => {
+                const titleField = formEl.querySelector('[name=title]');
+                if (titleField) titleField.focus();
+              }, 100);
+            }
           }
         };
         viewBtn.appendChild(editBtn);
@@ -775,20 +784,18 @@ function renderManageList() {
 }
 
 function showExerciseLecturerDetail(exercise, form, subject) {
-  const modal = document.getElementById('exercise-detail-modal');
+  let modal = document.getElementById('exercise-detail-modal');
   if (!modal) {
-    // Create modal if not exists
     const newModal = document.createElement('div');
     newModal.id = 'exercise-detail-modal';
     newModal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:2000;';
     document.body.appendChild(newModal);
+    modal = newModal;
   }
   
-  const m = document.getElementById('exercise-detail-modal');
   const content = document.createElement('div');
   content.style.cssText = 'background:white; padding:30px; border-radius:8px; max-width:600px; max-height:80vh; overflow-y:auto; position:relative;';
- content.innerHTML = `
-    <button onclick="this.parentElement.parentElement.style.display='none'" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:24px; cursor:pointer;">×</button>
+  content.innerHTML = `
     <h2>${exercise.title}</h2>
     <p><strong>ID:</strong> ${exercise.id}</p>
     <p><strong>Dạng:</strong> ${form.name}</p>
@@ -808,12 +815,20 @@ function showExerciseLecturerDetail(exercise, form, subject) {
     <p>${exercise.submission_format || '(Không có)'}</p>
   `;
   
-  m.innerHTML = '';
-  m.appendChild(content);
-  m.style.display = 'flex';
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '×';
+  closeBtn.style.cssText = 'position:absolute; top:10px; right:10px; background:none; border:none; font-size:28px; cursor:pointer; color:#999;';
+  closeBtn.onmouseover = () => closeBtn.style.color = '#000';
+  closeBtn.onmouseout = () => closeBtn.style.color = '#999';
+  closeBtn.onclick = () => modal.style.display = 'none';
+  content.appendChild(closeBtn);
   
-  m.onclick = (e) => {
-    if (e.target === m) m.style.display = 'none';
+  modal.innerHTML = '';
+  modal.appendChild(content);
+  modal.style.display = 'flex';
+  
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.style.display = 'none';
   };
 }
 
