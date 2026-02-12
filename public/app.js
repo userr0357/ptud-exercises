@@ -6,10 +6,22 @@ async function fetchJSON(url, opts) {
   return res.json();
 }
 
-const state = { subjects: [], currentSubject: null, expandedForms: {}, searchQuery: '', difficultyFilter: '' }; 
+const state = { 
+  subjects: [], 
+  currentSubject: null, 
+  expandedForms: {}, 
+  searchQuery: '', 
+  difficultyFilter: '',
+  currentPage: 1,
+  itemsPerPage: 10,
+  sortBy: 'id',
+  sortOrder: 'asc',
+  viewMode: 'grid',
+  selectedExercise: null
+};
 
-// difficulty order mapping (lowercased keys)
-const DIFF_ORDER = { 'dễ': 0, 'de': 0, 'dễ': 0, 'trung bình': 1, 'trung': 1, 'trung binh': 1, 'khó': 2, 'kho': 2 };
+// difficulty order mapping
+const DIFF_ORDER = { 'dễ': 0, 'de': 0, 'trung bình': 1, 'trung': 1, 'trung binh': 1, 'khó': 2, 'kho': 2 };
 
 function normalizeDifficultyLabel(raw) {
   if (!raw) return '';
@@ -17,7 +29,6 @@ function normalizeDifficultyLabel(raw) {
   if (s.includes('dễ') || s.includes('de')) return 'Dễ';
   if (s.includes('khó') || s.includes('kho')) return 'Khó';
   if (s.includes('trung')) return 'Trung bình';
-  // also handle bracketed forms like "[Trung bình]"
   const m = raw.match(/\[(.*?)\]/);
   if (m && m[1]) {
     const inner = m[1].toLowerCase();
@@ -28,36 +39,36 @@ function normalizeDifficultyLabel(raw) {
   return '';
 }
 
-// restore expandedForms state (which form cards were expanded)
 try {
   const ef = localStorage.getItem('expandedForms');
   if (ef) state.expandedForms = JSON.parse(ef);
-} catch (e) { /* ignore */ }
-
+} catch (e) { }
 
 async function loadSubjects() {
   state.subjects = await fetchJSON('/api/subjects');
   renderSidebar();
   populateLecturerSelects();
-  // refresh login button (in case lecturer restored earlier)
   try { updateLoginButton(); } catch (e) {}
-  // auto-select first subject when opening student page (so students see exercises immediately)
   try {
     const hash = (location.hash || '').replace(/^#/, '');
     if (!hash && state.subjects && state.subjects.length) {
       await selectSubject(state.subjects[0].subject_id);
     }
-  } catch (e) { /* ignore */ }
+  } catch (e) { }
 }
-
 
 function renderSidebar() {
   const ul = document.getElementById('subject-list');
+  if (!ul) return;
   ul.innerHTML = '';
   state.subjects.forEach(s => {
     const li = document.createElement('li');
     li.textContent = `${s.subject_name} (${s.total_exercises})`;
-    li.onclick = async () => { await selectSubject(s.subject_id); renderSidebar(); };
+    li.onclick = async () => { 
+      state.currentPage = 1;
+      await selectSubject(s.subject_id); 
+      renderSidebar(); 
+    };
     if (state.currentSubject && state.currentSubject.subject_id === s.subject_id) li.classList.add('active');
     ul.appendChild(li);
   });
@@ -68,7 +79,6 @@ async function selectSubject(id) {
   state.currentSubject = subject;
   renderSubject();
   renderSidebar();
-  // update URL fragment without adding a history entry
   try { history.replaceState(null, '', '#' + id); } catch (e) { location.hash = '#' + id; }
 }
 
@@ -87,7 +97,38 @@ function getFilteredExercises() {
     });
   });
 
+  allExercises.sort((a, b) => {
+    let aVal, bVal;
+    if (state.sortBy === 'title') {
+      aVal = (a.exercise.title || '').toLowerCase();
+      bVal = (b.exercise.title || '').toLowerCase();
+    } else if (state.sortBy === 'difficulty') {
+      const diffOrder = { 'Dễ': 0, 'Trung bình': 1, 'Khó': 2 };
+      aVal = diffOrder[a.exercise.difficulty] || 999;
+      bVal = diffOrder[b.exercise.difficulty] || 999;
+    } else {
+      aVal = (a.exercise.id || '').toLowerCase();
+      bVal = (b.exercise.id || '').toLowerCase();
+    }
+    
+    if (aVal < bVal) return state.sortOrder === 'asc' ? -1 : 1;
+    if (aVal > bVal) return state.sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   return allExercises;
+}
+
+function getPaginatedExercises() {
+  const all = getFilteredExercises();
+  const start = (state.currentPage - 1) * state.itemsPerPage;
+  const end = start + state.itemsPerPage;
+  return {
+    exercises: all.slice(start, end),
+    totalCount: all.length,
+    totalPages: Math.ceil(all.length / state.itemsPerPage),
+    currentPage: state.currentPage
+  };
 }
 
 function updateStats() {
@@ -97,22 +138,84 @@ function updateStats() {
   const medium = exercises.filter(e => e.difficulty === 'Trung bình').length;
   const hard = exercises.filter(e => e.difficulty === 'Khó').length;
   
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-easy').textContent = easy;
-  document.getElementById('stat-medium').textContent = medium;
-  document.getElementById('stat-hard').textContent = hard;
+  const st = document.getElementById('stat-total');
+  const se = document.getElementById('stat-easy');
+  const sm = document.getElementById('stat-medium');
+  const sh = document.getElementById('stat-hard');
+  
+  if (st) st.textContent = total;
+  if (se) se.textContent = easy;
+  if (sm) sm.textContent = medium;
+  if (sh) sh.textContent = hard;
+}
+
+function renderPagination() {
+  const container = document.getElementById('pagination-control');
+  if (!container) return;
+  
+  const { totalPages, currentPage } = getPaginatedExercises();
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+  
+  let html = '<div class="pagination" style="text-align:center; margin:20px 0; padding:10px; border-top:1px solid #ddd;">';
+  html += `<span style="margin:0 5px;">Trang ${currentPage} / ${totalPages}</span> `;
+  
+  if (currentPage > 1) {
+    html += `<button onclick="changePage(${currentPage - 1})" style="padding:5px 10px; margin:0 3px;">← Trước</button>`;
+  }
+  
+  for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+    if (i === currentPage) {
+      html += `<button onclick="changePage(${i})" style="padding:5px 10px; margin:0 3px; font-weight:bold; background:#007bff; color:white;">${i}</button>`;
+    } else {
+      html += `<button onclick="changePage(${i})" style="padding:5px 10px; margin:0 3px;">${i}</button>`;
+    }
+  }
+  
+  if (currentPage < totalPages) {
+    html += `<button onclick="changePage(${currentPage + 1})" style="padding:5px 10px; margin:0 3px;">Tiếp →</button>`;
+  }
+  
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function changePage(page) {
+  const { totalPages } = getPaginatedExercises();
+  if (page >= 1 && page <= totalPages) {
+    state.currentPage = page;
+    renderSubject();
+  }
+}
+
+function changeSortBy(field) {
+  if (state.sortBy === field) {
+    state.sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc';
+  } else {
+    state.sortBy = field;
+    state.sortOrder = 'asc';
+  }
+  state.currentPage = 1;
+  renderSubject();
 }
 
 function renderSubject() {
   const s = state.currentSubject;
-  document.getElementById('subject-title').textContent = s.subject_name;
+  if (!s) return;
+  
+  const titleEl = document.getElementById('subject-title');
   const descEl = document.getElementById('subject-desc');
+  const container = document.getElementById('forms-container');
+  
+  if (!container) return;
+  
+  if (titleEl) titleEl.textContent = s.subject_name;
   if (descEl) descEl.textContent = s.description || '';
   
-  const container = document.getElementById('forms-container');
   container.innerHTML = '';
 
-  // sort forms by difficulty then by name
   const sortedForms = [...s.forms].sort((a,b) => {
     const da = DIFF_ORDER[(normalizeDifficultyLabel(a.difficulty)||a.difficulty||'').toLowerCase()] ?? 1;
     const db = DIFF_ORDER[(normalizeDifficultyLabel(b.difficulty)||b.difficulty||'').toLowerCase()] ?? 1;
@@ -122,9 +225,8 @@ function renderSubject() {
 
   sortedForms.forEach(form => {
     const filtered = getFilteredExercises().filter(e => e.form.form_id === form.form_id);
-    if (filtered.length === 0) return; // skip empty forms
+    if (filtered.length === 0) return;
 
-    // Subject/Form group with collapse
     const group = document.createElement('div');
     group.className = 'subject-group';
 
@@ -148,9 +250,8 @@ function renderSubject() {
     header.appendChild(count);
 
     const grid = document.createElement('div');
-    grid.className = 'exercises-grid show'; // show by default
+    grid.className = 'exercises-grid show';
 
-    // Render exercise cards
     filtered.forEach(({form: f, exercise: ex}) => {
       const card = document.createElement('div');
       card.className = 'exercise-card';
@@ -189,7 +290,6 @@ function renderSubject() {
       localStorage.setItem(`form-${form.form_id}`, isCollapsed ? 'collapsed' : 'expanded');
     };
 
-    // Restore collapse state
     const savedState = localStorage.getItem(`form-${form.form_id}`);
     if (savedState === 'collapsed') {
       toggle.classList.add('collapsed');
@@ -202,47 +302,52 @@ function renderSubject() {
   });
 
   updateStats();
+  renderPagination();
 }
 
 function showExerciseDetail(exercise, form) {
   const modal = document.getElementById('detail-modal');
-  document.getElementById('detail-title').innerHTML = `${exercise.title} <span class="modal-badge">${exercise.difficulty}</span>`;
+  if (!modal) return;
   
-  const body = document.getElementById('detail-body');
-  body.innerHTML = `
-    <div class="modal-section">
-      <div class="modal-section-title">Thông tin bài tập</div>
-      <p><strong>ID:</strong> ${exercise.id}</p>
-      <p><strong>Dạng:</strong> ${form.name}</p>
-      <p><strong>Độ khó:</strong> ${exercise.difficulty}</p>
-      <p><strong>Định dạng nộp:</strong> ${exercise.submission_format || '(không xác định)'}</p>
-    </div>
-    ${exercise.description ? `<div class="modal-section">
-      <div class="modal-section-title">Mô tả</div>
-      <div>${DOMPurify.sanitize(marked.parse(exercise.description))}</div>
-    </div>` : ''}
-    ${exercise.requirements && exercise.requirements.length ? `<div class="modal-section">
-      <div class="modal-section-title">Yêu cầu (${exercise.requirements.length})</div>
-      <ul>${exercise.requirements.map(r => `<li>${DOMPurify.sanitize(marked.parse(r))}</li>`).join('')}</ul>
-    </div>` : ''}
-    ${exercise.grading_criteria && exercise.grading_criteria.length ? `<div class="modal-section">
-      <div class="modal-section-title">Tiêu chí chấm (${exercise.grading_criteria.length})</div>
-      <ul>${exercise.grading_criteria.map(g => `<li>${DOMPurify.sanitize(marked.parse(typeof g === 'string' ? g : g.name || ''))}</li>`).join('')}</ul>
-    </div>` : ''}
-  `;
+  const titleEl = document.getElementById('detail-title');
+  const bodyEl = document.getElementById('detail-body');
+  
+  if (titleEl) titleEl.innerHTML = `${exercise.title} <span class="modal-badge">${exercise.difficulty}</span>`;
+  
+  if (bodyEl) {
+    bodyEl.innerHTML = `
+      <div class="modal-section">
+        <div class="modal-section-title">Thông tin bài tập</div>
+        <p><strong>ID:</strong> ${exercise.id}</p>
+        <p><strong>Dạng:</strong> ${form.name}</p>
+        <p><strong>Độ khó:</strong> ${exercise.difficulty}</p>
+        <p><strong>Định dạng nộp:</strong> ${exercise.submission_format || '(không xác định)'}</p>
+      </div>
+      ${exercise.description ? `<div class="modal-section">
+        <div class="modal-section-title">Mô tả</div>
+        <div>${DOMPurify.sanitize(marked.parse(exercise.description))}</div>
+      </div>` : ''}
+      ${exercise.requirements && exercise.requirements.length ? `<div class="modal-section">
+        <div class="modal-section-title">Yêu cầu (${exercise.requirements.length})</div>
+        <ul>${exercise.requirements.map(r => `<li>${DOMPurify.sanitize(marked.parse(r))}</li>`).join('')}</ul>
+      </div>` : ''}
+      ${exercise.grading_criteria && exercise.grading_criteria.length ? `<div class="modal-section">
+        <div class="modal-section-title">Tiêu chí chấm (${exercise.grading_criteria.length})</div>
+        <ul>${exercise.grading_criteria.map(g => `<li>${DOMPurify.sanitize(marked.parse(typeof g === 'string' ? g : g.name || ''))}</li>`).join('')}</ul>
+      </div>` : ''}
+    `;
+  }
 
-  if (modal) modal.classList.add('show');
+  modal.classList.add('show');
 }
 
 function showExercise(ex) {
-  // helper: escape HTML to avoid XSS when building innerHTML
   function escapeHtml(s) {
     if (s == null) return '';
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function renderGradingHtml(criteria) {
-    // Handle both object { tieu_chi: [...] } and direct array formats
     let items = [];
     if (!criteria) {
       return '<div class="small muted">(Không có tiêu chí)</div>';
@@ -260,22 +365,22 @@ function showExercise(ex) {
       if (!g) return '<li>(Không xác định)</li>';
       if (typeof g === 'string') return `<li>${escapeHtml(g)}</li>`;
       const name = escapeHtml(g.name || '(Không tên)');
-      // hide numeric points in student view per request; show only name and optional note
       const note = g.note ? ` — ${escapeHtml(g.note)}` : '';
       return `<li><strong>${name}</strong>${note}</li>`;
     }).join('') + '</ul>';
   }
+
   const d = document.getElementById('exercise-detail');
-  // render markdown then sanitize
+  if (!d) return;
+  
   const rawHtml = (typeof marked !== 'undefined') ? marked.parse(ex.description || '') : (ex.description || '');
   const safeHtml = (typeof DOMPurify !== 'undefined') ? DOMPurify.sanitize(rawHtml) : rawHtml;
-  // prepare example input/output if present
   const sampleIn = ex.example_input ? `<pre class="sample">${ex.example_input}</pre>` : '<div class="small muted">(Không có ví dụ đầu vào)</div>';
   const sampleOut = ex.example_output ? `<pre class="sample">${ex.example_output}</pre>` : '<div class="small muted">(Không có ví dụ đầu ra)</div>';
   const attached = (ex.attached_files||[]).map(f=>f.originalname || f.filename).join(', ') || '(Không có)';
-  // difficulty badge class
   const diffLabel = normalizeDifficultyLabel(ex.difficulty) || ex.difficulty || '';
   const badgeClass = (diffLabel === 'Khó') ? 'badge hard' : (diffLabel === 'Trung bình' ? 'badge medium' : 'badge easy');
+  
   d.innerHTML = `
     <button class="close-ex" id="exercise-close-btn">×</button>
     <h2>${ex.title} <span class="${badgeClass}" style="margin-left:12px">${diffLabel || ex.difficulty || ''}</span></h2>
@@ -287,29 +392,26 @@ function showExercise(ex) {
     <div><strong>Cách nộp / Định dạng:</strong> ${ex.submission_format || '(Không có)'}</div>
     <div><strong>File đính kèm:</strong> ${attached}</div>
   `;
-  // ensure overlay exists at document level (not inside modal) and show it
+  
   let overlay = document.getElementById('exercise-overlay');
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.id = 'exercise-overlay';
     document.body.appendChild(overlay);
   }
-  // show overlay and panel (panel slides in from right)
   overlay.classList.add('show');
-  overlay.style.position = 'fixed'; overlay.style.inset = '0'; overlay.style.zIndex = '1098';
-  // small delay to allow CSS transition
+  overlay.style.position = 'fixed'; 
+  overlay.style.inset = '0'; 
+  overlay.style.zIndex = '1098';
   setTimeout(()=> overlay.classList.add('show'), 10);
-  // show panel
+  
   d.classList.remove('hidden');
-  // ensure closed state reset then open
   d.classList.remove('open');
   requestAnimationFrame(()=> d.classList.add('open'));
 
-  // close handler shared
   function closePanel(){
     d.classList.remove('open');
     overlay.classList.remove('show');
-    // wait for transition before fully hiding
     d.addEventListener('transitionend', function handler(){ d.classList.add('hidden'); d.removeEventListener('transitionend', handler); }, { once: true });
   }
 
@@ -318,44 +420,38 @@ function showExercise(ex) {
   if (closeBtn) closeBtn.onclick = closePanel;
 }
 
-// Theme (light/dark) handling
+// Theme
 function applyTheme(theme) {
   if (theme === 'dark') document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode');
 }
 try { const saved = localStorage.getItem('theme'); if (saved) applyTheme(saved); } catch (e) {}
-const themeToggle = document.getElementById('theme-toggle'); if (themeToggle) themeToggle.onclick = () => { try { const cur = document.body.classList.contains('dark-mode') ? 'dark' : 'light'; const next = cur === 'dark' ? 'light' : 'dark'; applyTheme(next); localStorage.setItem('theme', next); } catch (e) {} };
+const themeToggle = document.getElementById('theme-toggle'); 
+if (themeToggle) themeToggle.onclick = () => { 
+  try { 
+    const cur = document.body.classList.contains('dark-mode') ? 'dark' : 'light'; 
+    const next = cur === 'dark' ? 'light' : 'dark'; 
+    applyTheme(next); 
+    localStorage.setItem('theme', next); 
+  } catch (e) {} 
+};
 
 // Lecturer flow
 const btnLogin = document.getElementById('btn-login');
-const loginCancelEl = document.getElementById('login-cancel');
-if (loginCancelEl) loginCancelEl.onclick = () => {
-  const m = document.getElementById('lecturer-modal'); if (m) m.classList.add('hidden');
-};
 
 function updateLoginButton() {
   if (!btnLogin) return;
-  // Student page's login button now redirects to a separate login page.
   btnLogin.textContent = 'Đăng nhập giảng viên';
   btnLogin.onclick = () => { window.location.href = '/login'; };
 }
 
-function showLoginModal() {
-  const m = document.getElementById('lecturer-modal');
-  if (!m) return;
-  m.classList.remove('hidden');
-  // autofocus first input
-  setTimeout(() => {
-    const first = m.querySelector('input[name="name"]');
-    if (first) first.focus();
-  }, 50);
-}
-
-// set initial button state after defining btnLogin and update function
 updateLoginButton();
 
-// close buttons (added in HTML)
-const loginModal = document.getElementById('lecturer-modal');
-// Search and filter handlers
+const loginCancelEl = document.getElementById('login-cancel');
+if (loginCancelEl) loginCancelEl.onclick = () => {
+  const m = document.getElementById('lecturer-modal'); 
+  if (m) m.classList.add('hidden');
+};
+
 const searchInput = document.getElementById('search-input');
 const filterDiff = document.getElementById('filter-difficulty');
 const modalClose = document.getElementById('modal-close');
@@ -363,11 +459,13 @@ const detailModal = document.getElementById('detail-modal');
 
 if (searchInput) searchInput.addEventListener('input', (e) => {
   state.searchQuery = e.target.value;
+  state.currentPage = 1;
   renderSubject();
 });
 
 if (filterDiff) filterDiff.addEventListener('change', (e) => {
   state.difficultyFilter = e.target.value;
+  state.currentPage = 1;
   renderSubject();
 });
 
@@ -379,7 +477,6 @@ if (detailModal) detailModal.addEventListener('click', (e) => {
   if (e.target === detailModal) detailModal.classList.remove('show');
 });
 
-// Close detail modal on ESC
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && detailModal && detailModal.classList.contains('show')) {
     detailModal.classList.remove('show');
@@ -391,12 +488,13 @@ const loginCloseBtn = document.getElementById('login-close');
 const panelCloseBtn = document.getElementById('panel-close');
 const loginCloseText = document.getElementById('login-close-text');
 const panelCloseText = document.getElementById('panel-close-text');
-if (loginCloseBtn) loginCloseBtn.onclick = () => loginModal.classList.add('hidden');
-if (panelCloseBtn) panelCloseBtn.onclick = () => panelModal.classList.add('hidden');
-if (loginCloseText) loginCloseText.onclick = () => loginModal.classList.add('hidden');
-if (panelCloseText) panelCloseText.onclick = () => panelModal.classList.add('hidden');
 
-// clicking on overlay (outside modal-content) closes modal
+if (loginCloseBtn) loginCloseBtn.onclick = () => { if (loginModal) loginModal.classList.add('hidden'); };
+if (panelCloseBtn) panelCloseBtn.onclick = () => { if (panelModal) panelModal.classList.add('hidden'); };
+if (loginCloseText) loginCloseText.onclick = () => { if (loginModal) loginModal.classList.add('hidden'); };
+if (panelCloseText) panelCloseText.onclick = () => { if (panelModal) panelModal.classList.add('hidden'); };
+
+const loginModal = document.getElementById('lecturer-modal');
 if (loginModal) {
   loginModal.addEventListener('click', (ev) => {
     if (ev.target === loginModal) loginModal.classList.add('hidden');
@@ -408,7 +506,6 @@ if (panelModal) {
   });
 }
 
-// ESC key closes any open modal
 document.addEventListener('keydown', (ev) => {
   if (ev.key === 'Escape' || ev.key === 'Esc') {
     if (loginModal && !loginModal.classList.contains('hidden')) loginModal.classList.add('hidden');
@@ -424,7 +521,6 @@ if (loginForm) loginForm.onsubmit = async (e) => {
   try {
     const res = await fetch('/api/lecturer/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), credentials: 'include' });
     if (!res.ok) throw new Error('Login failed');
-    // server sets HttpOnly cookie; redirect to /lecturer (protected page)
     window.location.href = '/lecturer';
   } catch (err) {
     alert('Đăng nhập thất bại');
@@ -435,10 +531,10 @@ function openLecturerPanel() {
   const panel = document.getElementById('lecturer-panel');
   if (!panel) return;
   panel.classList.remove('hidden');
-  document.getElementById('lecturer-info').textContent = `Giảng viên: ${state.lecturer.name} (${state.lecturer.lecturer_id || ''})`;
+  const infoEl = document.getElementById('lecturer-info');
+  if (infoEl && state.lecturer) infoEl.textContent = `Giảng viên: ${state.lecturer.name} (${state.lecturer.lecturer_id || ''})`;
   populateLecturerSelects();
   renderManageList();
-  // autofocus first field inside panel
   setTimeout(() => {
     const first = panel.querySelector('#form-subject');
     if (first) first.focus();
@@ -447,7 +543,6 @@ function openLecturerPanel() {
 
 const btnLogout = document.getElementById('btn-logout');
 if (btnLogout) btnLogout.onclick = () => {
-  // call logout endpoint to clear server cookie
   fetch('/api/lecturer/logout', { method: 'POST', credentials: 'include' }).finally(()=>{
     try { localStorage.removeItem('lecturer'); } catch(e){}
     updateLoginButton();
@@ -460,47 +555,53 @@ function populateLecturerSelects() {
   if (!selSub) return;
   selSub.innerHTML = '';
   state.subjects.forEach(s => {
-    const o = document.createElement('option'); o.value = s.subject_id; o.textContent = s.subject_name; selSub.appendChild(o);
+    const o = document.createElement('option'); 
+    o.value = s.subject_id; 
+    o.textContent = s.subject_name; 
+    selSub.appendChild(o);
   });
   selSub.onchange = () => {
     const sub = state.subjects.find(x => x.subject_id === selSub.value);
     if (!selForm) return;
     selForm.innerHTML = '';
-    sub.forms.forEach(f => { const o = document.createElement('option'); o.value = f.form_id; o.textContent = `${f.name} (${f.difficulty})`; selForm.appendChild(o); });
+    if (sub && sub.forms) {
+      sub.forms.forEach(f => { 
+        const o = document.createElement('option'); 
+        o.value = f.form_id; 
+        o.textContent = `${f.name} (${f.difficulty})`; 
+        selForm.appendChild(o); 
+      });
+    }
   };
   if (state.subjects.length) selSub.onchange();
 }
 
-// Additional handlers for lecturer panel buttons (not needed on student page)
-
 const exerciseCancel = document.getElementById('exercise-cancel');
 if (exerciseCancel) exerciseCancel.onclick = () => {
-  const p = document.getElementById('lecturer-panel'); if (p) p.classList.add('hidden');
+  const p = document.getElementById('lecturer-panel'); 
+  if (p) p.classList.add('hidden');
 };
 
 const exerciseForm = document.getElementById('exercise-form');
-// parse grading criteria textarea into structured objects
+
 function parseCriteriaText(text) {
   const lines = (text || '').split('\n').map(s=>s.trim()).filter(Boolean);
   const out = [];
   for (const line of lines) {
-    // try to find first number as points
     const m = line.match(/(\d+)\s*p?\b/i);
     if (m) {
       const pts = parseInt(m[1], 10);
-      // name is text before the number
       const idx = line.indexOf(m[0]);
       const namePart = line.substring(0, idx).replace(/[-–—|:]+$/,'').trim();
-      // note is text after the number
       const notePart = line.substring(idx + m[0].length).replace(/^[-–—|:]+/,'').trim();
       out.push({ name: namePart || '(Không tên)', points: pts, note: notePart || '' });
     } else {
-      // no points found — keep as simple object with 0 points
       out.push({ name: line, points: 0, note: '' });
     }
   }
   return out;
 }
+
 if (exerciseForm) exerciseForm.onsubmit = async (e) => {
   e.preventDefault();
   const formEl = e.target;
@@ -547,54 +648,174 @@ function renderManageList() {
   const container = document.getElementById('manage-list');
   if (!container) return;
   container.innerHTML = '';
+  
   state.subjects.forEach(s => {
-    const h = document.createElement('h4'); h.textContent = s.subject_name; container.appendChild(h);
+    const h = document.createElement('h4'); 
+    h.textContent = s.subject_name; 
+    h.style.marginTop = '20px';
+    container.appendChild(h);
+    
     s.forms.forEach(f => {
-      const formDiv = document.createElement('div'); formDiv.innerHTML = `<strong>${f.name} (${f.difficulty})</strong>`;
-      const list = document.createElement('div');
+      const formDiv = document.createElement('div'); 
+      formDiv.innerHTML = `<strong style="display:block; margin:10px 0 5px 0;">${f.name} (${f.difficulty})</strong>`;
+      
+      // Table view
+      const table = document.createElement('table');
+      table.style.width = '100%';
+      table.style.borderCollapse = 'collapse';
+      table.style.marginBottom = '20px';
+      table.style.fontSize = '14px';
+      
+      const thead = document.createElement('thead');
+      thead.innerHTML = `
+        <tr style="background-color: #f0f0f0; border-bottom: 2px solid #ddd;">
+          <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">ID</th>
+          <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Tiêu đề</th>
+          <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">Độ khó</th>
+          <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">Yêu cầu</th>
+          <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">Tiêu chí</th>
+          <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">Hành động</th>
+        </tr>
+      `;
+      table.appendChild(thead);
+      
+      const tbody = document.createElement('tbody');
       f.exercises.forEach(ex => {
-        const item = document.createElement('div');
-        item.style.display='flex'; item.style.justifyContent='space-between'; item.style.padding='6px 0';
-        item.innerHTML = `<div>${ex.title} <small>[${ex.difficulty}]</small></div>`;
-        const controls = document.createElement('div');
-        const edit = document.createElement('button'); edit.textContent='Sửa'; edit.style.marginLeft='8px'; edit.onclick = () => {
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid #ddd';
+        row.style.cursor = 'pointer';
+        row.onmouseover = () => row.style.backgroundColor = '#f9f9f9';
+        row.onmouseout = () => row.style.backgroundColor = 'transparent';
+        
+        const diffBadgeClass = ex.difficulty === 'Khó' ? 'badge hard' : (ex.difficulty === 'Trung bình' ? 'badge medium' : 'badge easy');
+        
+        row.innerHTML = `
+          <td style="padding: 8px; border: 1px solid #ddd; max-width: 80px; word-break: break-word;">${ex.id}</td>
+          <td style="padding: 8px; border: 1px solid #ddd; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${ex.title}">${ex.title}</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+            <span class="${diffBadgeClass}" style="padding: 3px 8px; border-radius: 3px; color: white; font-size: 12px;">${ex.difficulty}</span>
+          </td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${ex.requirements?.length || 0}</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${ex.grading_criteria?.length || 0}</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;"></td>
+        `;
+        
+        // Click row to view details
+        const viewBtn = row.cells[5];
+        viewBtn.innerHTML = '<button onclick="event.stopPropagation()" style="padding:4px 8px; margin-right:4px; background:#0066cc; color:white; border:none; border-radius:3px; cursor:pointer;">Chi tiết</button>';
+        const detailBtn = viewBtn.querySelector('button');
+        detailBtn.onclick = (e) => {
+          e.stopPropagation();
+          showExerciseLecturerDetail(ex, f, s);
+        };
+        
+        // Edit button
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Sửa';
+        editBtn.style.padding = '4px 8px';
+        editBtn.style.marginRight = '4px';
+        editBtn.style.background = '#28a745';
+        editBtn.style.color = 'white';
+        editBtn.style.border = 'none';
+        editBtn.style.borderRadius = '3px';
+        editBtn.style.cursor = 'pointer';
+        editBtn.onclick = (e) => {
+          e.stopPropagation();
           const formEl = document.getElementById('exercise-form');
-          document.getElementById('original_id').value = ex.id;
-          formEl.querySelector('[name=id]').value = ex.id;
-          formEl.querySelector('[name=title]').value = ex.title;
-          formEl.querySelector('[name=difficulty]').value = ex.difficulty;
-          formEl.querySelector('[name=description]').value = ex.description || '';
-          formEl.querySelector('[name=requirements]').value = (ex.requirements||[]).join('\n');
-          // grading_criteria may be array of objects or strings — present as readable lines for editor
-          formEl.querySelector('[name=grading_criteria]').value = (ex.grading_criteria||[]).map(g => {
-            if (!g) return '';
-            if (typeof g === 'string') return g;
-            const note = g.note ? ` — ${g.note}` : '';
-            return `${g.name} — ${g.points}${note}`;
-          }).join('\n');
-          formEl.querySelector('[name=submission_format]').value = ex.submission_format || '';
-          const selSub = document.getElementById('form-subject');
-          selSub.value = s.subject_id;
-          selSub.onchange && selSub.onchange();
-          document.getElementById('form-form').value = f.form_id;
-          try { localStorage.setItem('editTarget', JSON.stringify({ subject_id: s.subject_id, form_id: f.form_id, id: ex.id })); } catch (e) {}
-          location.href = '/lecturer';
+          const original_id = document.getElementById('original_id');
+          if (original_id) original_id.value = ex.id;
+          if (formEl && formEl.querySelector('[name=id]')) {
+            formEl.querySelector('[name=id]').value = ex.id;
+            formEl.querySelector('[name=title]').value = ex.title;
+            formEl.querySelector('[name=difficulty]').value = ex.difficulty;
+            formEl.querySelector('[name=description]').value = ex.description || '';
+            formEl.querySelector('[name=requirements]').value = (ex.requirements||[]).join('\n');
+            formEl.querySelector('[name=grading_criteria]').value = (ex.grading_criteria||[]).map(g => {
+              if (!g) return '';
+              if (typeof g === 'string') return g;
+              const note = g.note ? ` — ${g.note}` : '';
+              return `${g.name} — ${g.points}${note}`;
+            }).join('\n');
+            formEl.querySelector('[name=submission_format]').value = ex.submission_format || '';
+            const selSub = document.getElementById('form-subject');
+            selSub.value = s.subject_id;
+            selSub.onchange && selSub.onchange();
+            const formSelect = document.getElementById('form-form');
+            if (formSelect) formSelect.value = f.form_id;
+            try { localStorage.setItem('editTarget', JSON.stringify({ subject_id: s.subject_id, form_id: f.form_id, id: ex.id })); } catch (e) {}
+          }
         };
-        const del = document.createElement('button'); del.textContent='Xóa'; del.style.marginLeft='8px'; del.onclick = async () => {
-          if (!confirm('Xóa bài tập?')) return; await fetch(`/api/exercise/${ex.id}`, { method: 'DELETE', credentials: 'include' }); await loadSubjects(); renderManageList();
+        viewBtn.appendChild(editBtn);
+        
+        // Delete button
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Xóa';
+        delBtn.style.padding = '4px 8px';
+        delBtn.style.background = '#dc3545';
+        delBtn.style.color = 'white';
+        delBtn.style.border = 'none';
+        delBtn.style.borderRadius = '3px';
+        delBtn.style.cursor = 'pointer';
+        delBtn.onclick = async (e) => {
+          e.stopPropagation();
+          if (!confirm('Xóa bài tập?')) return; 
+          await fetch(`/api/exercise/${ex.id}`, { method: 'DELETE', credentials: 'include' }); 
+          await loadSubjects(); 
+          renderManageList();
         };
-        controls.appendChild(edit);
-        controls.appendChild(del);
-        item.appendChild(controls);
-        list.appendChild(item);
+        viewBtn.appendChild(delBtn);
+        
+        tbody.appendChild(row);
       });
-      formDiv.appendChild(list);
+      table.appendChild(tbody);
+      formDiv.appendChild(table);
       container.appendChild(formDiv);
     });
   });
 }
 
-// Export button removed from lecturer UI; export handled elsewhere when needed
+function showExerciseLecturerDetail(exercise, form, subject) {
+  const modal = document.getElementById('exercise-detail-modal');
+  if (!modal) {
+    // Create modal if not exists
+    const newModal = document.createElement('div');
+    newModal.id = 'exercise-detail-modal';
+    newModal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:2000;';
+    document.body.appendChild(newModal);
+  }
+  
+  const m = document.getElementById('exercise-detail-modal');
+  const content = document.createElement('div');
+  content.style.cssText = 'background:white; padding:30px; border-radius:8px; max-width:600px; max-height:80vh; overflow-y:auto; position:relative;';
+ content.innerHTML = `
+    <button onclick="this.parentElement.parentElement.style.display='none'" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:24px; cursor:pointer;">×</button>
+    <h2>${exercise.title}</h2>
+    <p><strong>ID:</strong> ${exercise.id}</p>
+    <p><strong>Dạng:</strong> ${form.name}</p>
+    <p><strong>Môn:</strong> ${subject.subject_name}</p>
+    <p><strong>Độ khó:</strong> <span class="badge ${exercise.difficulty === 'Khó' ? 'hard' : (exercise.difficulty === 'Trung bình' ? 'medium' : 'easy')}" style="padding:3px 8px; border-radius:3px; color:white;">${exercise.difficulty}</span></p>
+    <hr>
+    <h3>Mô tả</h3>
+    <p>${exercise.description || '(Không có)'}</p>
+    <h3>Yêu cầu</h3>
+    <ol>${(exercise.requirements || []).map(r => `<li>${r}</li>`).join('') || '<li>(Không có)</li>'}</ol>
+    <h3>Tiêu chí chấm</h3>
+    <ul>${(exercise.grading_criteria || []).map(g => {
+      if (typeof g === 'string') return `<li>${g}</li>`;
+      return `<li><strong>${g.name}</strong> (${g.points}p) ${g.note ? ` — ${g.note}` : ''}</li>`;
+    }).join('') || '<li>(Không có)</li>'}</ul>
+    <h3>Định dạng nộp</h3>
+    <p>${exercise.submission_format || '(Không có)'}</p>
+  `;
+  
+  m.innerHTML = '';
+  m.appendChild(content);
+  m.style.display = 'flex';
+  
+  m.onclick = (e) => {
+    if (e.target === m) m.style.display = 'none';
+  };
+}
 
 // init
 loadSubjects().catch(err=>console.error(err));
