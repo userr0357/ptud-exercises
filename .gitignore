@@ -9,3 +9,7 @@ db.json.backup.*.json
 /.idea/
 npm-debug.log*
 dist/
+uploads/
+temp_docx_extract/
+*.jpg
+*.ps1

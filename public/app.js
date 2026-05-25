@@ -749,6 +749,8 @@ if (btnCreateNew) btnCreateNew.onclick = () => {
   currentRequirements = [];
   currentGrades = [];
   renderRequirements(); renderGradingList();
+  // Reset submission format checkboxes
+  if (typeof fillSubmissionFormat === 'function') fillSubmissionFormat('');
   const modal = document.getElementById('exercise-modal'); if (modal) modal.classList.add('show');
   setTimeout(()=> { const t = formEl.querySelector('[name=title]'); if (t) t.focus(); }, 50);
 };
@@ -993,11 +995,22 @@ if (exerciseForm) exerciseForm.onsubmit = async (e) => {
     renderSubject();
     // close modal if present
     try { const modal = document.getElementById('exercise-modal'); if (modal) modal.classList.remove('show'); } catch (e) {}
-    alert('Lưu thành công!');
+    if (typeof showToast === 'function') {
+      showToast('Lưu thành công!', 'success');
+    } else {
+      alert('Lưu thành công!');
+    }
     formEl.reset();
     document.getElementById('original_id').value = '';
     renderManageList();
-  } catch (err) { console.error(err); alert('Lỗi: ' + (err.message || 'Lỗi không xác định')); }
+  } catch (err) { 
+    console.error(err); 
+    if (typeof showToast === 'function') {
+      showToast('Lỗi: ' + (err.message || 'Lỗi không xác định'), 'error');
+    } else {
+      alert('Lỗi: ' + (err.message || 'Lỗi không xác định')); 
+    }
+  }
 };
 
 function renderManageList() {
@@ -1077,7 +1090,12 @@ function renderManageList() {
         renderRequirements();
         currentGrades = (ex.grading_criteria || []).map(g => (typeof g==='string'?{name:g,points:0,note:''}:{ name: g.name||g.tieu_chi||'', points: g.points||0, note: g.note||'' }));
         renderGradingList();
-        setIf('[name=submission_format]', ex.submission_format || '');
+        // Fill submission format checkboxes
+        if (typeof fillSubmissionFormat === 'function') {
+          fillSubmissionFormat(ex.submission_format || '');
+        } else {
+          setIf('[name=submission_format]', ex.submission_format || '');
+        }
         const selSub = document.getElementById('form-subject'); if (selSub) { selSub.value = s.subject_id; selSub.onchange && selSub.onchange(); const selForm = document.getElementById('form-form'); if (selForm) selForm.value = f.form_id; }
         try { localStorage.setItem('editTarget', JSON.stringify({ subject_id: s.subject_id, form_id: f.form_id, id: ex.id })); } catch (e) {}
         const modal = document.getElementById('exercise-modal'); if (modal) modal.classList.add('show');
@@ -1085,7 +1103,13 @@ function renderManageList() {
       tdActions.appendChild(btnEdit);
 
       const btnDel = document.createElement('button'); btnDel.className='btn-delete'; btnDel.textContent='Xóa'; btnDel.onclick = async () => {
-        if (!confirm('Xóa bài tập?')) return;
+        const confirmed = await showConfirmModal({
+          title: 'Xác nhận xóa',
+          body: 'Bạn có chắc chắn muốn xóa bài tập này không?',
+          type: 'danger',
+          confirmText: 'Xóa bài tập'
+        });
+        if (!confirmed) return;
         const resp = await fetch(`/api/exercise/${ex.id}`, { method: 'DELETE', credentials: 'include' });
         if (!resp.ok) {
           alert('Không thể xóa (không có quyền hoặc lỗi)');
@@ -1117,6 +1141,52 @@ loadSubjects().catch(err=>console.error(err));
 // LECTURER IMPORT & EXPORT LOG
 // ==========================================
 let lecImportPreviewData = [];
+let lecImportStrategy = 'update';
+
+// Download Excel template with dropdowns (use fetch+blob to stay on page)
+async function downloadImportTemplate() {
+  const btn = document.querySelector('[onclick="downloadImportTemplate()"]');
+  const origText = btn ? btn.innerHTML : '';
+  try {
+    if (btn) { btn.innerHTML = '⏳ Đang tạo file...'; btn.disabled = true; }
+    const res = await fetch('/api/import/template', { credentials: 'include' });
+    if (!res.ok) throw new Error('Server trả về lỗi ' + res.status);
+    // Validate Content-Type to catch cases where server returns JSON/HTML error
+    const ct = res.headers.get('content-type') || '';
+    if (!ct.includes('spreadsheet') && !ct.includes('excel') && !ct.includes('octet-stream')) {
+      const errText = await res.text();
+      try { const errJson = JSON.parse(errText); throw new Error(errJson.error || 'Server lỗi khi tạo file Excel'); } catch {}
+      throw new Error('Server không trả về file Excel hợp lệ. Vui lòng thử lại.');
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'BaiTap_Template.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    alert('Lỗi tải file mẫu: ' + e.message);
+  } finally {
+    if (btn) { btn.innerHTML = origText; btn.disabled = false; }
+  }
+}
+
+// Step indicator
+function setImportStep(step) {
+  [1,2,3].forEach(i => {
+    const el = document.getElementById(`import-step-${i}`);
+    if (!el) return;
+    el.style.background = i === step ? '#6366f1' : (i < step ? '#10b981' : 'var(--border-color,#e2e8f0)');
+    el.style.color = i <= step ? '#fff' : 'var(--text-muted)';
+  });
+  [1,2,3].forEach(i => {
+    const p = document.getElementById(`import-panel-${i}`);
+    if (p) p.style.display = i === step ? 'block' : 'none';
+  });
+}
 
 async function handleLecturerImport(e) {
   const file = e.target.files[0];
@@ -1127,94 +1197,163 @@ async function handleLecturerImport(e) {
   try {
     const res = await fetch('/api/import/preview', { method: 'POST', body: formData, credentials: 'include' });
     const data = await res.json();
-    if (data.success) {
-      lecImportPreviewData = data.preview;
-      renderLecturerImportPreview();
-      document.getElementById('lec-import-preview-modal').style.display = 'flex';
-    } else {
-      showToast('Lỗi: ' + data.error, 'error');
-    }
-  } catch (err) {
-    showToast('Lỗi server: ' + err.message, 'error');
-  }
+    if (!data.success) { showToast('Lỗi: ' + data.error, 'error'); return; }
+    lecImportPreviewData = data.preview;
+    renderLecturerImportPreview();
+    setImportStep(2);
+  } catch (err) { showToast('Lỗi: ' + err.message, 'error'); }
+  e.target.value = '';
+}
+
+async function handlePdfImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file);
+  showToast('Đang đọc file PDF và dùng AI phân tích. Vui lòng chờ...', 'success');
+  try {
+    const res = await fetch('/api/lecturer/import/pdf', { method: 'POST', body: formData, credentials: 'include' });
+    const data = await res.json();
+    if (!data.success) { showToast('Lỗi: ' + data.error, 'error'); return; }
+    lecImportPreviewData = data.preview;
+    renderLecturerImportPreview();
+    setImportStep(2);
+  } catch (err) { showToast('Lỗi: ' + err.message, 'error'); }
   e.target.value = '';
 }
 
 function renderLecturerImportPreview() {
+  const valid = lecImportPreviewData.filter(r => r.status === 'VALID');
+  const conflicts = lecImportPreviewData.filter(r => r.action === 'UPDATE' && r.status === 'VALID');
+  const permErrors = lecImportPreviewData.filter(r => r.status === 'INVALID_NO_PERMISSION');
+  const otherErrors = lecImportPreviewData.filter(r => r.status !== 'VALID' && r.status !== 'INVALID_NO_PERMISSION');
+
+  const statsEl = document.getElementById('import-preview-stats');
+  if (statsEl) statsEl.innerHTML = `
+    <span style="background:#dcfce7;color:#16a34a;padding:6px 14px;border-radius:20px;font-weight:700;font-size:14px">✅ ${valid.length} hợp lệ</span>
+    <span style="background:#fef3c7;color:#d97706;padding:6px 14px;border-radius:20px;font-weight:700;font-size:14px">⚠️ ${conflicts.length} trùng mã</span>
+    ${permErrors.length ? `<span style="background:#fce4ec;color:#c62828;padding:6px 14px;border-radius:20px;font-weight:700;font-size:14px">🚫 ${permErrors.length} không có quyền</span>` : ''}
+    ${otherErrors.length ? `<span style="background:#fee2e2;color:#dc2626;padding:6px 14px;border-radius:20px;font-weight:700;font-size:14px">❌ ${otherErrors.length} lỗi</span>` : ''}`;
+
   const tbody = document.getElementById('lec-import-preview-tbody');
   if (!tbody) return;
-  tbody.innerHTML = lecImportPreviewData.map((r, idx) => `
-    <tr style="border-bottom:1px solid var(--border-color);">
-      <td style="padding:10px;">${idx + 1}</td>
-      <td style="padding:10px; font-weight:600; color:var(--text-main);">${r.MaBaiTap || '<span style="color:#10b981">Tự động (Thêm mới)</span>'}</td>
-      <td style="padding:10px; color:var(--text-main);">${r.TenBaiTap}</td>
-      <td style="padding:10px; font-weight:bold; color:${r.action==='INSERT'?'#10b981':'#f59e0b'};">${r.action}</td>
-      <td style="padding:10px; font-weight:bold; color:${r.status==='VALID'?'#10b981':'#ef4444'};">${r.status}</td>
-    </tr>
-  `).join('');
-}
-
-function closeLecturerImportPreview() {
-  document.getElementById('lec-import-preview-modal').style.display = 'none';
-  lecImportPreviewData = [];
+  tbody.innerHTML = lecImportPreviewData.map((r, i) => {
+    const isErr = r.status !== 'VALID';
+    const isPerm = r.status === 'INVALID_NO_PERMISSION';
+    const isConflict = r.action === 'UPDATE' && r.status === 'VALID';
+    const bg = isPerm ? '#fce4ec' : isErr ? '#fff5f5' : isConflict ? '#fffbeb' : '';
+    let badge;
+    if (isPerm) {
+      badge = `<span style="background:#fce4ec;color:#c62828;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:700" title="${r.statusNote||''}">🚫 Không có quyền</span>`;
+    } else if (isErr) {
+      badge = `<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:700" title="${r.statusNote||''}">Lỗi</span>`;
+    } else if (isConflict) {
+      badge = `<span style="background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:700">Trùng mã</span>`;
+    } else {
+      badge = `<span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:700">Hợp lệ</span>`;
+    }
+    return `<tr style="background:${bg};border-bottom:1px solid var(--border-color,#e2e8f0)">
+      <td style="padding:8px 12px;color:var(--text-muted);font-size:14px">${r.row||i+2}</td>
+      <td style="padding:8px 12px;font-weight:600;font-size:14px">${r.MaBaiTap||'(mới)'}</td>
+      <td style="padding:8px 12px;font-size:14px">${r.TenBaiTap||''}</td>
+      <td style="padding:8px 12px;font-size:14px">${r.MaMon||''}</td>
+      <td style="padding:8px 12px">${badge}${r.statusNote ? `<div style="font-size:11px;color:#9e9e9e;margin-top:2px">${r.statusNote}</div>` : ''}</td>
+    </tr>`;
+  }).join('');
 }
 
 async function confirmLecturerImport() {
-  if (lecImportPreviewData.length === 0) return;
+  const validData = lecImportPreviewData.filter(r => r.status === 'VALID');
+  if (!validData.length) return;
   const btn = document.getElementById('lec-import-confirm-btn');
-  const origText = btn.innerHTML;
-  btn.innerHTML = '⏳ Đang lưu...'; btn.disabled = true;
-
+  if (btn) { btn.innerHTML = '⏳ Đang lưu...'; btn.disabled = true; }
   try {
     const res = await fetch('/api/import/confirm', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: lecImportPreviewData }), credentials: 'include'
+      body: JSON.stringify({ data: validData, strategy: lecImportStrategy }), credentials: 'include'
     });
     const result = await res.json();
-    if (result.success) {
-      showToast(`Thành công! Đã thêm ${result.inserted} bài, cập nhật ${result.updated} bài.`, 'success');
-      closeLecturerImportPreview();
-      loadLecturerExportLog();
-      // Reload exercise lists if open
-      if (document.getElementById('section-exercises')) window.location.reload();
-    } else {
-      showToast('Lỗi: ' + result.error, 'error');
-    }
-  } catch (err) {
-    showToast('Lỗi server: ' + err.message, 'error');
-  } finally {
-    btn.innerHTML = origText; btn.disabled = false;
-  }
+    if (!result.success) { showToast('Lỗi: ' + result.error, 'error'); return; }
+
+    // Show result panel (step 3)
+    const resEl = document.getElementById('import-result-content');
+    if (resEl) resEl.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+        <div style="background:linear-gradient(135deg,#10b981,#34d399);border-radius:12px;padding:14px;color:#fff;text-align:center">
+          <div style="font-size:11px;font-weight:600;opacity:.85">Thêm mới</div>
+          <div style="font-size:28px;font-weight:800">${result.inserted}</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#f59e0b,#fbbf24);border-radius:12px;padding:14px;color:#fff;text-align:center">
+          <div style="font-size:11px;font-weight:600;opacity:.85">Cập nhật</div>
+          <div style="font-size:28px;font-weight:800">${result.updated}</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#6366f1,#818cf8);border-radius:12px;padding:14px;color:#fff;text-align:center">
+          <div style="font-size:11px;font-weight:600;opacity:.85">Bỏ qua</div>
+          <div style="font-size:28px;font-weight:800">${result.skipped||0}</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#ef4444,#f87171);border-radius:12px;padding:14px;color:#fff;text-align:center">
+          <div style="font-size:11px;font-weight:600;opacity:.85">Lỗi</div>
+          <div style="font-size:28px;font-weight:800">${(result.errors||[]).length}</div>
+        </div>
+      </div>
+      ${(result.errors||[]).length ? `<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:12px">
+        <div style="font-weight:700;color:#dc2626;margin-bottom:8px">Chi tiết lỗi:</div>
+        ${result.errors.map(e=>`<div style="font-size:14px;color:#7f1d1d;padding:4px 0;border-bottom:1px dashed #fecaca">Hàng ${e.row}: ${e.MaBaiTap||''} — ${e.reason}</div>`).join('')}
+      </div>` : '<div style="color:#10b981;font-weight:600;font-size:16px;text-align:center;padding:16px">✅ Import hoàn tất không có lỗi!</div>'}`;
+    setImportStep(3);
+    loadLecturerExportLog();
+    lecImportPreviewData = [];
+  } catch (err) { showToast('Lỗi: ' + err.message, 'error'); }
+  finally { if (btn) { btn.innerHTML = '✅ Xác nhận Import'; btn.disabled = false; } }
+}
+
+function resetImportWizard() {
+  lecImportPreviewData = [];
+  lecImportStrategy = 'update';
+  const strat = document.getElementById('import-strategy');
+  if (strat) strat.value = 'update';
+  setImportStep(1);
 }
 
 async function loadLecturerExportLog() {
   const tbody = document.getElementById('lecturer-export-log-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-muted);">⏳ Đang tải...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted)">⏳ Đang tải...</td></tr>';
   try {
-    const res  = await fetch('/api/admin/export/log', { credentials: 'include' });
+    const res = await fetch('/api/lecturer/export/log', { credentials: 'include' });
     const logs = await res.json();
-    if (!logs.length) {
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted); font-style:italic;">Chưa có lịch sử xuất</td></tr>';
-      return;
-    }
-    const typeLabel = { exercises:'📋 Bài Tập', import_exercises:'📥 Nhập Bài Tập' };
-    const fmtColor  = { xlsx:'#16a34a', csv:'#0891b2' };
+    if (!logs.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);font-style:italic">Chưa có lịch sử</td></tr>'; return; }
+    const fmtColor = { xlsx:'#16a34a', csv:'#0891b2', json:'#7c3aed' };
+    const typeLabels = { exercises:'Xuất bài tập', import_exercises:'Nhập bài tập', students:'Xuất sinh viên', grades:'Xuất điểm' };
     tbody.innerHTML = logs.map(l => {
-      const dt = new Date(l.exported_at).toLocaleString('vi-VN');
-      return `<tr style="border-bottom:1px solid var(--border-color);">
-        <td style="padding:11px 16px; font-weight:600; color:var(--text-main);">${l.exported_by || '—'}</td>
-        <td style="padding:11px 16px; text-align:center;">
-          <span style="background:${(fmtColor[l.format]||'#64748b')}22; color:${fmtColor[l.format]||'#64748b'}; padding:2px 9px; border-radius:20px; font-size:14px; font-weight:700; text-transform:uppercase;">${l.format}</span>
+      const [date, time] = (l.exported_at||'').split(' ');
+      const [y,mo,d] = (date||'').split('-');
+      const dt = date ? `${d}/${mo}/${y} ${time?time.slice(0,5):''}` : '—';
+      const typeLabel = typeLabels[l.export_type] || l.export_type || '—';
+      const isImport = (l.export_type||'').includes('import');
+      const typeBg = isImport ? '#e0f2fe' : '#f0fdf4';
+      const typeColor = isImport ? '#0369a1' : '#16a34a';
+      const typeIcon = isImport ? '📥' : '📤';
+      // Details: truncate for display, show full on hover
+      const details = l.details || '';
+      const shortDetails = details.length > 80 ? details.substring(0, 80) + '...' : details;
+      return `<tr style="border-bottom:1px solid var(--border-color)">
+        <td style="padding:10px 14px">
+          <span style="background:${typeBg};color:${typeColor};padding:3px 10px;border-radius:8px;font-size:13px;font-weight:700">${typeIcon} ${typeLabel}</span>
         </td>
-        <td style="padding:11px 16px; text-align:center; font-weight:700; color:#6366f1;">${l.row_count || 0}</td>
-        <td style="padding:11px 16px; font-size:15px; color:var(--text-muted);">${dt}</td>
+        <td style="padding:10px 14px;text-align:center">
+          <span style="background:${(fmtColor[l.format]||'#64748b')}22;color:${fmtColor[l.format]||'#64748b'};padding:2px 9px;border-radius:20px;font-size:13px;font-weight:700;text-transform:uppercase">${l.format||'—'}</span>
+        </td>
+        <td style="padding:10px 14px;text-align:center;font-weight:700;color:#6366f1">${l.row_count||0}</td>
+        <td style="padding:10px 14px;font-size:13px;color:var(--text-muted);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${details.replace(/"/g,'&quot;')}">${shortDetails||'—'}</td>
+        <td style="padding:10px 14px;font-size:14px;color:var(--text-muted)">${dt}</td>
       </tr>`;
     }).join('');
-  } catch (e) { tbody.innerHTML = `<tr><td colspan="4" style="color:#ef4444; text-align:center;">❌ ${e.message}</td></tr>`; }
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="color:#ef4444;text-align:center">❌ ${e.message}</td></tr>`; }
 }
 
-// Automatically load the log when the page loads
 if (document.getElementById('lecturer-export-log-tbody')) {
   setTimeout(loadLecturerExportLog, 1000);
 }
+
+

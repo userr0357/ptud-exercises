@@ -442,7 +442,7 @@
                 <p style="margin:0; font-size:15px; color:var(--text-muted);">Danh sách giảng viên và quyền hạn trong hệ thống</p>
               </div>
             </div>
-            <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:10px; margin-right: 48px;">
               <input type="text" id="gv-search-input" placeholder="Tìm tên hoặc mã GV..." style="padding:8px 12px; border:1px solid var(--border-color); border-radius:8px; font-size:15px; width:200px;" oninput="filterLecturers()" />
               <button class="btn btn-primary" onclick="openAddLecturerModal()">+ Thêm Mới</button>
             </div>
@@ -791,6 +791,7 @@
                 <div style="display:flex; gap:8px; align-items:center; padding-top:18px;">
                   <label style="display:flex; align-items:center; gap:5px; font-size:15px; cursor:pointer; white-space:nowrap;"><input type="radio" name="exp-ex-fmt" value="xlsx" checked> Excel</label>
                   <label style="display:flex; align-items:center; gap:5px; font-size:15px; cursor:pointer; white-space:nowrap;"><input type="radio" name="exp-ex-fmt" value="csv"> CSV</label>
+                  <label style="display:flex; align-items:center; gap:5px; font-size:15px; cursor:pointer; white-space:nowrap;"><input type="radio" name="exp-ex-fmt" value="pdf"> PDF</label>
                 </div>
               </div>
               <!-- Exercise list -->
@@ -837,6 +838,7 @@
                 <div style="display:flex; gap:8px; align-items:center; padding-top:18px;">
                   <label style="display:flex; align-items:center; gap:5px; font-size:15px; cursor:pointer; white-space:nowrap;"><input type="radio" name="exp-sv-fmt" value="xlsx" checked> Excel</label>
                   <label style="display:flex; align-items:center; gap:5px; font-size:15px; cursor:pointer; white-space:nowrap;"><input type="radio" name="exp-sv-fmt" value="csv"> CSV</label>
+                  <label style="display:flex; align-items:center; gap:5px; font-size:15px; cursor:pointer; white-space:nowrap;"><input type="radio" name="exp-sv-fmt" value="pdf"> PDF</label>
                 </div>
               </div>
               <div id="exp-sv-list-container" style="padding:16px 20px; min-height:120px; max-height:420px; overflow-y:auto; flex:1;">
@@ -874,6 +876,7 @@
                 <div style="display:flex; gap:8px; align-items:center; padding-top:18px;">
                   <label style="display:flex; align-items:center; gap:5px; font-size:15px; cursor:pointer; white-space:nowrap;"><input type="radio" name="exp-gr-fmt" value="xlsx" checked> Excel</label>
                   <label style="display:flex; align-items:center; gap:5px; font-size:15px; cursor:pointer; white-space:nowrap;"><input type="radio" name="exp-gr-fmt" value="csv"> CSV</label>
+                  <label style="display:flex; align-items:center; gap:5px; font-size:15px; cursor:pointer; white-space:nowrap;"><input type="radio" name="exp-gr-fmt" value="pdf"> PDF</label>
                 </div>
               </div>
               <div id="exp-gr-list-container" style="padding:16px 20px; min-height:120px; max-height:420px; overflow-y:auto; flex:1;">
@@ -1068,7 +1071,10 @@
           <p style="margin:0; font-size:15px; color:var(--text-muted);">Phát hiện các bài tập sao chép nội dung bằng Thuật toán & AI.</p>
         </div>
       </div>
-      <div id="scan-button-container">
+      <div id="scan-button-container" style="display:flex; gap: 10px;">
+        <button id="btn-sync-ai" onclick="syncAllMissingAI()" style="background:var(--bg-color);color:var(--text-main);border:1.5px solid var(--border-color);padding:12px 20px;border-radius:10px;font-weight:600;font-size:15px;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;gap:8px;">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Đồng bộ vân tay AI (Bài cũ)
+        </button>
         <!-- Nút này chỉ hiện cho Admin -->
         <button id="btn-start-scan" onclick="startDuplicateScan()" style="display:none;background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;border:none;padding:12px 24px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 4px 14px rgba(59,130,246,0.3);transition:transform 0.15s;display:flex;align-items:center;gap:8px;">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Quét Toàn Hệ Thống
@@ -1237,7 +1243,7 @@
         <!-- Search inside header -->
         <div style="margin-top:14px;position:relative;">
           <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text-muted);">🔍</span>
-          <input type="text" id="gv-detail-search" placeholder="Tìm kiếm bài tập theo tên, mã, môn học..." oninput="filterLecturerExercises()" style="width:100%;padding:9px 14px 9px 36px;border:1px solid rgba(255,255,255,0.3);border-radius:9px;font-size:15px;background:var(--card-bg,#fff)fff;color:var(--text-main);box-sizing:border-box;outline:none;box-shadow:0 2px 4px rgba(0,0,0,0.1);" onfocus="this.style.boxShadow='0 0 0 3px rgba(255,255,255,0.4)'" onblur="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
+          <input type="text" id="gv-detail-search" placeholder="Tìm kiếm bài tập theo tên, mã, môn học..." oninput="filterLecturerExercises()" style="width:100%;padding:9px 14px 9px 36px;border:1px solid rgba(255,255,255,0.3);border-radius:9px;font-size:15px;background:var(--card-bg,#fff);color:var(--text-main);box-sizing:border-box;outline:none;box-shadow:0 2px 4px rgba(0,0,0,0.1);" onfocus="this.style.boxShadow='0 0 0 3px rgba(255,255,255,0.4)'" onblur="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
         </div>
       </div>
       <!-- Stats cards -->
@@ -1275,8 +1281,8 @@
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="width:44px; height:44px; background:rgba(255,255,255,0.2); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:23px;">👨‍🏫</div>
           <div>
-            <h2 id="lecturer-modal-title" style="margin:0; font-size:19px; font-weight:700;">Thêm Giảng Viên Mới</h2>
-            <p style="margin:2px 0 0; font-size:14px; opacity:0.8;">Tài khoản sẽ được kích hoạt ngay sau khi lưu</p>
+            <h2 id="lecturer-modal-title" style="margin:0; font-size:19px; font-weight:700; color:white;">Thêm Giảng Viên Mới</h2>
+            <p style="margin:2px 0 0; font-size:14px; color:rgba(255,255,255,0.8);">Tài khoản sẽ được kích hoạt ngay sau khi lưu</p>
           </div>
         </div>
       </div>
@@ -1511,7 +1517,7 @@
     </div>
   </div>
 
-  <div id="edit-lecturer-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9000; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
+  <div id="edit-lecturer-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9500; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
     <div style="background:var(--card-bg); border-radius:16px; width:680px; max-width:95vw; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 24px 64px rgba(0,0,0,0.2);">
       <!-- Header -->
       <div style="background:linear-gradient(135deg,#1e293b,#334155); padding:20px 24px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
@@ -1579,10 +1585,40 @@
           </div>
           <div id="edit-subjects-list" style="margin-bottom:16px;"></div>
           <div id="edit-add-subject-picker" style="display:none; border:1.5px dashed #e2e8f0; border-radius:10px; padding:14px; background:var(--bg-color);">
-            <div style="font-size:15px; color:var(--text-muted); margin-bottom:10px;">Chọn môn học để thêm:</div>
-            <div id="edit-add-subject-tags" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;"></div>
-            <button onclick="confirmAddSubjectsToGV()" style="padding:8px 16px; background:#10b981; color:white; border:none; border-radius:7px; font-size:15px; font-weight:600; cursor:pointer;">✅ Xác nhận thêm</button>
-            <button onclick="document.getElementById('edit-add-subject-picker').style.display='none'" style="padding:8px 14px; background:transparent; color:var(--text-muted); border:none; font-size:15px; cursor:pointer; margin-left:6px;">Hủy</button>
+            <!-- Tab switcher for edit modal -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <div style="display:flex; background:var(--card-bg); border:1px solid #e2e8f0; border-radius:8px; padding:3px; gap:2px;">
+                <button type="button" id="edit-tab-pick-btn" onclick="switchEditAddSubjectTab('pick')" style="padding:5px 14px; border:none; border-radius:6px; font-size:14px; font-weight:600; cursor:pointer; background:#fff; color:#2563eb; box-shadow:0 1px 3px rgba(0,0,0,0.1); transition:all 0.15s;">✔ Chọn môn có sẵn</button>
+                <button type="button" id="edit-tab-add-btn" onclick="switchEditAddSubjectTab('add')" style="padding:5px 14px; border:none; border-radius:6px; font-size:14px; font-weight:600; cursor:pointer; background:transparent; color:var(--text-muted); transition:all 0.15s;">+ Tạo môn mới</button>
+              </div>
+              <button onclick="document.getElementById('edit-add-subject-picker').style.display='none'" style="background:transparent; color:var(--text-muted); border:none; font-size:18px; cursor:pointer;">&times;</button>
+            </div>
+
+            <!-- Tab: Pick -->
+            <div id="edit-tab-content-pick">
+              <div style="font-size:14px; color:var(--text-muted); margin-bottom:10px;">Chọn các môn học đã có trên hệ thống:</div>
+              <div id="edit-add-subject-tags" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; max-height:130px; overflow-y:auto; padding:2px;"></div>
+              <button onclick="confirmAddSubjectsToGV()" style="padding:8px 16px; background:#10b981; color:white; border:none; border-radius:7px; font-size:15px; font-weight:600; cursor:pointer;">✅ Xác nhận thêm</button>
+            </div>
+
+            <!-- Tab: Add -->
+            <div id="edit-tab-content-add" style="display:none;">
+              <div style="font-size:14px; color:var(--text-muted); margin-bottom:10px;">Tạo môn học mới và tự động gán cho giảng viên này:</div>
+              <div style="display:grid; grid-template-columns:130px 1fr; gap:10px; margin-bottom:10px;">
+                <div>
+                  <label style="font-size:14px; font-weight:600; color:var(--text-main); display:block; margin-bottom:4px;">Mã Môn <span style="color:#ef4444;">*</span></label>
+                  <input type="text" id="edit-new-sub-mamon" placeholder="VD: KTLT" maxlength="10" style="width:100%; padding:8px 10px; border:1px solid #e2e8f0; border-radius:6px; font-size:14px; outline:none; text-transform:uppercase;">
+                </div>
+                <div>
+                  <label style="font-size:14px; font-weight:600; color:var(--text-main); display:block; margin-bottom:4px;">Tên Môn Học <span style="color:#ef4444;">*</span></label>
+                  <input type="text" id="edit-new-sub-tenmon" placeholder="VD: Kỹ thuật lập trình" maxlength="100" style="width:100%; padding:8px 10px; border:1px solid #e2e8f0; border-radius:6px; font-size:14px; outline:none;">
+                </div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <button type="button" id="btn-edit-create-subject" onclick="createAndAssignSubjectInEdit()" style="padding:8px 16px; background:#6366f1; color:white; border:none; border-radius:7px; font-size:15px; font-weight:600; cursor:pointer;">✨ Tạo & Gán Môn</button>
+                <span id="edit-new-sub-status" style="font-size:14px;"></span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1596,47 +1632,68 @@
 
 
   <!-- MODAL: HỒ SƠ GIẢNG VIÊN -->
-  <div id="gv-profile-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9100; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
-    <div style="background:var(--card-bg); border-radius:16px; width:620px; max-width:95vw; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 24px 64px rgba(0,0,0,0.2);">
-      <!-- Header -->
-      <div style="background:linear-gradient(135deg,#0f172a,#1e293b); padding:20px 24px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div id="profile-avatar" style="width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:21px; font-weight:700; color:white;"></div>
-          <div>
-            <h3 id="profile-name" style="margin:0; color:white; font-size:18px;">Đang tải...</h3>
-            <p id="profile-sub" style="margin:3px 0 0; font-size:14px; color:rgba(255,255,255,0.6);"></p>
+  <div id="gv-profile-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); z-index:9100; align-items:center; justify-content:center; backdrop-filter:blur(6px);">
+    <div style="background:var(--card-bg); border-radius:20px; width:640px; max-width:95vw; max-height:88vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 32px 80px rgba(0,0,0,0.3); animation:fadeInScale 0.2s ease;">
+
+      <!-- Header gradient -->
+      <div style="background:linear-gradient(135deg,#1e40af 0%,#3b82f6 100%); padding:32px 24px 0; flex-shrink:0; position:relative; overflow:hidden;">
+        <!-- Background decoration -->
+        <div style="position:absolute; top:-30px; right:-30px; width:160px; height:160px; background:rgba(255,255,255,0.1); border-radius:50%; pointer-events:none;"></div>
+        <div style="position:absolute; top:10px; right:60px; width:80px; height:80px; background:rgba(255,255,255,0.05); border-radius:50%; pointer-events:none;"></div>
+
+        <!-- Close button -->
+        <button onclick="closeProfileModal()" style="position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; z-index:1; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">✕</button>
+
+        <!-- Identity row -->
+        <div style="display:flex; align-items:center; gap:20px; margin-bottom:24px; position:relative; z-index:1;">
+          <div id="profile-avatar" style="width:72px; height:72px; border-radius:18px; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:800; color:white; flex-shrink:0; box-shadow:0 8px 24px rgba(0,0,0,0.15); border:2px solid rgba(255,255,255,0.3);"></div>
+          <div style="flex:1; min-width:0;">
+            <h3 id="profile-name" style="margin:0; color:white; font-size:26px; font-weight:800; letter-spacing:-0.5px;">Đang tải...</h3>
+            <p id="profile-sub" style="margin:6px 0 0; font-size:15px; color:rgba(255,255,255,0.85); display:flex; flex-wrap:wrap; gap:8px; align-items:center;"></p>
           </div>
         </div>
-        <button onclick="closeProfileModal()" style="background:rgba(255,255,255,0.15); border:none; color:white; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:18px;">✕</button>
-      </div>
-      <!-- Stats row -->
-      <div id="profile-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:0; border-bottom:1px solid #f1f5f9; flex-shrink:0;"></div>
-      <!-- Body -->
-      <div style="overflow-y:auto; flex:1; padding:20px 24px;">
-        <!-- 2 columns -->
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-          <!-- Đăng nhập gần đây -->
-          <div>
-            <div style="font-size:15px; font-weight:700; color:var(--text-main); margin-bottom:10px; display:flex; align-items:center; gap:6px;">🔑 Đăng Nhập Gần Đây</div>
-            <div id="profile-logins" style="display:flex; flex-direction:column; gap:6px;"></div>
-          </div>
-          <!-- Bài tập gần đây -->
-          <div>
-            <div style="font-size:15px; font-weight:700; color:var(--text-main); margin-bottom:10px; display:flex; align-items:center; gap:6px;">📝 Bài Tập Gần Đây</div>
-            <div id="profile-exercises" style="display:flex; flex-direction:column; gap:6px;"></div>
-          </div>
+
+        <!-- Stats row inside header -->
+        <div id="profile-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(255,255,255,0.1); border-radius:14px 14px 0 0; overflow:hidden; margin:0 -24px; padding:0 24px; flex-shrink:0;"></div>
+
+        <!-- Tab bar -->
+        <div style="display:flex; gap:0; margin:0 -24px; border-top:1px solid rgba(255,255,255,0.15);">
+          <button id="profile-tab-login-btn" onclick="switchProfileTab('login')"
+            style="flex:1; padding:16px 0; border:none; background:rgba(255,255,255,0.15); color:white; font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; border-bottom:3px solid white; transition:all 0.2s;">
+            🔑 Đăng Nhập <span id="profile-tab-login-count" style="background:rgba(255,255,255,0.3); border-radius:20px; padding:2px 10px; font-size:13px;"></span>
+          </button>
+          <button id="profile-tab-exercise-btn" onclick="switchProfileTab('exercise')"
+            style="flex:1; padding:16px 0; border:none; background:transparent; color:rgba(255,255,255,0.6); font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; border-bottom:3px solid transparent; transition:all 0.2s;">
+            📝 Bài Tập <span id="profile-tab-exercise-count" style="background:rgba(255,255,255,0.15); border-radius:20px; padding:2px 10px; font-size:13px;"></span>
+          </button>
         </div>
       </div>
+
+      <!-- Body - tab panels -->
+      <div style="overflow-y:auto; flex:1; background:var(--bg-color,#f8fafc);">
+
+        <!-- Tab: Đăng nhập -->
+        <div id="profile-tab-login" style="padding:16px;">
+          <div id="profile-logins" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+
+        <!-- Tab: Bài tập -->
+        <div id="profile-tab-exercise" style="display:none; padding:16px;">
+          <div id="profile-exercises" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+      </div>
+
       <!-- Footer -->
-      <div style="padding:14px 24px; border-top:1px solid #f1f5f9; display:flex; gap:8px; justify-content:flex-end; background:#fafafa; flex-shrink:0;">
+      <div style="padding:14px 20px; border-top:1px solid var(--border-color); display:flex; gap:10px; justify-content:flex-end; background:var(--card-bg); flex-shrink:0;">
         <button onclick="openEditLecturerModal(document.getElementById('profile-modal-gv-id').value)"
-          style="padding:9px 18px; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; border-radius:8px; font-size:15px; font-weight:600; cursor:pointer;">✏️ Sửa Thông Tin</button>
+          style="padding:9px 20px; background:linear-gradient(135deg,#3b82f6,#2563eb); color:white; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(59,130,246,0.35);">✏️ Sửa Thông Tin</button>
         <button onclick="closeProfileModal()"
-          style="padding:9px 18px; background:var(--bg-color); color:var(--text-muted); border:none; border-radius:8px; font-size:15px; font-weight:600; cursor:pointer;">Đóng</button>
+          style="padding:9px 18px; background:var(--bg-color); color:var(--text-muted); border:1.5px solid var(--border-color); border-radius:10px; font-size:14px; font-weight:600; cursor:pointer;">Đóng</button>
         <input type="hidden" id="profile-modal-gv-id">
       </div>
     </div>
-  </div><!-- /admin-wrapper -->
+  </div><!-- /gv-profile-modal -->
+
   <!-- ═══════════════════════════════════ -->
   <!-- MODAL: CHI TIẾT BÀI TẬP (ADMIN)   -->
   <!-- ═══════════════════════════════════ -->

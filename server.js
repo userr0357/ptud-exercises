@@ -119,36 +119,51 @@ app.post('/api/lecturer/login', async (req, res) => {
 
 app.post('/api/lecturer/logout', async (req, res) => {
   try {
-    const token = req.cookies?.token;
+    // Read cookie manually (cookie-parser not used)
+    let token = null;
+    const m = (req.headers.cookie || '').match(/(?:^|; )token=([^;]+)/);
+    if (m) token = decodeURIComponent(m[1]);
     if (token) {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      if (decoded && decoded.login_history_id) {
-        const pool = await db.getPool();
-        await pool.request()
-          .input('id', sql.Int, decoded.login_history_id)
-          .query(`UPDATE LOGIN_HISTORY SET LogoutTime = GETDATE(), IsOnline = 0, DurationMinutes = DATEDIFF(minute, LoginTime, GETDATE()) WHERE Id = @id`);
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        if (decoded && decoded.login_history_id) {
+          const pool = await db.getPool();
+          await pool.request()
+            .input('id', sql.Int, decoded.login_history_id)
+            .query(`UPDATE LOGIN_HISTORY SET LogoutTime = GETDATE(), IsOnline = 0, DurationMinutes = DATEDIFF(minute, LoginTime, GETDATE()) WHERE Id = @id`);
+        }
+      } catch(verifyErr) {
+        // Token expired or invalid – still clear cookie, skip history update
+        console.warn('Logout: token verify failed', verifyErr.message);
       }
     }
   } catch(e) { console.error('Logout log error', e); }
-  res.clearCookie('token'); 
-  res.json({ success: true }); 
+  res.clearCookie('token');
+  res.json({ success: true });
 });
 
-app.get('/api/lecturer/logout', async (req, res) => { 
+app.get('/api/lecturer/logout', async (req, res) => {
   try {
-    const token = req.cookies?.token;
+    // Read cookie manually (cookie-parser not used)
+    let token = null;
+    const m = (req.headers.cookie || '').match(/(?:^|; )token=([^;]+)/);
+    if (m) token = decodeURIComponent(m[1]);
     if (token) {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      if (decoded && decoded.login_history_id) {
-        const pool = await db.getPool();
-        await pool.request()
-          .input('id', sql.Int, decoded.login_history_id)
-          .query(`UPDATE LOGIN_HISTORY SET LogoutTime = GETDATE(), IsOnline = 0, DurationMinutes = DATEDIFF(minute, LoginTime, GETDATE()) WHERE Id = @id`);
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        if (decoded && decoded.login_history_id) {
+          const pool = await db.getPool();
+          await pool.request()
+            .input('id', sql.Int, decoded.login_history_id)
+            .query(`UPDATE LOGIN_HISTORY SET LogoutTime = GETDATE(), IsOnline = 0, DurationMinutes = DATEDIFF(minute, LoginTime, GETDATE()) WHERE Id = @id`);
+        }
+      } catch(verifyErr) {
+        console.warn('Logout GET: token verify failed', verifyErr.message);
       }
     }
   } catch(e) {}
-  res.clearCookie('token'); 
-  res.redirect('/login'); 
+  res.clearCookie('token');
+  res.redirect('/login');
 });
 
 app.get('/api/lecturer/me', auth, async (req, res) => {
@@ -372,14 +387,16 @@ app.post('/api/export/excel/selected', auth, async (req, res) => {
     
     // Log Export
     try {
+      const detailStr = r.recordset.map(row => `📤 ${row.MaBaiTap} - ${row.TenBaiTap}`).join('; ').substring(0, 2000);
       await pool.request()
         .input('uid', sql.VarChar, gvId)
         .input('role', sql.VarChar, 'Lecturer')
         .input('type', sql.VarChar, 'exercises')
         .input('fmt', sql.VarChar, 'xlsx')
         .input('num', sql.Int, r.recordset.length)
-        .query(`INSERT INTO EXPORT_LOG (exported_by, role, export_type, format, row_count, exported_at)
-                VALUES (@uid, @role, @type, @fmt, @num, GETDATE())`);
+        .input('details', sql.NVarChar, detailStr)
+        .query(`INSERT INTO EXPORT_LOG (exported_by, role, export_type, format, row_count, exported_at, details)
+                VALUES (@uid, @role, @type, @fmt, @num, GETDATE(), @details)`);
     } catch (e) { console.error('EXPORT LOG ERROR:', e); }
 
     const ExcelJS = require('exceljs');
@@ -419,11 +436,53 @@ app.post('/api/export/excel/selected', auth, async (req, res) => {
     sheet.getRow(1).font = { bold: true };
     sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD3D3D3' } };
     sheet.getColumn('id').font = { color: { argb: 'FF888888' }, italic: true };
+    const exportBuf = await workbook.xlsx.writeBuffer();
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename="BaiTap.xlsx"');
-    await workbook.xlsx.write(res);
-    res.end();
+    res.setHeader('Content-Length', exportBuf.byteLength);
+    res.send(Buffer.from(exportBuf));
   } catch (err) { console.error('Export error', err.message); res.status(500).json({ error: 'Server error' }); }
+});
+
+app.post('/api/export/pdf/selected', auth, async (req, res) => {
+  try {
+    const { exercise_ids } = req.body;
+    const pool = await db.getPool();
+    const gvId = req.user.lecturer_id;
+    const sql = require('mssql');
+    let queryStr = `
+      SELECT b.MaBaiTap, b.TenBaiTap, b.MaDoKho, dk.TenDoKho, b.MaDangBai, d.TenDangBai,
+      b.MoTa, b.YeuCau, b.TieuChiChamDiem, b.FileDinhKem, b.SkillLevel, b.UpdatedAt, b.MaMon, m.TenMon
+      FROM BAITAP b
+      LEFT JOIN MONHOC m ON m.MaMon = b.MaMon
+      LEFT JOIN DOKHO dk ON dk.MaDoKho = b.MaDoKho
+      LEFT JOIN DANGBAI d ON d.MaDangBai = b.MaDangBai
+      WHERE b.MaGiangVien = @gv AND (b.IsDeleted=0 OR b.IsDeleted IS NULL)
+    `;
+    
+    if (Array.isArray(exercise_ids) && exercise_ids.length > 0) {
+      queryStr += ` AND b.MaBaiTap IN (${exercise_ids.map(id => `'${id.replace(/'/g, "''")}'`).join(',')})`;
+    }
+
+    const r = await pool.request().input('gv', sql.VarChar, gvId).query(queryStr);
+    
+    // Log Export
+    try {
+      const detailStr = r.recordset.map(row => `📄 ${row.MaBaiTap} - ${row.TenBaiTap}`).join('; ').substring(0, 2000);
+      await pool.request()
+        .input('uid', sql.VarChar, gvId)
+        .input('role', sql.VarChar, 'Lecturer')
+        .input('type', sql.VarChar, 'exercises')
+        .input('fmt', sql.VarChar, 'pdf')
+        .input('num', sql.Int, r.recordset.length)
+        .input('details', sql.NVarChar, detailStr)
+        .query(`INSERT INTO EXPORT_LOG (exported_by, role, export_type, format, row_count, exported_at, details)
+                VALUES (@uid, @role, @type, @fmt, @num, GETDATE(), @details)`);
+    } catch (e) { console.error('EXPORT LOG ERROR:', e); }
+
+    const pdfService = require('./pdf-service');
+    await pdfService.exportExercisesAsPDF(res, r.recordset, 'DANH SÁCH BÀI TẬP');
+  } catch (err) { console.error('Export PDF error', err.message); res.status(500).json({ error: 'Server error' }); }
 });
 
 app.post('/api/export-inline', auth, async (req, res) => {
@@ -450,6 +509,118 @@ app.post('/api/export-inline', auth, async (req, res) => {
 // ==================================================
 //  IMPORT EXCEL (LECTURER)
 // ==================================================
+
+// Download template Excel with dropdowns
+app.get('/api/import/template', auth, async (req, res) => {
+  try {
+    const pool = await db.getPool();
+    const monRes  = await pool.request().query('SELECT MaMon, TenMon FROM MONHOC ORDER BY MaMon');
+    const formRes = await pool.request().query('SELECT MaDangBai, TenDangBai FROM DANGBAI ORDER BY MaDangBai');
+    const khoRes  = await pool.request().query('SELECT MaDoKho, TenDoKho FROM DOKHO ORDER BY MaDoKho');
+    const subjects = monRes.recordset;
+    const forms    = formRes.recordset;
+    const doKhos   = khoRes.recordset;
+
+    const ExcelJS = require('exceljs');
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('BaiTap_Mau');
+
+    sheet.columns = [
+      { header: 'Ma Bai Tap (*)', key: 'id',    width: 20 },
+      { header: 'Ten Bai Tap (*)',key: 'title',  width: 42 },
+      { header: 'Ma Mon Hoc (*)', key: 'mon',    width: 15 },
+      { header: 'Ma Dang Bai',   key: 'dang',   width: 14 },
+      { header: 'Ma Do Kho',     key: 'kho',    width: 13 },
+      { header: 'Level KN (1-5)',key: 'skill',  width: 15 },
+      { header: 'Mo Ta',         key: 'desc',   width: 50 },
+      { header: 'Yeu Cau (JSON)',key: 'req',    width: 45 },
+      { header: 'Tieu Chi (JSON)',key:'crit',   width: 45 },
+      { header: 'File Dinh Kem', key: 'files',  width: 25 },
+    ];
+
+    // Style header
+    const hdr = sheet.getRow(1);
+    hdr.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12 };
+    hdr.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+    hdr.height = 24;
+    hdr.alignment = { vertical: 'middle' };
+
+    // Example row
+    sheet.addRow({
+      id:    '(De trong = them moi)',
+      title: 'Vi du: Tinh giai thua',
+      mon:   subjects[0]?.MaMon   || 'KTLT',
+      dang:  forms[0]?.MaDangBai  || 1,
+      kho:   doKhos[0]?.MaDoKho   || 1,
+      skill: 2,
+      desc:  'Viet ham tinh n! voi dieu kien n >= 0',
+      req:   '["Khong dung de quy","n=0 tra ve 1"]',
+      crit:  '[{"name":"Tinh dung","points":60},{"name":"Edge cases","points":40}]',
+      files: ''
+    });
+    const exRow = sheet.getRow(2);
+    exRow.font = { italic: true, color: { argb: 'FF94A3B8' } };
+    exRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+
+    // Data validation: subjects (col C) — apply to rows 3-200
+    const subList = subjects.map(s => s.MaMon).join(',');
+    if (subList) {
+      for (let r = 3; r <= 200; r++) {
+        sheet.getCell(r, 3).dataValidation = {
+          type: 'list', allowBlank: true,
+          formulae: [`"${subList}"`],
+          showErrorMessage: true,
+          errorTitle: 'Ma Mon Hoc khong hop le',
+          error: `Chon mot trong: ${subList}`
+        };
+      }
+    }
+
+    // Data validation: difficulty (col E)
+    const khoList = doKhos.map(d => String(d.MaDoKho)).join(',');
+    if (khoList) {
+      for (let r = 3; r <= 200; r++) {
+        sheet.getCell(r, 5).dataValidation = {
+          type: 'list', allowBlank: true,
+          formulae: [`"${khoList}"`],
+          showErrorMessage: true,
+          errorTitle: 'Ma Do Kho khong hop le',
+          error: `Chon mot trong: ${khoList}`
+        };
+      }
+    }
+
+    // Data validation: skill level (col F)
+    for (let r = 3; r <= 200; r++) {
+      sheet.getCell(r, 6).dataValidation = {
+        type: 'list', allowBlank: true,
+        formulae: ['"1,2,3,4,5"'],
+        showErrorMessage: true,
+        errorTitle: 'Level khong hop le',
+        error: 'Level phai la so tu 1 den 5'
+      };
+    }
+
+    // Hidden reference sheet
+    const ref = workbook.addWorksheet('Danh_Muc');
+    ref.state = 'hidden';
+    ['Ma Mon','Ten Mon','Ma Dang Bai','Ten Dang Bai','Ma Do Kho','Ten Do Kho'].forEach((h,i)=>{
+      ref.getCell(1, i+1).value = h;
+      ref.getCell(1, i+1).font = { bold: true };
+    });
+    subjects.forEach((s,i)=>{ ref.getCell(i+2,1).value=s.MaMon; ref.getCell(i+2,2).value=s.TenMon; });
+    forms.forEach((f,i)=>{ ref.getCell(i+2,3).value=f.MaDangBai; ref.getCell(i+2,4).value=f.TenDangBai; });
+    doKhos.forEach((d,i)=>{ ref.getCell(i+2,5).value=d.MaDoKho; ref.getCell(i+2,6).value=d.TenDoKho; });
+
+    // Generate file in memory FIRST, then send — avoids partial corrupt response
+    const xlsxBuffer = await workbook.xlsx.writeBuffer();
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="BaiTap_Template.xlsx"');
+    res.setHeader('Content-Length', xlsxBuffer.byteLength);
+    res.send(Buffer.from(xlsxBuffer));
+  } catch(e) { console.error('Template error:', e.message); res.status(500).json({ error: e.message }); }
+});
+
 app.post('/api/import/preview', auth, upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'Không tìm thấy file Excel' });
@@ -459,18 +630,35 @@ app.post('/api/import/preview', auth, upload.single('file'), async (req, res) =>
     const sheet = workbook.worksheets[0];
     if (!sheet) return res.status(400).json({ error: 'File Excel không có dữ liệu' });
 
+    // Fetch lecturer's allowed subjects for permission check
+    const allowedSubjects = await db.getLecturerAllowedSubjects(req.user.lecturer_id);
+
     const parsedData = [];
     sheet.eachRow((row, rowNumber) => {
       if (rowNumber === 1) return; 
       const id = row.getCell(1).text || '';
       const title = row.getCell(2).text || '';
       if (!title && !id) return; 
-      
+
+      const maMon = row.getCell(3).text || '';
+      let status = 'VALID';
+      let statusNote = '';
+      if (!title) {
+        status = 'INVALID_NO_TITLE';
+        statusNote = 'Thiếu tên bài tập';
+      } else if (!maMon) {
+        status = 'INVALID_NO_SUBJECT';
+        statusNote = 'Thiếu mã môn học';
+      } else if (allowedSubjects.length > 0 && !allowedSubjects.includes(maMon)) {
+        status = 'INVALID_NO_PERMISSION';
+        statusNote = `Không có quyền quản lý môn ${maMon}`;
+      }
+
       parsedData.push({
         row: rowNumber,
         MaBaiTap: id,
         TenBaiTap: title,
-        MaMon: row.getCell(3).text || '',
+        MaMon: maMon,
         MaDangBai: row.getCell(4).text || '',
         MaDoKho: row.getCell(5).text || '',
         SkillLevel: row.getCell(6).text || '',
@@ -479,7 +667,8 @@ app.post('/api/import/preview', auth, upload.single('file'), async (req, res) =>
         TieuChiChamDiem: row.getCell(9).text || '',
         FileDinhKem: row.getCell(10).text || '',
         action: id ? 'UPDATE' : 'INSERT',
-        status: title ? 'VALID' : 'INVALID_NO_TITLE'
+        status,
+        statusNote
       });
     });
 
@@ -491,73 +680,108 @@ app.post('/api/import/preview', auth, upload.single('file'), async (req, res) =>
 
 app.post('/api/import/confirm', auth, async (req, res) => {
   try {
-    const { data } = req.body;
-    if (!Array.isArray(data) || !data.length) return res.status(400).json({ error: 'Dữ liệu trống' });
+    const { data, strategy = 'update' } = req.body;
+    // strategy: 'skip' | 'update' | 'clone'
+    if (!Array.isArray(data) || !data.length) return res.status(400).json({ error: 'Du lieu trong' });
     
     const pool = await db.getPool();
     const gvId = req.user.lecturer_id;
-    let updated = 0; let inserted = 0;
+    let updated = 0, inserted = 0, skipped = 0;
+    const errors = [];
+    const importedDetails = []; // Track details for log
+
+    // Fetch allowed subjects for server-side enforcement
+    const allowedSubjects = await db.getLecturerAllowedSubjects(gvId);
 
     for (const item of data) {
-      if (item.action === 'UPDATE' && item.MaBaiTap) {
-        // Lecturer can only update their own exercises
-        const chk = await pool.request().input('id', sql.VarChar, item.MaBaiTap).query('SELECT MaGiangVien FROM BAITAP WHERE MaBaiTap=@id');
-        if (chk.recordset.length > 0 && chk.recordset[0].MaGiangVien === gvId) {
-          await pool.request()
-            .input('id', sql.VarChar, item.MaBaiTap)
-            .input('title', sql.NVarChar, item.TenBaiTap)
-            .input('mon', sql.VarChar, item.MaMon)
-            .input('dang', sql.Int, parseInt(item.MaDangBai) || null)
-            .input('kho', sql.VarChar, item.MaDoKho)
-            .input('skill', sql.Int, parseInt(item.SkillLevel) || null)
-            .input('desc', sql.NVarChar, item.MoTa)
-            .input('req', sql.NVarChar, item.YeuCau)
-            .input('crit', sql.NVarChar, item.TieuChiChamDiem)
-            .input('files', sql.NVarChar, item.FileDinhKem)
-            .query(`UPDATE BAITAP SET 
-              TenBaiTap=@title, MaMon=@mon, MaDangBai=@dang, MaDoKho=@kho, SkillLevel=@skill,
-              MoTa=@desc, YeuCau=@req, TieuChiChamDiem=@crit, FileDinhKem=@files, UpdatedAt=GETDATE()
-              WHERE MaBaiTap=@id`);
-          updated++;
+      if (item.status && item.status !== 'VALID') {
+        errors.push({ row: item.row, MaBaiTap: item.MaBaiTap, reason: item.statusNote || 'Dữ liệu không hợp lệ' });
+        continue;
+      }
+
+      // Server-side permission check
+      if (allowedSubjects.length > 0 && item.MaMon && !allowedSubjects.includes(item.MaMon)) {
+        errors.push({ row: item.row, MaBaiTap: item.MaBaiTap, reason: `Không có quyền quản lý môn ${item.MaMon}` });
+        continue;
+      }
+
+      try {
+        const isExisting = item.action === 'UPDATE' && item.MaBaiTap;
+        if (isExisting) {
+          const chk = await pool.request().input('id', sql.VarChar, item.MaBaiTap)
+            .query('SELECT MaGiangVien FROM BAITAP WHERE MaBaiTap=@id AND (IsDeleted=0 OR IsDeleted IS NULL)');
+          const exists = chk.recordset.length > 0;
+
+          if (exists && strategy === 'skip') {
+            skipped++; continue;
+          }
+          if (exists && strategy === 'update' && chk.recordset[0].MaGiangVien === gvId) {
+            await pool.request()
+              .input('id', sql.VarChar, item.MaBaiTap)
+              .input('title', sql.NVarChar, item.TenBaiTap)
+              .input('mon', sql.VarChar, item.MaMon)
+              .input('dang', sql.Int, parseInt(item.MaDangBai) || null)
+              .input('kho', sql.VarChar, item.MaDoKho)
+              .input('skill', sql.Int, parseInt(item.SkillLevel) || null)
+              .input('desc', sql.NVarChar, item.MoTa || '')
+              .input('req', sql.NVarChar, item.YeuCau || '')
+              .input('crit', sql.NVarChar, item.TieuChiChamDiem || '[]')
+              .input('files', sql.NVarChar, item.FileDinhKem || '')
+              .query(`UPDATE BAITAP SET TenBaiTap=@title, MaMon=@mon, MaDangBai=@dang, MaDoKho=@kho, SkillLevel=@skill,
+                MoTa=@desc, YeuCau=@req, TieuChiChamDiem=@crit, FileDinhKem=@files, UpdatedAt=GETDATE()
+                WHERE MaBaiTap=@id`);
+            updated++;
+            importedDetails.push({ id: item.MaBaiTap, title: item.TenBaiTap, mon: item.MaMon, action: 'updated' });
+            continue;
+          }
+          if (!exists || strategy === 'clone') {
+            // fall through to INSERT with new ID
+          } else {
+            errors.push({ row: item.row, MaBaiTap: item.MaBaiTap, reason: 'Khong co quyen sua bai nay' });
+            continue;
+          }
         }
-      } else if (item.action === 'INSERT') {
+
+        // INSERT (new or clone)
         let nextId = `NEW_${Date.now()}_${Math.floor(Math.random()*1000)}`;
         try {
           const idObj = await db.getNextExerciseId(item.MaMon, item.MaDangBai);
           if (idObj && idObj.nextId) nextId = idObj.nextId;
-        } catch(err) {}
+        } catch(_) {}
 
         await pool.request()
           .input('id', sql.VarChar, nextId)
-          .input('title', sql.NVarChar, item.TenBaiTap)
+          .input('title', sql.NVarChar, strategy === 'clone' ? `${item.TenBaiTap} (Copy)` : item.TenBaiTap)
           .input('mon', sql.VarChar, item.MaMon)
           .input('dang', sql.Int, parseInt(item.MaDangBai) || null)
           .input('kho', sql.VarChar, item.MaDoKho)
           .input('skill', sql.Int, parseInt(item.SkillLevel) || null)
-          .input('desc', sql.NVarChar, item.MoTa)
-          .input('req', sql.NVarChar, item.YeuCau)
-          .input('crit', sql.NVarChar, item.TieuChiChamDiem)
-          .input('files', sql.NVarChar, item.FileDinhKem)
+          .input('desc', sql.NVarChar, item.MoTa || '')
+          .input('req', sql.NVarChar, item.YeuCau || '')
+          .input('crit', sql.NVarChar, item.TieuChiChamDiem || '[]')
+          .input('files', sql.NVarChar, item.FileDinhKem || '')
           .input('gv', sql.VarChar, gvId)
-          .query(`INSERT INTO BAITAP (MaBaiTap, TenBaiTap, MaMon, MaDangBai, MaDoKho, SkillLevel, MoTa, YeuCau, TieuChiChamDiem, FileDinhKem, MaGiangVien, IsDeleted, UpdatedAt, CreatedAt)
-            VALUES (@id, @title, @mon, @dang, @kho, @skill, @desc, @req, @crit, @files, @gv, 0, GETDATE(), GETDATE())`);
+          .query(`INSERT INTO BAITAP (MaBaiTap,TenBaiTap,MaMon,MaDangBai,MaDoKho,SkillLevel,MoTa,YeuCau,TieuChiChamDiem,FileDinhKem,MaGiangVien,IsDeleted,UpdatedAt)
+            VALUES (@id,@title,@mon,@dang,@kho,@skill,@desc,@req,@crit,@files,@gv,0,GETDATE())`);
         inserted++;
+        importedDetails.push({ id: nextId, title: item.TenBaiTap, mon: item.MaMon, action: 'inserted' });
+      } catch(itemErr) {
+        errors.push({ row: item.row, MaBaiTap: item.MaBaiTap, reason: itemErr.message });
       }
     }
-    
-    // Log Import
-    try {
-      await pool.request()
-        .input('uid', sql.VarChar, gvId)
-        .input('role', sql.VarChar, 'Lecturer')
-        .input('type', sql.VarChar, 'import_exercises')
-        .input('fmt', sql.VarChar, 'xlsx')
-        .input('num', sql.Int, updated + inserted)
-        .query(`INSERT INTO EXPORT_LOG (exported_by, role, export_type, format, row_count, exported_at)
-                VALUES (@uid, @role, @type, @fmt, @num, GETDATE())`);
-    } catch (e) { console.error('log import error', e); }
 
-    res.json({ success: true, updated, inserted });
+    // Log import with details
+    try {
+      const detailStr = importedDetails.map(d => `${d.action === 'updated' ? '📝' : '➕'} ${d.id} - ${d.title} (${d.mon})`).join('; ');
+      await pool.request()
+        .input('uid', sql.VarChar, gvId).input('role', sql.VarChar, 'Lecturer')
+        .input('type', sql.VarChar, 'import_exercises').input('fmt', sql.VarChar, 'xlsx')
+        .input('num', sql.Int, updated + inserted)
+        .input('details', sql.NVarChar, detailStr.substring(0, 2000))
+        .query(`INSERT INTO EXPORT_LOG (exported_by,role,export_type,format,row_count,exported_at,details) VALUES (@uid,@role,@type,@fmt,@num,GETDATE(),@details)`);
+    } catch(_) {}
+
+    res.json({ success: true, updated, inserted, skipped, errors });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -697,6 +921,56 @@ app.post('/api/ai/check-duplicates', auth, async (req, res) => {
 });
 
 // ==================================================
+//  LECTURER FORMS
+// ==================================================
+app.post('/api/lecturer/forms', auth, async (req, res) => {
+    try {
+        const pool = await db.getPool();
+        const gvId = req.user.lecturer_id;
+        const { subjectId, formName } = req.body;
+        
+        // 1. Check if lecturer is assigned to this subject
+        const checkR = await pool.request()
+            .input('gvId', sql.VarChar, gvId)
+            .input('subjectId', sql.VarChar, subjectId)
+            .query("SELECT 1 FROM GIANGVIEN_MONHOC WHERE MaGiangVien = @gvId AND MaMon = @subjectId");
+        
+        if (checkR.recordset.length === 0) {
+            return res.status(403).json({ error: 'Bạn không quản lý môn học này.' });
+        }
+        
+        // 2. Check if a form with similar name already exists
+        const existR = await pool.request()
+            .input('subjectId', sql.VarChar, subjectId)
+            .input('formName', sql.NVarChar, formName.trim())
+            .query("SELECT 1 FROM DANGBAI WHERE MaMon = @subjectId AND LOWER(TenDangBai) = LOWER(@formName)");
+        
+        if (existR.recordset.length > 0) {
+            return res.status(400).json({ error: 'Dạng bài này đã tồn tại trong môn học này.' });
+        }
+        
+        const transaction = new sql.Transaction(pool);
+        await transaction.begin(sql.ISOLATION_LEVEL.SERIALIZABLE);
+        try {
+            const maxR = await transaction.request().query("SELECT ISNULL(MAX(MaDangBai), 0) + 1 AS NextId FROM DANGBAI WITH (UPDLOCK)");
+            const nextId = maxR.recordset[0].NextId;
+            await transaction.request()
+                .input('id', sql.Int, nextId)
+                .input('name', sql.NVarChar, formName.trim())
+                .input('mon', sql.VarChar, subjectId)
+                .query("INSERT INTO DANGBAI (MaDangBai, TenDangBai, MaMon) VALUES (@id, @name, @mon)");
+            await transaction.commit();
+            res.json({ success: true, MaDangBai: nextId, TenDangBai: formName.trim() });
+        } catch (err) {
+            await transaction.rollback();
+            throw err;
+        }
+    } catch(e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ==================================================
 //  LECTURER DASHBOARD STATS
 // ==================================================
 app.get('/api/lecturer/dashboard', auth, async (req, res) => {
@@ -707,8 +981,10 @@ app.get('/api/lecturer/dashboard', auth, async (req, res) => {
     // Subjects this lecturer manages
     const subR = await pool.request().input('gv', sql.VarChar, gvId)
       .query(`SELECT DISTINCT m.MaMon, m.TenMon, COUNT(b.Id) AS SoBaiTap
-        FROM BAITAP b JOIN MONHOC m ON m.MaMon=b.MaMon
-        WHERE b.MaGiangVien=@gv AND (b.IsDeleted=0 OR b.IsDeleted IS NULL)
+        FROM GIANGVIEN_MONHOC gm
+        JOIN MONHOC m ON gm.MaMon = m.MaMon
+        LEFT JOIN BAITAP b ON b.MaMon = m.MaMon AND b.MaGiangVien = @gv AND (b.IsDeleted = 0 OR b.IsDeleted IS NULL)
+        WHERE gm.MaGiangVien = @gv
         GROUP BY m.MaMon, m.TenMon`);
 
     // Exercises by difficulty
@@ -839,6 +1115,7 @@ app.get('/api/feedback/sent', auth, async (req, res) => {
 //  ADMIN ROUTES (from admin-routes.js)
 // ==================================================
 require('./admin-routes')(app, auth);
+require('./pdf-import-routes')(app, auth);
 
 // ==================================================
 //  STATIC PAGES

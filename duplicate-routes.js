@@ -29,6 +29,46 @@ router.post('/sync', async (req, res) => {
     }
 });
 
+// API Động bộ hàng loạt (Background)
+router.post('/sync-all', async (req, res) => {
+    try {
+        const pool = await getPool();
+        // Lấy tất cả bài tập hợp lệ chưa có vân tay AI
+        const result = await pool.request().query(`
+            SELECT b.Id, b.TenBaiTap, b.MoTa, b.YeuCau 
+            FROM BAITAP b 
+            LEFT JOIN EXERCISE_FEATURES f ON b.Id = f.BaiTapId 
+            WHERE (b.IsDeleted = 0 OR b.IsDeleted IS NULL) AND f.BaiTapId IS NULL
+        `);
+        const missingExercises = result.recordset;
+
+        // Trả về ngay lập tức để admin không phải đợi
+        res.json({ success: true, message: 'Đã bắt đầu đồng bộ ngầm', count: missingExercises.length });
+
+        // Chạy ngầm
+        if (missingExercises.length > 0) {
+            console.log(`Bắt đầu đồng bộ AI cho ${missingExercises.length} bài tập cũ...`);
+            (async () => {
+                for (let i = 0; i < missingExercises.length; i++) {
+                    const ex = missingExercises[i];
+                    try {
+                        await syncExerciseFeature(ex.Id, ex.TenBaiTap, ex.MoTa, ex.YeuCau);
+                        console.log(`[Sync AI] Đã đồng bộ bài tập ID: ${ex.Id} (${i + 1}/${missingExercises.length})`);
+                    } catch (err) {
+                        console.error(`[Sync AI] Lỗi đồng bộ bài tập ID: ${ex.Id}`, err);
+                    }
+                    // Nghỉ 2 giây để tránh bị Groq chặn vì Rate Limit
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+                console.log('Đã hoàn thành đồng bộ AI cho tất cả bài tập cũ.');
+            })();
+        }
+    } catch (e) {
+        console.error('Error starting sync-all', e);
+        if (!res.headersSent) res.status(500).json({ error: e.message });
+    }
+});
+
 // Lấy lịch sử quét (Admin)
 router.get('/logs', async (req, res) => {
     try {
@@ -139,6 +179,9 @@ router.post('/reports/:id/action', async (req, res) => {
 router.get('/reports/history', async (req, res) => {
     try {
         const pool = await getPool();
+        const userId = req.user ? req.user.lecturer_id : '';
+        const isAdmin = req.user && req.user.is_admin;
+
         let sql = `
             SELECT r.*, 
                    b1.MaBaiTap as MaA, b1.TenBaiTap as TenA, b1.MaGiangVien as GVA, b1.YeuCau as YeuCauA, b1.MoTa as MoTaA, b1.MaMon as MonA, b1.MaDoKho as DoKhoA, b1.UpdatedAt as UpdatedA, f1.AI_Summary as SumA, f1.AI_Keywords as KwA,
@@ -149,9 +192,18 @@ router.get('/reports/history', async (req, res) => {
             LEFT JOIN EXERCISE_FEATURES f1 ON f1.BaiTapId = b1.Id
             LEFT JOIN EXERCISE_FEATURES f2 ON f2.BaiTapId = b2.Id
             WHERE r.Status IN ('MERGED', 'IGNORED')
-            ORDER BY r.ReportId DESC
         `;
-        const r = await pool.request().query(sql);
+
+        if (!isAdmin && userId) {
+            sql += ` AND (b1.MaGiangVien = @uid OR b2.MaGiangVien = @uid)`;
+        }
+        
+        sql += ` ORDER BY r.ReportId DESC`;
+        
+        const reqDb = pool.request();
+        if (!isAdmin && userId) reqDb.input('uid', mssql.VarChar, userId);
+        
+        const r = await reqDb.query(sql);
         res.json({ success: true, history: r.recordset });
     } catch (e) {
         res.status(500).json({ error: e.message });

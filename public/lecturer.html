@@ -10,6 +10,12 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     #app-lecturer { display: flex; min-height: 100vh; background: var(--bg-color, #f8fafc); }
+    /* Submission format checkbox highlight */
+    #submission-checkboxes label:has(input:checked) {
+      border-color: #6366f1;
+      background: #eef2ff;
+      color: #4338ca;
+    }
 
     /* ── Sidebar ── */
     .sidebar-lecturer { width: 240px; position: fixed; left: 0; top: 0; bottom: 0; background: var(--card-bg, #fff); border-right: 1px solid var(--border-color, #e2e8f0); display: flex; flex-direction: column; overflow-y: auto; z-index: 100; }
@@ -278,7 +284,7 @@
 
   <div id="app-lecturer">
     <div style="position:fixed;top:16px;right:16px;z-index:9999;display:flex;gap:12px;align-items:center;">
-      <button class="theme-toggle-btn" style="position:relative;" title="Góp ý từ giảng viên khác" onclick="if(window.switchLecturerSection) { switchLecturerSection('section-feedback', this); document.getElementById('feedback-badge').style.display='none'; }">
+      <button class="theme-toggle-btn" style="position:relative;" title="Góp ý từ giảng viên khác" onclick="if(window.switchLecturerSection) { switchLecturerSection('feedback', this); document.getElementById('feedback-badge').style.display='none'; }">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span id="feedback-badge" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;font-size:10px;font-weight:bold;padding:2px 5px;border-radius:10px;">Mới</span>
       </button>
@@ -511,125 +517,152 @@
         </div>
       </div>
 
-      <!-- Export Section -->
+      <!-- Import / Export Section -->
       <div id="section-export" class="section-lecturer" style="display:none">
-        <!-- Header -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-          <div style="display:flex;align-items:center;gap:12px">
-            <span style="font-size:28px">📤</span>
-            <div>
-              <h2 style="margin:0;font-size:23px;font-weight:800;color:var(--text-main,#1e293b)">Xuất báo cáo bài tập</h2>
-              <p style="margin:2px 0 0;font-size:16px;color:var(--text-muted,#64748b)">Lọc và chọn bài tập để xuất Excel hoặc JSON</p>
+        <!-- Tabs -->
+
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <span style="font-size:28px">📦</span>
+          <div>
+            <h2 style="margin:0;font-size:22px;font-weight:800;color:var(--text-main,#1e293b)">Xuất / Nhập dữ liệu</h2>
+            <p style="margin:2px 0 0;font-size:15px;color:var(--text-muted,#64748b)">Quản lý bài tập qua file Excel chuyên nghiệp</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:4px;margin-bottom:20px;background:var(--bg-color,#f1f5f9);padding:4px;border-radius:12px;width:fit-content">
+          <button id="tab-btn-import" onclick="switchIETab('import')" style="padding:9px 22px;border-radius:9px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;background:#6366f1;color:#fff">📥 Nhập Excel</button>
+          <button id="tab-btn-export" onclick="switchIETab('export')" style="padding:9px 22px;border-radius:9px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;background:transparent;color:var(--text-muted)">📤 Xuất Excel</button>
+        </div>
+
+        <!-- IMPORT TAB -->
+        <div id="ie-tab-import">
+          <div style="display:flex;align-items:center;margin-bottom:24px;gap:0">
+            <div id="import-step-1" style="width:32px;height:32px;border-radius:50%;background:#6366f1;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">1</div>
+            <div style="flex:1;height:3px;background:var(--border-color,#e2e8f0)"></div>
+            <div id="import-step-2" style="width:32px;height:32px;border-radius:50%;background:var(--border-color,#e2e8f0);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">2</div>
+            <div style="flex:1;height:3px;background:var(--border-color,#e2e8f0)"></div>
+            <div id="import-step-3" style="width:32px;height:32px;border-radius:50%;background:var(--border-color,#e2e8f0);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">3</div>
+          </div>
+          <!-- Step 1 -->
+          <div id="import-panel-1">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div style="background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:14px;padding:24px">
+                <div style="font-size:17px;font-weight:700;color:var(--text-main);margin-bottom:8px">📋 Bước 1a: Tải file mẫu</div>
+                <p style="color:var(--text-muted);font-size:14px;margin:0 0 16px">File mẫu có sẵn dropdown cho Môn học, Độ khó, Level. Cột có (*) là bắt buộc.</p>
+                <button onclick="downloadImportTemplate()" style="display:flex;align-items:center;gap:8px;padding:11px 20px;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer">⬇️ Tải file Excel mẫu</button>
+              </div>
+              <div style="background:var(--card-bg,#fff);border:2px dashed #818cf8;border-radius:14px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+                <div style="font-size:42px;margin-bottom:10px">📁</div>
+                <div style="font-size:17px;font-weight:700;color:var(--text-main);margin-bottom:6px">Bước 1b: Upload file</div>
+                <div style="font-size:14px;color:var(--text-muted)">Nhấn để chọn file .xlsx (Mẫu chuẩn) hoặc .pdf (Dùng AI bóc tách)</div>
+                <div style="display:flex;gap:10px;margin-top:10px;">
+                  <button onclick="document.getElementById('lecturer-import-file').click()" style="padding:8px 16px;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">📂 Nhập Excel</button>
+                  <button onclick="document.getElementById('lecturer-import-pdf').click()" style="padding:8px 16px;background:linear-gradient(135deg,#db2777,#ec4899);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">📄 Nhập PDF (AI)</button>
+                </div>
+                <input type="file" id="lecturer-import-file" style="display:none" accept=".xlsx" onchange="handleLecturerImport(event)">
+                <input type="file" id="lecturer-import-pdf" style="display:none" accept=".pdf" onchange="handlePdfImport(event)">
+              </div>
             </div>
           </div>
-          <div style="display:flex;gap:8px">
-            <button onclick="exportSelectedExcel()" id="btn-export-excel" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(22,163,74,.25);transition:transform .1s" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">📊 Xuất Excel</button>
-            <button onclick="exportSelectedJSON()" id="btn-export-json" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.25);transition:transform .1s" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">📄 Xuất JSON</button>
-            
-            <div style="width:1px; background:var(--border-color); margin:0 5px;"></div>
-            
-            <input type="file" id="lecturer-import-file" style="display:none;" accept=".xlsx" onchange="handleLecturerImport(event)">
-            <button id="lecturer-import-btn" onclick="document.getElementById('lecturer-import-file').click()" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(16,185,129,.25);transition:transform .1s" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">📥 Nhập Excel</button>
+          <!-- Step 2 -->
+          <div id="import-panel-2" style="display:none">
+            <div style="background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:14px;padding:20px;margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px">
+                <div id="import-preview-stats" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <label style="font-size:14px;font-weight:700;color:var(--text-muted)">Khi trùng mã:</label>
+                  <select id="import-strategy" onchange="lecImportStrategy=this.value" style="padding:7px 12px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:8px;font-size:14px;font-family:inherit;background:var(--card-bg);color:var(--text-main);outline:none">
+                    <option value="update">📝 Ghi đè — cập nhật bài cũ bằng dữ liệu mới</option>
+                    <option value="skip">⏭️ Bỏ qua — giữ nguyên bài cũ, không thay đổi</option>
+                    <option value="clone">📋 Tạo bản sao — thêm bài mới với mã mới</option>
+                  </select>
+                </div>
+              </div>
+              <div style="overflow-x:auto;border:1px solid var(--border-color,#e2e8f0);border-radius:10px">
+                <table style="width:100%;border-collapse:collapse;font-size:14px">
+                  <thead><tr style="background:var(--bg-color,#f8fafc)">
+                    <th style="padding:10px 12px;text-align:left;font-weight:700;color:var(--text-muted)">Hàng</th>
+                    <th style="padding:10px 12px;text-align:left;font-weight:700;color:var(--text-muted)">Mã bài tập</th>
+                    <th style="padding:10px 12px;text-align:left;font-weight:700;color:var(--text-muted)">Tên bài tập</th>
+                    <th style="padding:10px 12px;text-align:left;font-weight:700;color:var(--text-muted)">Môn</th>
+                    <th style="padding:10px 12px;text-align:left;font-weight:700;color:var(--text-muted)">Trạng thái</th>
+                  </tr></thead>
+                  <tbody id="lec-import-preview-tbody"><tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted)">Chưa có dữ liệu</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+              <button onclick="resetImportWizard()" style="padding:10px 20px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:10px;background:none;font-size:15px;font-weight:600;cursor:pointer;color:var(--text-muted);font-family:inherit">← Chọn lại file</button>
+              <button id="lec-import-confirm-btn" onclick="confirmLecturerImport()" style="padding:10px 24px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">✅ Xác nhận Import</button>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div id="import-panel-3" style="display:none">
+            <div style="background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:14px;padding:24px">
+              <h3 style="margin:0 0 16px;font-size:17px;font-weight:700;color:var(--text-main)">🎉 Kết quả Import</h3>
+              <div id="import-result-content"></div>
+              <div style="margin-top:16px;display:flex;gap:10px">
+                <button onclick="resetImportWizard()" style="padding:10px 20px;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">+ Import thêm</button>
+                <button onclick="switchIETab('export'); setTimeout(()=>{ const el=document.getElementById('export-log-section'); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); },350);" style="padding:10px 20px;border:1.5px solid var(--border-color);border-radius:10px;background:none;font-size:15px;font-weight:600;cursor:pointer;color:var(--text-muted);font-family:inherit">Xem lịch sử →</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Stats Bar -->
-        <div id="export-stats-bar" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
-          <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#6366f1,#818cf8);border-radius:12px;padding:14px 16px;color:#fff">
-            <div style="font-size:12px;font-weight:600;opacity:.8">Tổng bài tập</div>
-            <div id="export-stat-total" style="font-size:25px;font-weight:800">0</div>
+        <!-- EXPORT TAB -->
+        <div id="ie-tab-export" style="display:none">
+          <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+            <button onclick="exportSelectedExcel()" id="btn-export-excel" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(22,163,74,.25)">📊 Xuất Excel</button>
+            <button onclick="exportSelectedJSON()" id="btn-export-json" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.25)">📄 Xuất JSON</button>
+            <button onclick="exportSelectedPDF()" id="btn-export-pdf" style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:linear-gradient(135deg,#db2777,#ec4899);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(219,39,119,.25)">🖨️ Xuất PDF</button>
           </div>
-          <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#10b981,#34d399);border-radius:12px;padding:14px 16px;color:#fff">
-            <div style="font-size:12px;font-weight:600;opacity:.8">Đã chọn</div>
-            <div id="export-stat-selected" style="font-size:25px;font-weight:800">0</div>
+          <div id="export-stats-bar" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+            <div style="flex:1;min-width:130px;background:linear-gradient(135deg,#6366f1,#818cf8);border-radius:12px;padding:14px 16px;color:#fff"><div style="font-size:12px;font-weight:600;opacity:.8">Tổng bài tập</div><div id="export-stat-total" style="font-size:25px;font-weight:800">0</div></div>
+            <div style="flex:1;min-width:130px;background:linear-gradient(135deg,#10b981,#34d399);border-radius:12px;padding:14px 16px;color:#fff"><div style="font-size:12px;font-weight:600;opacity:.8">Đã chọn</div><div id="export-stat-selected" style="font-size:25px;font-weight:800">0</div></div>
+            <div style="flex:1;min-width:130px;background:linear-gradient(135deg,#f59e0b,#fbbf24);border-radius:12px;padding:14px 16px;color:#fff"><div style="font-size:12px;font-weight:600;opacity:.8">Dạng bài</div><div id="export-stat-forms" style="font-size:25px;font-weight:800">0</div></div>
+            <div style="flex:1;min-width:130px;background:linear-gradient(135deg,#ef4444,#f87171);border-radius:12px;padding:14px 16px;color:#fff"><div style="font-size:12px;font-weight:600;opacity:.8">Môn học</div><div id="export-stat-subjects" style="font-size:25px;font-weight:800">0</div></div>
           </div>
-          <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#f59e0b,#fbbf24);border-radius:12px;padding:14px 16px;color:#fff">
-            <div style="font-size:12px;font-weight:600;opacity:.8">Dạng bài</div>
-            <div id="export-stat-forms" style="font-size:25px;font-weight:800">0</div>
+          <div style="background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <input type="text" id="export-search" placeholder="🔍 Tìm kiếm bài tập..." style="flex:1;min-width:200px;padding:9px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;font-size:15px;font-family:inherit;background:var(--bg-color,#f8fafc);color:var(--text-main);outline:none" oninput="filterExportList()">
+            <select id="export-filter-form" onchange="filterExportList()" style="padding:8px 12px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;font-size:15px;font-family:inherit;background:var(--card-bg);color:var(--text-main);outline:none"><option value="">Tất cả dạng bài</option></select>
+            <select id="export-filter-diff" onchange="filterExportList()" style="padding:8px 12px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;font-size:15px;font-family:inherit;background:var(--card-bg);color:var(--text-main);outline:none"><option value="">Tất cả độ khó</option><option value="Dễ">Dễ</option><option value="Trung bình">Trung bình</option><option value="Khó">Khó</option></select>
+            <select id="export-filter-level" onchange="filterExportList()" style="padding:8px 12px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;font-size:15px;font-family:inherit;background:var(--card-bg);color:var(--text-main);outline:none"><option value="">Tất cả level</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option><option value="4">Level 4</option><option value="5">Level 5</option></select>
+            <button onclick="clearExportFilters()" style="padding:8px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;background:none;font-size:15px;color:var(--text-muted);cursor:pointer;font-family:inherit">✕ Xóa lọc</button>
           </div>
-          <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#ef4444,#f87171);border-radius:12px;padding:14px 16px;color:#fff">
-            <div style="font-size:12px;font-weight:600;opacity:.8">Môn học</div>
-            <div id="export-stat-subjects" style="font-size:25px;font-weight:800">0</div>
+          <div style="background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:12px;padding:10px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:16px;font-weight:600;color:var(--text-main)"><input type="checkbox" id="export-select-all" onchange="toggleSelectAllExport(this.checked)" style="width:18px;height:18px;accent-color:#6366f1;cursor:pointer"> Chọn tất cả bài tập hiển thị</label>
+            <span id="export-selection-info" style="font-size:15px;color:var(--text-muted)">0 bài đã chọn</span>
           </div>
-        </div>
-
-        <!-- Filters -->
-        <div style="background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <input type="text" id="export-search" placeholder="🔍 Tìm kiếm bài tập..." style="flex:1;min-width:200px;padding:9px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;font-size:15px;font-family:inherit;background:var(--bg-color,#f8fafc);color:var(--text-main);outline:none" oninput="filterExportList()">
-          <select id="export-filter-form" onchange="filterExportList()" style="padding:8px 12px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;font-size:15px;font-family:inherit;background:var(--card-bg);color:var(--text-main);cursor:pointer;outline:none">
-            <option value="">Tất cả dạng bài</option>
-          </select>
-          <select id="export-filter-diff" onchange="filterExportList()" style="padding:8px 12px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;font-size:15px;font-family:inherit;background:var(--card-bg);color:var(--text-main);cursor:pointer;outline:none">
-            <option value="">Tất cả độ khó</option>
-            <option value="Dễ">Dễ</option>
-            <option value="Trung bình">Trung bình</option>
-            <option value="Khó">Khó</option>
-          </select>
-          <select id="export-filter-level" onchange="filterExportList()" style="padding:8px 12px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;font-size:15px;font-family:inherit;background:var(--card-bg);color:var(--text-main);cursor:pointer;outline:none">
-            <option value="">Tất cả level</option>
-            <option value="1">Level 1</option>
-            <option value="2">Level 2</option>
-            <option value="3">Level 3</option>
-            <option value="4">Level 4</option>
-            <option value="5">Level 5</option>
-          </select>
-          <button onclick="clearExportFilters()" style="padding:8px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:9px;background:none;font-size:15px;color:var(--text-muted);cursor:pointer;font-family:inherit" onmouseenter="this.style.background='#fee2e2';this.style.color='#dc2626'" onmouseleave="this.style.background='';this.style.color='var(--text-muted)'">✕ Xóa lọc</button>
-        </div>
-
-        <!-- Select All Bar -->
-        <div style="background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:12px;padding:10px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:16px;font-weight:600;color:var(--text-main)">
-            <input type="checkbox" id="export-select-all" onchange="toggleSelectAllExport(this.checked)" style="width:18px;height:18px;accent-color:#6366f1;cursor:pointer">
-            Chọn tất cả bài tập hiển thị
-          </label>
-          <span id="export-selection-info" style="font-size:15px;color:var(--text-muted)">0 bài đã chọn</span>
-        </div>
-
-        <!-- Exercise List -->
-        <div style="background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:12px;overflow:hidden">
-          <table style="width:100%;border-collapse:collapse">
-            <thead style="position:sticky;top:0;background:var(--bg-color,#f8fafc);z-index:1">
-              <tr style="border-bottom:2px solid var(--border-color,#e2e8f0)">
+          <div style="background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:12px;overflow:hidden">
+            <table style="width:100%;border-collapse:collapse">
+              <thead style="position:sticky;top:0;background:var(--bg-color,#f8fafc);z-index:1"><tr style="border-bottom:2px solid var(--border-color,#e2e8f0)">
                 <th style="padding:12px 14px;width:40px"></th>
-                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">mã bài</th>
-                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">tên bài tập</th>
-                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">dạng bài</th>
-                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">độ khó</th>
-                <th style="padding:12px 14px;text-align:center;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">level</th>
-                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">môn học</th>
-              </tr>
-            </thead>
-            <tbody id="export-exercises-tbody">
-              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">Đang tải danh sách bài tập...</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div id="export-status" style="margin-top:12px;font-size:15px;color:var(--text-muted)"></div>
-
-        <!-- EXPORT LOG TABLE -->
-        <div style="margin-top:40px;background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:14px;overflow:hidden">
-          <div style="padding:16px 20px;border-bottom:1px solid var(--border-color,#e2e8f0);display:flex;justify-content:space-between;align-items:center;background:var(--bg-color,#f8fafc)">
-            <h3 style="margin:0;font-size:17px;font-weight:700;color:var(--text-main,#1e293b);display:flex;align-items:center;gap:8px">
-              📜 Lịch sử xuất / nhập
-            </h3>
-            <button onclick="loadLecturerExportLog()" style="padding:6px 12px;border:1px solid var(--border-color,#e2e8f0);border-radius:8px;background:var(--card-bg,#fff);font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px" onmouseenter="this.style.background='var(--bg-color)'" onmouseleave="this.style.background='var(--card-bg)'">
-              🔄 Làm mới
-            </button>
-          </div>
-          <div style="overflow-x:auto">
-            <table style="width:100%;border-collapse:collapse;font-size:15px;text-align:left">
-              <thead>
-                <tr style="background:var(--bg-color,#f8fafc);border-bottom:2px solid var(--border-color,#e2e8f0)">
-                  <th style="padding:12px 16px;font-weight:700;color:var(--text-muted)">Hành động</th>
-                  <th style="padding:12px 16px;font-weight:700;color:var(--text-muted);text-align:center">Định dạng</th>
-                  <th style="padding:12px 16px;font-weight:700;color:var(--text-muted);text-align:center">Số lượng</th>
-                  <th style="padding:12px 16px;font-weight:700;color:var(--text-muted)">Thời gian</th>
-                </tr>
-              </thead>
-              <tbody id="lecturer-export-log-tbody">
-                <tr><td colspan="4" style="text-align:center;padding:30px;color:var(--text-muted)">chưa có dữ liệu</td></tr>
-              </tbody>
+                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase">mã bài</th>
+                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase">tên bài tập</th>
+                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase">dạng bài</th>
+                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase">độ khó</th>
+                <th style="padding:12px 14px;text-align:center;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase">level</th>
+                <th style="padding:12px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase">môn học</th>
+              </tr></thead>
+              <tbody id="export-exercises-tbody"><tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">Đang tải danh sách bài tập...</td></tr></tbody>
             </table>
+          </div>
+          <div id="export-status" style="margin-top:12px;font-size:15px;color:var(--text-muted)"></div>
+          <!-- Log -->
+          <div id="export-log-section" style="margin-top:32px;background:var(--card-bg,#fff);border:1px solid var(--border-color,#e2e8f0);border-radius:14px;overflow:hidden">
+            <div style="padding:14px 20px;border-bottom:1px solid var(--border-color,#e2e8f0);display:flex;justify-content:space-between;align-items:center;background:var(--bg-color,#f8fafc)">
+              <h3 style="margin:0;font-size:16px;font-weight:700;color:var(--text-main)">📜 Lịch sử xuất / nhập</h3>
+              <button onclick="loadLecturerExportLog()" style="padding:6px 12px;border:1px solid var(--border-color,#e2e8f0);border-radius:8px;background:var(--card-bg,#fff);font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer">🔄 Làm mới</button>
+            </div>
+            <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+              <thead><tr style="background:var(--bg-color,#f8fafc);border-bottom:2px solid var(--border-color,#e2e8f0)">
+                <th style="padding:11px 14px;font-weight:700;color:var(--text-muted);text-align:left">Loại</th>
+                <th style="padding:11px 14px;font-weight:700;color:var(--text-muted);text-align:center">Định dạng</th>
+                <th style="padding:11px 14px;font-weight:700;color:var(--text-muted);text-align:center">Số lượng</th>
+                <th style="padding:11px 14px;font-weight:700;color:var(--text-muted);text-align:left">Chi tiết</th>
+                <th style="padding:11px 14px;font-weight:700;color:var(--text-muted)">Thời gian</th>
+              </tr></thead>
+              <tbody id="lecturer-export-log-tbody"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted)">chưa có dữ liệu</td></tr></tbody>
+            </table></div>
           </div>
         </div>
       </div>
@@ -639,7 +672,7 @@
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
           <span style="font-size:28px">💬</span>
           <div>
-            <h2 style="margin:0;font-size:23px;font-weight:800;color:var(--text-main,#1e293b)">Tiếp nhận & gửi góp ý</h2>
+            <h2 style="margin:0;font-size:23px;font-weight:800;color:var(--text-main,#1e293b)">Tiếp nhận &amp; gửi góp ý</h2>
             <p style="margin:2px 0 0;font-size:16px;color:var(--text-muted,#64748b)">Quản lý góp ý nhận được và góp ý đã gửi</p>
           </div>
         </div>
@@ -862,6 +895,19 @@
 
   </div>
 
+  <!-- Modal: Add Form -->
+  <div id="add-form-modal" class="modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
+    <div style="background:var(--card-bg,#fff);border-radius:14px;width:90%;max-width:400px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+      <h3 style="margin:0 0 16px;font-size:18px;font-weight:700;color:var(--text-main);">Thêm Dạng Bài Mới</h3>
+      <label style="display:block;margin-bottom:6px;font-size:14px;font-weight:600;color:var(--text-main);">Tên dạng bài</label>
+      <input type="text" id="add-form-name" placeholder="VD: Mảng 1 chiều..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border-color);border-radius:8px;font-size:15px;margin-bottom:16px;box-sizing:border-box;outline:none;">
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button type="button" onclick="closeAddFormModal()" style="padding:8px 16px;border:1px solid var(--border-color);border-radius:8px;background:none;font-weight:600;cursor:pointer;color:var(--text-muted);">Hủy</button>
+        <button type="button" onclick="submitAddForm()" style="padding:8px 16px;border:none;border-radius:8px;background:#10b981;color:white;font-weight:700;cursor:pointer;">Lưu dạng bài</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast notification -->
   <div id="toast" class="toast"></div>
 
@@ -880,7 +926,10 @@
         <input type="hidden" id="original_id" name="original_id" />
         <label>Môn</label>
         <select id="form-subject" name="subject_id" required onchange="onFormSubjectChange()"></select>
-        <label>Dạng bài</label>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <label style="margin:0;">Dạng bài</label>
+          <button type="button" onclick="openAddFormModal()" style="padding:4px 8px;border:none;background:#ecfdf5;color:#10b981;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">+ Thêm mới</button>
+        </div>
         <select id="form-form" name="form_id" required onchange="onFormFormChange()"></select>
         <label>Tên bài</label>
         <input name="title" id="field-title" placeholder="Nhập tên bài tập..." />
@@ -939,8 +988,28 @@
         <label>Tiêu chí chấm</label>
         <div id="grading-list"></div>
         <div style="margin:6px 0"><button type="button" id="grade-add">+ Thêm tiêu chí</button></div>
-        <label>Định dạng nộp</label>
-        <input name="submission_format" id="field-submission" />
+        <label>Định dạng nộp bài <span style="font-size:12px;font-weight:400;color:var(--text-muted)">— Chọn các hình thức cho phép</span></label>
+        <input type="hidden" name="submission_format" id="field-submission" />
+        <div id="submission-checkboxes" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;">
+          <label id="sfmt-zip" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:10px;cursor:pointer;transition:all .2s;font-weight:500;">
+            <input type="checkbox" data-fmt="zip" style="width:16px;height:16px;accent-color:#6366f1;" onchange="syncSubmissionFormat()"> 📦 File nén (.zip, .rar)
+          </label>
+          <label id="sfmt-pdf" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:10px;cursor:pointer;transition:all .2s;font-weight:500;">
+            <input type="checkbox" data-fmt="pdf" style="width:16px;height:16px;accent-color:#ef4444;" onchange="syncSubmissionFormat()"> 📄 File PDF
+          </label>
+          <label id="sfmt-docx" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:10px;cursor:pointer;transition:all .2s;font-weight:500;">
+            <input type="checkbox" data-fmt="docx" style="width:16px;height:16px;accent-color:#2563eb;" onchange="syncSubmissionFormat()"> 📝 Tài liệu Word (.docx)
+          </label>
+          <label id="sfmt-link" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:10px;cursor:pointer;transition:all .2s;font-weight:500;">
+            <input type="checkbox" data-fmt="link" style="width:16px;height:16px;accent-color:#0891b2;" onchange="syncSubmissionFormat()"> 🔗 Đường dẫn (Link)
+          </label>
+          <label id="sfmt-image" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:10px;cursor:pointer;transition:all .2s;font-weight:500;">
+            <input type="checkbox" data-fmt="image" style="width:16px;height:16px;accent-color:#d97706;" onchange="syncSubmissionFormat()"> 🖼️ Hình ảnh (.jpg, .png)
+          </label>
+          <label id="sfmt-text" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border-color,#e2e8f0);border-radius:10px;cursor:pointer;transition:all .2s;font-weight:500;">
+            <input type="checkbox" data-fmt="text" style="width:16px;height:16px;accent-color:#10b981;" onchange="syncSubmissionFormat()"> 💬 Trả lời trực tiếp
+          </label>
+        </div>
         <div style="margin-top:16px;">
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
             <span style="font-size:16px">📎</span>
@@ -1152,7 +1221,18 @@
   <script src="/app.js"></script>
   <script src="/duplicate-client.js"></script>
   <script>
+    function switchIETab(tab) {
+      document.getElementById('ie-tab-import').style.display = tab==='import' ? 'block' : 'none';
+      document.getElementById('ie-tab-export').style.display = tab==='export' ? 'block' : 'none';
+      const bi = document.getElementById('tab-btn-import');
+      const be = document.getElementById('tab-btn-export');
+      if(bi){ bi.style.background = tab==='import' ? '#6366f1' : 'transparent'; bi.style.color = tab==='import' ? '#fff' : 'var(--text-muted)'; }
+      if(be){ be.style.background = tab==='export' ? '#6366f1' : 'transparent'; be.style.color = tab==='export' ? '#fff' : 'var(--text-muted)'; }
+      if(tab==='export'){ if(typeof loadExportList==='function') loadExportList(); if(typeof loadLecturerExportLog==='function') loadLecturerExportLog(); }
+    }
+
     function insertMarkdown(prefix, suffix) {
+
       const textarea = document.getElementById('field-description');
       if (!textarea) return;
       const start = textarea.selectionStart;
@@ -1220,6 +1300,8 @@
         renderManageList();
         populateFilters();
         updateProfileCard(_pageData.lec, _pageData.subjects);
+        // Run dashboard AFTER initPage so accurate DB count overwrites subjects-tree count
+        loadLecturerDashboard();
       } catch(e) { console.error('Lecturer page init error:', e); }
     }
 
@@ -1554,7 +1636,13 @@
     }
 
     async function deleteExercise(exId, subjectId) {
-      if(!confirm('Xóa bài tập này khỏi hệ thống?')) return;
+      const confirmed = await showConfirmModal({
+        title: 'Xác nhận xóa',
+        body: 'Bạn có chắc chắn muốn xóa bài tập này khỏi hệ thống không? Hành động này không thể hoàn tác.',
+        type: 'danger',
+        confirmText: 'Xóa bài tập'
+      });
+      if(!confirmed) return;
       const resp = await fetch(`/api/exercise/${encodeURIComponent(exId)}`, { method:'DELETE', credentials:'include' });
       if(!resp.ok){ alert('Không thể xóa: '+(await resp.text())); return; }
       window.location.reload();
@@ -1812,6 +1900,10 @@
         if (el('gv-stat-forms'))    el('gv-stat-forms').textContent    = d.totalForms;
         if (el('gv-stat-levels'))   el('gv-stat-levels').textContent   = d.byLevel.length;
 
+        // Sync sidebar profile stats with accurate DB count
+        if (el('profile-exercises')) el('profile-exercises').textContent = d.totalExercises;
+        if (el('profile-subjects'))  el('profile-subjects').textContent  = d.totalSubjects;
+
         // Subject breakdown
         const subEl = el('gv-dash-subjects');
         if (subEl && d.subjects.length) {
@@ -1950,7 +2042,9 @@
         const el = id => document.getElementById(id);
         if (el('export-stat-total')) el('export-stat-total').textContent = allExportExercises.length;
         if (el('export-stat-forms')) el('export-stat-forms').textContent = formSet.size;
-        if (el('export-stat-subjects')) el('export-stat-subjects').textContent = subjects.length;
+        // Count only subjects that have at least one exercise owned by this lecturer
+        const mySubjectIds = new Set(allExportExercises.map(ex => ex.subject_id));
+        if (el('export-stat-subjects')) el('export-stat-subjects').textContent = mySubjectIds.size;
         
         filterExportList();
       } catch(e) { console.error('Load export:', e); }
@@ -2062,7 +2156,7 @@
       const status = document.getElementById('export-status');
       if (exercises.length === 0) {
         if (status) status.innerHTML = '<span style="color:#ef4444">❌ Vui lòng chọn ít nhất 1 bài tập để xuất.</span>';
-        alert('Vui lòng chọn ít nhất 1 bài tập để xuất Excel.');
+        showToast('Vui lòng chọn ít nhất 1 bài tập để xuất Excel.', 'error');
         return;
       }
       
@@ -2094,7 +2188,7 @@
       const status = document.getElementById('export-status');
       if (exercises.length === 0) {
         if (status) status.innerHTML = '<span style="color:#ef4444">❌ Vui lòng chọn ít nhất 1 bài tập để xuất.</span>';
-        alert('Vui lòng chọn ít nhất 1 bài tập để xuất JSON.');
+        showToast('Vui lòng chọn ít nhất 1 bài tập để xuất JSON.', 'error');
         return;
       }
       
@@ -2106,6 +2200,37 @@
       if (status) status.innerHTML = '<span style="color:#16a34a">✅ Đã xuất ' + exercises.length + ' bài tập dạng JSON!</span>';
     }
 
+    async function exportSelectedPDF() {
+      const exercises = getSelectedExercises();
+      const status = document.getElementById('export-status');
+      if (exercises.length === 0) {
+        if (status) status.innerHTML = '<span style="color:#ef4444">❌ Vui lòng chọn ít nhất 1 bài tập để xuất.</span>';
+        showToast('Vui lòng chọn ít nhất 1 bài tập để xuất PDF.', 'error');
+        return;
+      }
+      
+      if (status) status.innerHTML = '<span style="color:#db2777">⏳ Đang xuất ' + exercises.length + ' bài tập ra PDF...</span>';
+      try {
+        const exercise_ids = exercises.map(ex => ex.id);
+        const res = await fetch('/api/export/pdf/selected', {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ exercise_ids })
+        });
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = 'bai_tap_export.pdf'; a.click();
+          URL.revokeObjectURL(url);
+          if (status) status.innerHTML = '<span style="color:#db2777">✅ Đã xuất thành công ' + exercises.length + ' bài tập ra PDF!</span>';
+        } else {
+          if (status) status.innerHTML = '<span style="color:#ef4444">❌ Lỗi xuất file PDF</span>';
+        }
+      } catch(e) {
+        if (status) status.innerHTML = '<span style="color:#ef4444">❌ ' + e.message + '</span>';
+      }
+    }
     
     // ═══════════════════ FEEDBACK SYSTEM ═══════════════════
     let currentFeedbackEx = null;
@@ -2293,8 +2418,7 @@
       setTimeout(() => t.style.display = 'none', 3000);
     }
 
-    // Auto-load dashboard on page load
-    loadLecturerDashboard();
+    // Auto-load dashboard is handled inside initPage() to avoid race condition
   
 function toggleLecSidebar() {
   const sidebar = document.querySelector('.lec-sidebar');
@@ -2321,6 +2445,91 @@ try {
     if(b) b.innerHTML='';
   }
 } catch(e){}
+
+  function syncSubmissionFormat() {
+    const checked = [...document.querySelectorAll('#submission-checkboxes input[type=checkbox]:checked')]
+      .map(cb => cb.dataset.fmt);
+    document.getElementById('field-submission').value = checked.join(', ');
+  }
+
+  function fillSubmissionFormat(value) {
+    // Uncheck all first
+    document.querySelectorAll('#submission-checkboxes input[type=checkbox]').forEach(cb => cb.checked = false);
+    if (!value) return;
+    const fmts = value.split(',').map(s => s.trim().toLowerCase());
+    fmts.forEach(fmt => {
+      const cb = document.querySelector(`#submission-checkboxes input[data-fmt="${fmt}"]`);
+      if (cb) cb.checked = true;
+    });
+    syncSubmissionFormat();
+  }
+
+  function openAddFormModal() {
+    const subjectId = document.getElementById('form-subject').value;
+    if (!subjectId) {
+      showToast('Vui lòng chọn Môn học trước khi thêm dạng bài mới.', 'error');
+      return;
+    }
+    document.getElementById('add-form-name').value = '';
+    const modal = document.getElementById('add-form-modal');
+    modal.style.display = 'flex';
+  }
+  
+  function closeAddFormModal() {
+    document.getElementById('add-form-modal').style.display = 'none';
+  }
+  
+  async function submitAddForm() {
+    const subjectId = document.getElementById('form-subject').value;
+    const formName = document.getElementById('add-form-name').value.trim();
+    if (!formName) {
+      showToast('Vui lòng nhập tên dạng bài.', 'error');
+      return;
+    }
+    
+    try {
+      const btn = document.querySelector('#add-form-modal button:last-child');
+      btn.textContent = 'Đang lưu...';
+      btn.disabled = true;
+      
+      const res = await fetch('/api/lecturer/forms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ subjectId, formName })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        showToast('Thêm dạng bài thành công!', 'success');
+        closeAddFormModal();
+        
+        // Cập nhật _pageData.subjects
+        const sub = _pageData.subjects.find(s => s.subject_id === subjectId);
+        if (sub) {
+          if (!sub.forms) sub.forms = [];
+          sub.forms.push({ form_id: String(data.MaDangBai), name: data.TenDangBai });
+        }
+        
+        // Update select dropdown
+        const formSel = document.getElementById('form-form');
+        const opt = document.createElement('option');
+        opt.value = data.MaDangBai;
+        opt.textContent = data.TenDangBai;
+        formSel.appendChild(opt);
+        formSel.value = data.MaDangBai;
+        onFormFormChange(); // update MaBaiTap
+      } else {
+        showToast(data.error || 'Lỗi khi thêm dạng bài.', 'error');
+      }
+    } catch(e) {
+      showToast('Lỗi kết nối.', 'error');
+    } finally {
+      const btn = document.querySelector('#add-form-modal button:last-child');
+      btn.textContent = 'Lưu dạng bài';
+      btn.disabled = false;
+    }
+  }
 </script>
 
 <!-- LECTURER IMPORT PREVIEW MODAL -->
@@ -2359,6 +2568,7 @@ try {
     </div>
   </div>
 
+  <div id="toast-notification" style="display:none; position:fixed; bottom:20px; right:20px; padding:12px 24px; color:#fff; border-radius:8px; font-weight:600; font-size:15px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:9999; transition:opacity 0.3s;"></div>
 </body>
 </html>
 

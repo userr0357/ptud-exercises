@@ -297,8 +297,40 @@ module.exports = function(app, auth) {
     try {
       const pool = await db.getPool();
       const r = await pool.request().input('id', mssql.VarChar, req.params.id)
-        .query('SELECT gm.MaMon, m.TenMon, gm.VaiTro FROM GIANGVIEN_MONHOC gm LEFT JOIN MONHOC m ON m.MaMon=gm.MaMon WHERE gm.MaGiangVien=@id');
+        .query('SELECT gm.MaMon, m.TenMon, gm.VaiTro, gm.QuyenXem, gm.QuyenSua, gm.QuyenXoa FROM GIANGVIEN_MONHOC gm LEFT JOIN MONHOC m ON m.MaMon=gm.MaMon WHERE gm.MaGiangVien=@id');
       res.json(r.recordset);
+    } catch(e) { res.status(500).json({ error: e.message }); }
+  });
+
+  app.post('/api/admin/lecturer/:id/subjects', auth, async (req, res) => {
+    try {
+      const pool = await db.getPool();
+      const id = req.params.id;
+      const subjects = req.body.subjects || []; // Array of { MaMon, VaiTro, QuyenXem, QuyenSua, QuyenXoa }
+      
+      const transaction = new mssql.Transaction(pool);
+      await transaction.begin();
+      try {
+        const reqDel = new mssql.Request(transaction);
+        await reqDel.input('id', mssql.VarChar, id).query('DELETE FROM GIANGVIEN_MONHOC WHERE MaGiangVien=@id');
+        
+        for (const sub of subjects) {
+          const reqIns = new mssql.Request(transaction);
+          await reqIns
+            .input('id', mssql.VarChar, id)
+            .input('mon', mssql.VarChar, sub.MaMon)
+            .input('vt', mssql.NVarChar, sub.VaiTro || 'Giảng viên')
+            .input('qx', mssql.Bit, sub.QuyenXem ? 1 : 0)
+            .input('qs', mssql.Bit, sub.QuyenSua ? 1 : 0)
+            .input('qxoa', mssql.Bit, sub.QuyenXoa ? 1 : 0)
+            .query('INSERT INTO GIANGVIEN_MONHOC (MaGiangVien, MaMon, VaiTro, QuyenXem, QuyenSua, QuyenXoa) VALUES (@id, @mon, @vt, @qx, @qs, @qxoa)');
+        }
+        await transaction.commit();
+        res.json({ success: true });
+      } catch (err) {
+        await transaction.rollback();
+        throw err;
+      }
     } catch(e) { res.status(500).json({ error: e.message }); }
   });
 
@@ -317,7 +349,7 @@ module.exports = function(app, auth) {
     try {
       const pool = await db.getPool();
       const r = await pool.request().input('id', mssql.VarChar, req.params.id)
-        .query('SELECT TOP 50 * FROM LECTURER_BLOCK_LOG WHERE MaGiangVien=@id ORDER BY NgayThaoTac DESC');
+        .query('SELECT TOP 50 * FROM LECTURER_BLOCK_LOG WHERE LecturerId=@id ORDER BY ActionTime DESC');
       res.json(r.recordset);
     } catch(e) { res.json([]); }
   });
@@ -325,14 +357,51 @@ module.exports = function(app, auth) {
   // ── Lecturer CRUD ──
   app.post('/api/admin/lecturer/create', auth, async (req, res) => {
     try {
-      const { lecturer_id, name, password, role } = req.body;
+      const id = req.body.magv || req.body.lecturer_id;
+      const name = req.body.ten || req.body.name;
+      const password = req.body.pass || req.body.password || '123456';
+      const role = req.body.role || 'Lecturer';
+      const email = req.body.email || '';
+      
+      if (!id || !name) return res.status(400).json({ error: 'Thiếu Mã Giảng Viên hoặc Tên' });
+
       const pool = await db.getPool();
-      await pool.request()
-        .input('id', mssql.VarChar, lecturer_id).input('name', mssql.NVarChar, name)
-        .input('pw', mssql.VarChar, password || '123456').input('role', mssql.VarChar, role || 'Lecturer')
-        .input('login', mssql.VarChar, lecturer_id)
-        .query('INSERT INTO GIANGVIEN (MaGiangVien,TenGiangVien,TenDangNhap,MatKhau,Quyen) VALUES (@id,@name,@login,@pw,@role)');
-      res.json({ success: true });
+      const transaction = new mssql.Transaction(pool);
+      await transaction.begin();
+
+      try {
+        const reqGV = new mssql.Request(transaction);
+        await reqGV
+          .input('id', mssql.VarChar, id)
+          .input('name', mssql.NVarChar, name)
+          .input('pw', mssql.VarChar, password)
+          .input('role', mssql.VarChar, role)
+          .input('login', mssql.VarChar, id)
+          .input('email', mssql.VarChar, email)
+          .query('INSERT INTO GIANGVIEN (MaGiangVien,TenGiangVien,TenDangNhap,MatKhau,Quyen,Email) VALUES (@id,@name,@login,@pw,@role,@email)');
+
+        // Assign subjects if any
+        if (req.body.subjects && Array.isArray(req.body.subjects) && req.body.subjects.length > 0) {
+          const px = req.body.permXem ? 1 : 0;
+          const ps = req.body.permSua ? 1 : 0;
+          const pdel = req.body.permXoa ? 1 : 0;
+          for (const sub of req.body.subjects) {
+            const reqSub = new mssql.Request(transaction);
+            await reqSub
+              .input('id', mssql.VarChar, id)
+              .input('mon', mssql.VarChar, sub)
+              .input('px', mssql.Bit, px)
+              .input('ps', mssql.Bit, ps)
+              .input('pdel', mssql.Bit, pdel)
+              .query('INSERT INTO GIANGVIEN_MONHOC (MaGiangVien, MaMon, VaiTro, QuyenXem, QuyenSua, QuyenXoa) VALUES (@id, @mon, N\'Giảng viên\', @px, @ps, @pdel)');
+          }
+        }
+        await transaction.commit();
+        res.json({ success: true });
+      } catch (err) {
+        await transaction.rollback();
+        throw err;
+      }
     } catch(e) { res.status(500).json({ error: e.message }); }
   });
 
@@ -580,7 +649,11 @@ module.exports = function(app, auth) {
     try {
       const { date, magv, status } = req.query;
       const pool = await db.getPool();
-      let sql = `SELECT TOP 100 h.Id, h.LecturerId AS MaGiangVien, g.TenGiangVien, h.LoginTime, h.LogoutTime, h.DurationMinutes AS DurationMin, h.IsOnline
+      // Use CONVERT to format dates as plain strings → avoids JS double UTC offset
+      let sql = `SELECT TOP 100 h.Id, h.LecturerId AS MaGiangVien, g.TenGiangVien,
+                 CONVERT(varchar(19), h.LoginTime, 120) AS LoginTime,
+                 CONVERT(varchar(19), h.LogoutTime, 120) AS LogoutTime,
+                 h.DurationMinutes AS DurationMin, h.IsOnline
                  FROM LOGIN_HISTORY h
                  LEFT JOIN GIANGVIEN g ON h.LecturerId = g.MaGiangVien
                  WHERE 1=1`;
@@ -656,8 +729,8 @@ module.exports = function(app, auth) {
   app.get('/api/admin/students/classes', auth, async (req, res) => {
     try {
       const pool = await db.getPool();
-      const r = await pool.request().query('SELECT DISTINCT LopID FROM class ORDER BY LopID');
-      res.json(r.recordset.map(row => row.LopID));
+      const r = await pool.request().query('SELECT DISTINCT class FROM students WHERE class IS NOT NULL ORDER BY class');
+      res.json(r.recordset.map(row => row.class));
     } catch(e) { res.json([]); }
   });
 
@@ -683,12 +756,20 @@ module.exports = function(app, auth) {
   // ── Subject create ──
   app.post('/api/admin/subjects/create', auth, async (req, res) => {
     try {
-      const { subject_id, subject_name } = req.body;
+      // Support both naming conventions: mamon/tenmon (frontend) and subject_id/subject_name (legacy)
+      const mamon   = req.body.mamon   || req.body.subject_id;
+      const tenmon  = req.body.tenmon  || req.body.subject_name;
+      if (!mamon || !tenmon) return res.status(400).json({ error: 'Thiếu Mã Môn hoặc Tên Môn' });
       const pool = await db.getPool();
-      await pool.request().input('id', mssql.VarChar, subject_id).input('name', mssql.NVarChar, subject_name)
+      await pool.request().input('id', mssql.VarChar, mamon).input('name', mssql.NVarChar, tenmon)
         .query('INSERT INTO MONHOC (MaMon,TenMon) VALUES (@id,@name)');
-      res.json({ success: true });
-    } catch(e) { res.status(500).json({ error: e.message }); }
+      res.json({ success: true, MaMon: mamon, TenMon: tenmon });
+    } catch(e) {
+      if (e.message && e.message.includes('PRIMARY KEY')) {
+        return res.status(409).json({ error: `Mã môn "${req.body.mamon || req.body.subject_id}" đã tồn tại` });
+      }
+      res.status(500).json({ error: e.message });
+    }
   });
 
   // ── Export ──
@@ -764,16 +845,20 @@ module.exports = function(app, auth) {
       // Lock the MaBaiTap column visually
       sheet.getColumn('id').font = { color: { argb: 'FF888888' }, italic: true };
 
-      if (format === 'csv') {
+      if (format === 'pdf') {
+        const pdfService = require('./pdf-service');
+        await pdfService.exportExercisesAsPDF(res, rows, 'DANH SÁCH BÀI TẬP');
+      } else if (format === 'csv') {
         res.setHeader('Content-Type', 'text/csv; charset=utf-8');
         res.setHeader('Content-Disposition', 'attachment; filename="BaiTap.csv"');
         await workbook.csv.write(res);
+        res.end();
       } else {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename="BaiTap.xlsx"');
         await workbook.xlsx.write(res);
+        res.end();
       }
-      res.end();
     } catch(e) { res.status(500).json({ error: e.message }); }
   });
 
@@ -820,17 +905,39 @@ module.exports = function(app, auth) {
       sheet.getRow(1).font = { bold: true };
       sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD3D3D3' } };
 
-      if (format === 'csv') {
+      if (format === 'pdf') {
+        const pdfService = require('./pdf-service');
+        const pdfHeaders = [
+          { label: 'MSSV', property: 'student_id', width: 70 },
+          { label: 'Họ Tên', property: 'name', width: 140 },
+          { label: 'Lớp', property: 'class', width: 70 },
+          { label: 'Khoa', property: 'khoa', width: 120 },
+          { label: 'Giới tính', property: 'sex', width: 50 },
+          { label: 'Điểm', property: 'total_score', width: 40 },
+          { label: 'Hoàn thành (%)', property: 'assignment_completion', width: 70 }
+        ];
+        const pdfRows = rows.map(r => ({
+          student_id: r.student_id || '—',
+          name: r.name || '—',
+          class: r.class || '—',
+          khoa: r.khoa || '—',
+          sex: r.sex || '—',
+          total_score: (r.total_score || 0).toString(),
+          assignment_completion: (r.assignment_completion || 0).toString()
+        }));
+        await pdfService.exportTableAsPDF(res, pdfHeaders, pdfRows, 'DANH SÁCH SINH VIÊN');
+      } else if (format === 'csv') {
         res.setHeader('Content-Type', 'text/csv; charset=utf-8');
         res.setHeader('Content-Disposition', 'attachment; filename="students.csv"');
         res.write('\ufeff'); // BOM for UTF-8 Excel support
         await workbook.csv.write(res);
+        res.end();
       } else {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename="students.xlsx"');
         await workbook.xlsx.write(res);
+        res.end();
       }
-      res.end();
     } catch(e) {
       res.status(500).json({ error: e.message });
     }
@@ -887,17 +994,41 @@ module.exports = function(app, auth) {
       sheet.getRow(1).font = { bold: true };
       sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD3D3D3' } };
 
-      if (format === 'csv') {
+      if (format === 'pdf') {
+        const pdfService = require('./pdf-service');
+        const pdfHeaders = [
+          { label: 'MSSV', property: 'student_id', width: 60 },
+          { label: 'Họ Tên', property: 'student_name', width: 120 },
+          { label: 'Mã BT', property: 'assignment_code', width: 60 },
+          { label: 'Tên BT', property: 'TenBaiTap', width: 120 },
+          { label: 'Điểm', property: 'total_score', width: 40 },
+          { label: 'Đạo văn', property: 'plagiarism_detected', width: 50 },
+          { label: 'Trạng thái', property: 'status', width: 60 },
+          { label: 'Ngày nộp', property: 'submitted_at', width: 80 }
+        ];
+        const pdfRows = formattedRows.map(r => ({
+          student_id: r.student_id || '—',
+          student_name: r.student_name || '—',
+          assignment_code: r.assignment_code || '—',
+          TenBaiTap: r.TenBaiTap || '—',
+          total_score: (r.total_score || 0).toString(),
+          plagiarism_detected: r.plagiarism_detected ? 'Có' : 'Không',
+          status: r.status || '—',
+          submitted_at: r.submitted_at || '—'
+        }));
+        await pdfService.exportTableAsPDF(res, pdfHeaders, pdfRows, 'ĐIỂM NỘP BÀI');
+      } else if (format === 'csv') {
         res.setHeader('Content-Type', 'text/csv; charset=utf-8');
         res.setHeader('Content-Disposition', 'attachment; filename="grades.csv"');
         res.write('\ufeff');
         await workbook.csv.write(res);
+        res.end();
       } else {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename="grades.xlsx"');
         await workbook.xlsx.write(res);
+        res.end();
       }
-      res.end();
     } catch(e) {
       res.status(500).json({ error: e.message });
     }
@@ -1048,6 +1179,18 @@ module.exports = function(app, auth) {
       const r = await pool.request().query('SELECT TOP 100 * FROM EXPORT_LOG ORDER BY exported_at DESC');
       res.json(r.recordset);
     } catch(e) { console.error('export log error', e); res.json([]); }
+  });
+
+  // Lecturer-scoped export log — only records belonging to the current lecturer
+  app.get('/api/lecturer/export/log', auth, async (req, res) => {
+    try {
+      const pool = await db.getPool();
+      const gvId = req.user.lecturer_id || req.user.name;
+      const r = await pool.request()
+        .input('gv', mssql.VarChar, gvId)
+        .query('SELECT TOP 100 * FROM EXPORT_LOG WHERE exported_by=@gv ORDER BY exported_at DESC');
+      res.json(r.recordset);
+    } catch(e) { console.error('lecturer export log error', e); res.json([]); }
   });
 
   app.get('/api/admin/export/:type', auth, async (req, res) => {

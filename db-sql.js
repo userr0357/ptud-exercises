@@ -24,6 +24,7 @@ async function getPool() {
 
 // ── Helpers ──
 const DIFF_MAP = { 'Dễ': 1, 'De': 1, 'Trung bình': 2, 'Trung binh': 2, 'Khó': 3, 'Kho': 3, 'KHo': 3 };
+const FORMAT_MAP = { 'zip': 1, 'pdf': 2, 'docx': 3, 'link': 4, 'text': 5, 'image': 6 };
 
 function parseRequirements(raw) {
   if (!raw) return [];
@@ -174,16 +175,33 @@ async function createExercise(subjectId, formId, exercise, ownerGvId) {
     .query(`INSERT INTO BAITAP (MaBaiTap, TenBaiTap, MaDoKho, MaDangBai, MoTa, YeuCau, TieuChiChamDiem, MaMon, MaGiangVien, SkillLevel, SkillSub, UpdatedAt, FileDinhKem)
             VALUES (@MaBaiTap, @TenBaiTap, @MaDoKho, @MaDangBai, @MoTa, @YeuCau, @TieuChi, @MaMon, @MaGV, @Skill, @SkillSub, GETDATE(), @File);
             SELECT SCOPE_IDENTITY() AS newId`);
-  return { success: true, newId: r.recordset[0]?.newId };
+  
+  const newId = r.recordset[0]?.newId;
+  
+  if (newId && exercise.submission_format) {
+    const formats = exercise.submission_format.split(',').map(s => s.trim().toLowerCase());
+    for (const f of formats) {
+      const fId = FORMAT_MAP[f];
+      if (fId) {
+        await pool.request()
+          .input('bid', mssql.Int, newId)
+          .input('fid', mssql.Int, fId)
+          .query('INSERT INTO BAITAP_DINHDANG (BaiTapId, MaDinhDang) VALUES (@bid, @fid)');
+      }
+    }
+  }
+
+  return { success: true, newId };
 }
 
 async function updateExercise(maBaiTap, exercise, currentUserId) {
   const pool = await getPool();
   // Check ownership
   const check = await pool.request().input('id', mssql.VarChar, maBaiTap)
-    .query('SELECT MaGiangVien FROM BAITAP WHERE MaBaiTap = @id AND (IsDeleted = 0 OR IsDeleted IS NULL)');
+    .query('SELECT Id, MaGiangVien FROM BAITAP WHERE MaBaiTap = @id AND (IsDeleted = 0 OR IsDeleted IS NULL)');
   if (!check.recordset.length) return { error: 'Not found', status: 404 };
   const owner = check.recordset[0].MaGiangVien;
+  const numericId = check.recordset[0].Id;
   if (owner && currentUserId && owner !== currentUserId) return { error: 'Forbidden', status: 403 };
 
   const sets = [];
@@ -198,6 +216,26 @@ async function updateExercise(maBaiTap, exercise, currentUserId) {
   sets.push('UpdatedAt = GETDATE()');
 
   if (sets.length > 1) await req.query(`UPDATE BAITAP SET ${sets.join(', ')} WHERE MaBaiTap = @id`);
+  
+  if (exercise.submission_format !== undefined) {
+    // Delete old formats
+    await pool.request().input('bid', mssql.Int, numericId).query('DELETE FROM BAITAP_DINHDANG WHERE BaiTapId = @bid');
+    
+    // Insert new formats
+    if (exercise.submission_format) {
+      const formats = exercise.submission_format.split(',').map(s => s.trim().toLowerCase());
+      for (const f of formats) {
+        const fId = FORMAT_MAP[f];
+        if (fId) {
+          await pool.request()
+            .input('bid', mssql.Int, numericId)
+            .input('fid', mssql.Int, fId)
+            .query('INSERT INTO BAITAP_DINHDANG (BaiTapId, MaDinhDang) VALUES (@bid, @fid)');
+        }
+      }
+    }
+  }
+  
   return { success: true };
 }
 

@@ -351,3 +351,15 @@ body:has(.app-sidebar.collapsed) .main-lecturer {
   margin-left: 80px !important;
   width: calc(100% - 80px) !important;
 }
+
+/* Enhanced Global Form Inputs */
+input, select, textarea {
+  font-family: inherit;
+  transition: all 0.2s ease-in-out;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+  outline: none;
+}
+

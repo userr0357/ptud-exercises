@@ -107,7 +107,12 @@ async function scanSystemDuplicates(userId) {
     const logId = logResult.recordset[0].logId;
     
     try {
-        const featuresResult = await pool.request().query('SELECT BaiTapId, HardHash, AI_Keywords FROM EXERCISE_FEATURES');
+        const featuresResult = await pool.request().query(`
+            SELECT f.BaiTapId, f.HardHash, f.AI_Keywords 
+            FROM EXERCISE_FEATURES f
+            JOIN BAITAP b ON f.BaiTapId = b.Id
+            WHERE b.IsDeleted = 0 OR b.IsDeleted IS NULL
+        `);
         const features = featuresResult.recordset;
         
         // Fetch all existing reports into memory to avoid N^2 SQL queries

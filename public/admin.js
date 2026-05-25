@@ -211,6 +211,7 @@ function renderLecturersTable(searchQuery = '') {
           <button onclick="toggleLecturerLock('${gv.MaGiangVien}', ${!gv.IsBlocked}, '${_safeName}', '${_safeSubjects}', ${_exCount})"
             style="padding:6px 12px; background:${gv.IsBlocked ? '#f0fdf4' : '#fff7ed'}; color:${gv.IsBlocked ? '#16a34a' : '#ea580c'}; border:1px solid ${gv.IsBlocked ? '#bbf7d0' : '#fed7aa'}; border-radius:7px; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap;"
             title="${gv.IsBlocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản'}">${gv.IsBlocked ? '🔓 Mở khóa' : '🔒 Khóa'}</button>
+          ${gv.IsBlocked ? `<button onclick="viewLockDetails('${gv.MaGiangVien}')" style="padding:6px 12px; background:#fefce8; color:#a16207; border:1px solid #fef08a; border-radius:7px; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap;" title="Xem chi tiết khóa">👁 Xem</button>` : ''}
           <button onclick="viewLecturerHistory('${gv.MaGiangVien}')"
             style="padding:6px 12px; background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; border-radius:7px; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap;"
             title="Xem hồ sơ tổng quan">👤 Hồ sơ</button>
@@ -626,6 +627,7 @@ async function showAddSubjectToGV() {
   const picker = document.getElementById('edit-add-subject-picker');
   const tagsEl = document.getElementById('edit-add-subject-tags');
   picker.style.display = 'block';
+  if (typeof switchEditAddSubjectTab === 'function') switchEditAddSubjectTab('pick');
   tagsEl.innerHTML = '<span style="color:var(--text-muted); font-size:15px;">Đang tải...</span>';
 
   try {
@@ -677,6 +679,93 @@ async function confirmAddSubjectsToGV() {
   });
   renderEditSubjectList(editingGV.subjects);
   picker.style.display = 'none';
+}
+
+function switchEditAddSubjectTab(tab) {
+  const contentPick = document.getElementById('edit-tab-content-pick');
+  const contentAdd  = document.getElementById('edit-tab-content-add');
+  const btnPick     = document.getElementById('edit-tab-pick-btn');
+  const btnAdd      = document.getElementById('edit-tab-add-btn');
+
+  if (!contentPick || !contentAdd || !btnPick || !btnAdd) return;
+
+  const baseStyle = 'padding:5px 14px; border:none; border-radius:6px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.15s;';
+
+  if (tab === 'pick') {
+    contentPick.style.display = 'block';
+    contentAdd.style.display = 'none';
+    btnPick.style.cssText = baseStyle + 'background:#fff; color:#2563eb; box-shadow:0 1px 3px rgba(0,0,0,0.1);';
+    btnAdd.style.cssText  = baseStyle + 'background:transparent; color:var(--text-muted); box-shadow:none;';
+  } else {
+    contentPick.style.display = 'none';
+    contentAdd.style.display = 'block';
+    btnPick.style.cssText = baseStyle + 'background:transparent; color:var(--text-muted); box-shadow:none;';
+    btnAdd.style.cssText  = baseStyle + 'background:#fff; color:#2563eb; box-shadow:0 1px 3px rgba(0,0,0,0.1);';
+  }
+}
+
+async function createAndAssignSubjectInEdit() {
+  const mamonEl  = document.getElementById('edit-new-sub-mamon');
+  const tenmonEl = document.getElementById('edit-new-sub-tenmon');
+  const statusEl = document.getElementById('edit-new-sub-status');
+  const btn      = document.getElementById('btn-edit-create-subject');
+
+  const mamon  = mamonEl.value.trim().toUpperCase();
+  const tenmon = tenmonEl.value.trim();
+
+  if (!mamon || !tenmon) {
+    statusEl.textContent = '⚠ Vui lòng điền đầy đủ Mã Môn và Tên Môn';
+    statusEl.style.color = '#f59e0b';
+    return;
+  }
+  if (mamon.length > 10) {
+    statusEl.textContent = '⚠ Mã môn tối đa 10 ký tự';
+    statusEl.style.color = '#ef4444';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang tạo...';
+  statusEl.textContent = '';
+
+  try {
+    const res = await fetch('/api/admin/subjects/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mamon, tenmon }),
+      credentials: 'include'
+    });
+    const result = await res.json();
+
+    if (res.ok) {
+      if (typeof allSubjects !== 'undefined') {
+        allSubjects.push({ MaMon: mamon, TenMon: tenmon, TotalExercises: 0, TotalLecturers: 0 });
+      }
+      
+      if (editingGV) {
+        if (!editingGV.subjects.some(s => s.MaMon === mamon)) {
+          editingGV.subjects.push({ MaMon: mamon, TenMon: tenmon, VaiTro: 'Giảng viên', QuyenXem: 1, QuyenSua: 1, QuyenXoa: 0 });
+        }
+        renderEditSubjectList(editingGV.subjects);
+      }
+      
+      mamonEl.value = '';
+      tenmonEl.value = '';
+      
+      showToast(`✅ Đã tạo môn "${tenmon}" và gán vào danh sách!`, 'success');
+      document.getElementById('edit-add-subject-picker').style.display = 'none';
+      switchEditAddSubjectTab('pick');
+    } else {
+      statusEl.textContent = '❌ ' + (result.error || 'Lỗi không xác định');
+      statusEl.style.color = '#ef4444';
+    }
+  } catch (err) {
+    statusEl.textContent = '❌ Lỗi kết nối: ' + err.message;
+    statusEl.style.color = '#ef4444';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✨ Tạo & Gán Môn';
+  }
 }
 
 async function saveEditSubjects() {
@@ -1038,20 +1127,20 @@ function showToast(msg, type = 'success') {
 }
 
 async function deleteLecturer(magv, name) {
-  if (!confirm(`CẢNH BÁO: Bạn có chắc chắn muốn XÓA giảng viên ${name} (${magv}) không?\n\nLưu ý: Nếu giảng viên này đã tạo bài tập, chức năng này sẽ báo lỗi vì liên quan đến dữ liệu hệ thống. Hãy sử dụng chức năng Khóa thay thế nếu không thể xóa.`)) return;
-  
-  try {
-    const res = await fetch(`/api/admin/lecturer/${magv}/delete`, { method: 'DELETE', credentials: 'include' });
-    const data = await res.json();
-    if (res.ok) {
-      showToast(`Đã xóa giảng viên ${name}`, 'success');
-      loadLecturersStats();
-    } else {
-      alert(`Không thể xóa:\n${data.error || 'Có lỗi xảy ra'}`);
+  showCustomConfirm(`CẢNH BÁO: Bạn có chắc chắn muốn XÓA giảng viên <b>${name} (${magv})</b> không?<br><br><span style="font-size:14px;color:var(--text-muted)">Lưu ý: Nếu giảng viên này đã tạo bài tập, chức năng này sẽ báo lỗi vì liên quan đến dữ liệu hệ thống. Hãy sử dụng chức năng <b>Khóa</b> thay thế nếu không thể xóa.</span>`, async () => {
+    try {
+      const res = await fetch(`/api/admin/lecturer/${magv}/delete`, { method: 'DELETE', credentials: 'include' });
+      const data = await res.json();
+      if (res.ok) {
+        showToast(`Đã xóa giảng viên ${name}`, 'success');
+        loadLecturersStats();
+      } else {
+        alert(`Không thể xóa:\n${data.error || 'Có lỗi xảy ra'}`);
+      }
+    } catch (err) {
+      alert('Lỗi kết nối tới máy chủ');
     }
-  } catch (err) {
-    alert('Lỗi kết nối tới máy chủ');
-  }
+  });
 }
 
 // ─────────────────────────────────────────────────
@@ -1237,7 +1326,7 @@ async function toggleLockHistory() {
       }
       tbody.innerHTML = logs.map(l => {
         const isLock = l.Action === 'LOCK';
-        const dt = l.BlockedAt ? new Date(l.BlockedAt).toLocaleString('vi-VN') : '—';
+        const dt = l.ActionTime ? new Date(l.ActionTime).toLocaleString('vi-VN') : '—';
         const until = l.BlockUntil ? new Date(l.BlockUntil).toLocaleDateString('vi-VN') : (isLock ? 'Vĩnh viễn' : '—');
         return `<div style="border-bottom:1px solid var(--border-color);padding:10px 0;display:flex;gap:10px;align-items:flex-start;">
           <span style="font-size:19px;">${isLock ? '🔒' : '🔓'}</span>
@@ -1268,6 +1357,58 @@ async function toggleLecturerLock(magv, lock, tenGV, subjectList, exerciseCount)
   }
 }
 
+async function viewLockDetails(magv) {
+  try {
+    const r = await fetch(`/api/admin/lecturer/${magv}/lock-history`, { credentials: 'include' });
+    const logs = await r.json();
+    if (!logs || logs.length === 0) {
+      showToast('Không tìm thấy chi tiết khóa', 'error');
+      return;
+    }
+    const latestLock = logs.find(l => l.Action === 'LOCK');
+    if (!latestLock) {
+      showToast('Không tìm thấy chi tiết khóa', 'error');
+      return;
+    }
+    const dt = latestLock.ActionTime ? new Date(latestLock.ActionTime).toLocaleString('vi-VN') : '—';
+    const until = latestLock.BlockUntil ? new Date(latestLock.BlockUntil).toLocaleDateString('vi-VN') : 'Vĩnh viễn';
+    
+    let html = `
+      <div style="font-size:15px; line-height:1.6; text-align:left;">
+        <div style="margin-bottom:8px;"><b>🔒 Khóa bởi:</b> ${latestLock.BlockedBy || 'admin'}</div>
+        <div style="margin-bottom:8px;"><b>⏱ Thời gian khóa:</b> ${dt}</div>
+        <div style="margin-bottom:8px;"><b>⏳ Hết hạn:</b> <span style="color:#ef4444; font-weight:600;">${until}</span> ${latestLock.Duration ? `(${latestLock.Duration})` : ''}</div>
+        <div style="margin-bottom:8px; padding:10px; background:var(--bg-color); border-radius:8px; border:1px solid var(--border-color);">
+          <b style="color:var(--text-muted); font-size:13px; display:block; margin-bottom:4px;">LÝ DO KHÓA:</b>
+          ${latestLock.Reason || 'Không có lý do cụ thể'}
+        </div>
+      </div>
+    `;
+    
+    showCustomConfirm(html, () => {});
+    
+    // Change the title of the custom confirm to 'Chi tiết khóa' instead of the warning sign
+    const header = document.querySelector('#custom-confirm-modal > div > div:first-child');
+    if (header) {
+      header.innerHTML = '🔒 Chi tiết khóa tài khoản';
+      header.style.background = '#fefce8';
+      header.style.color = '#a16207';
+      
+      const footer = document.querySelector('#custom-confirm-modal > div > div:last-child');
+      if (footer) {
+        footer.innerHTML = '';
+        const btnOk = document.createElement('button');
+        btnOk.innerHTML = 'Đóng';
+        btnOk.style.cssText = 'padding:8px 16px;border:none;border-radius:8px;background:#eab308;color:white;cursor:pointer;font-weight:700;font-family:inherit;';
+        btnOk.onclick = () => document.getElementById('custom-confirm-modal').remove();
+        footer.appendChild(btnOk);
+      }
+    }
+  } catch (err) {
+    showToast('Lỗi tải thông tin khóa', 'error');
+  }
+}
+
 
 
 // ─────────────────────────────────────────────────
@@ -1285,8 +1426,13 @@ async function openProfileModal(magv) {
   document.getElementById('profile-sub').textContent = '';
   document.getElementById('profile-avatar').textContent = '⏳';
   document.getElementById('profile-stats').innerHTML = '';
+  document.getElementById('profile-tab-login-count').textContent = '0';
+  document.getElementById('profile-tab-exercise-count').textContent = '0';
   document.getElementById('profile-logins').innerHTML = '<div style="color:var(--text-muted); font-size:15px; padding:10px 0;">Đang tải...</div>';
   document.getElementById('profile-exercises').innerHTML = '<div style="color:var(--text-muted); font-size:15px; padding:10px 0;">Đang tải...</div>';
+  
+  // Reset tab to login
+  switchProfileTab('login');
 
   try {
     const res = await fetch(`/api/admin/lecturer/${magv}/profile`, { credentials: 'include' });
@@ -1301,42 +1447,62 @@ async function openProfileModal(magv) {
 
     // Stats cards
     const statCards = [
-      { label: 'Tổng bài tập', value: stats.TotalEx, color: '#6366f1', icon: '📝' },
-      { label: '30 ngày qua', value: stats.ExLast30, color: '#10b981', icon: '🆕' },
-      { label: 'Số môn phụ trách', value: stats.SubjectCount, color: '#f59e0b', icon: '📚' },
-      { label: 'Tổng lần đăng nhập', value: stats.TotalLogins, color: '#06b6d4', icon: '🔑' },
+      { label: 'Tổng bài tập', value: stats.TotalEx, color: '#a5b4fc', icon: '📝' },
+      { label: '30 ngày qua', value: stats.ExLast30, color: '#6ee7b7', icon: '🆕' },
+      { label: 'Số môn phụ trách', value: stats.SubjectCount, color: '#fcd34d', icon: '📚' },
+      { label: 'Tổng lần đăng nhập', value: stats.TotalLogins, color: '#67e8f9', icon: '🔑' },
     ];
     document.getElementById('profile-stats').innerHTML = statCards.map(c => `
-      <div style="padding:16px; text-align:center; border-right:1px solid #f1f5f9;">
-        <div style="font-size:21px; margin-bottom:4px;">${c.icon}</div>
-        <div style="font-size:23px; font-weight:800; color:${c.color};">${c.value ?? 0}</div>
-        <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">${c.label}</div>
+      <div style="padding:20px 16px; text-align:center; border-right:1px solid rgba(255,255,255,0.15);">
+        <div style="font-size:24px; margin-bottom:6px;">${c.icon}</div>
+        <div style="font-size:28px; font-weight:800; color:${c.color};">${c.value ?? 0}</div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.8); margin-top:4px;">${c.label}</div>
       </div>
     `).join('');
 
+    // Update tab counts
+    document.getElementById('profile-tab-login-count').textContent = recentLogins.length;
+    document.getElementById('profile-tab-exercise-count').textContent = recentExercises.length;
+
     // Recent logins
     document.getElementById('profile-logins').innerHTML = recentLogins.length
-      ? recentLogins.map(l => {
-          const t = new Date(l.LoginTime).toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
-          return `<div style="padding:8px 10px; background:var(--bg-color,#f8fafc); border-radius:7px; font-size:14px; display:flex; justify-content:space-between; align-items:center;">
-            <span style="color:var(--text-main);">${t}</span>
-            <span style="padding:2px 8px; border-radius:20px; font-size:12px; font-weight:600; background:${l.IsOnline ? '#f0fdf4' : '#f1f5f9'}; color:${l.IsOnline ? '#16a34a' : '#94a3b8'};">${l.IsOnline ? '🟢 Online' : '⚫ Offline'}</span>
+      ? recentLogins.map((l, i) => {
+          const fmtStr = s => {
+            if (!s) return '—';
+            try {
+              const dObj = new Date(s);
+              if (isNaN(dObj.getTime())) return s;
+              return dObj.toLocaleDateString('vi-VN') + ' ' + dObj.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+            } catch(e) { return s; }
+          };
+          const t = fmtStr(l.LoginTime);
+          const isOnline = l.IsOnline;
+          return `<div style="padding:10px 14px; background:${i%2===0 ? 'var(--bg-color,#f8fafc)' : 'var(--card-bg)'}; border-radius:8px; font-size:14px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-color);">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px;">${isOnline ? '🟢' : '⚫'}</span>
+              <span style="color:var(--text-main); font-weight:500;">${t}</span>
+            </div>
+            <span style="padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700; background:${isOnline ? '#dcfce7' : '#f1f5f9'}; color:${isOnline ? '#15803d' : '#64748b'};">${isOnline ? 'Online' : 'Offline'}</span>
           </div>`;
         }).join('')
-      : '<div style="color:var(--text-muted); font-size:15px; font-style:italic; padding:10px 0;">Chưa có lịch sử đăng nhập</div>';
+      : '<div style="color:var(--text-muted); font-size:15px; font-style:italic; padding:16px; text-align:center;">Chưa có lịch sử đăng nhập</div>';
 
     // Recent exercises — dùng TenBaiTap và UpdatedAt
     document.getElementById('profile-exercises').innerHTML = recentExercises.length
-      ? recentExercises.map(e => {
+      ? recentExercises.map((e, i) => {
           const tenBai = e.TenBaiTap || e.TieuDe || '(Không có tên)';
           const dStr = e.UpdatedAt ? e.UpdatedAt.replace('Z', '') : null;
           const t = dStr ? new Date(dStr).toLocaleDateString('vi-VN') : '—';
-          return `<div style="padding:8px 10px; background:var(--bg-color,#f8fafc); border-radius:7px; font-size:14px;">
-            <div style="font-weight:600; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:220px;" title="${tenBai}">${tenBai}</div>
-            <div style="color:var(--text-muted); margin-top:2px;">${e.MaMon || '—'} • ${t}</div>
+          const monHoc = e.TenMon ? `${e.MaMon || '—'} · ${e.TenMon}` : (e.MaMon || '—');
+          return `<div style="padding:10px 14px; background:${i%2===0 ? 'var(--bg-color,#f8fafc)' : 'var(--card-bg)'}; border-radius:8px; font-size:14px; border:1px solid var(--border-color);">
+            <div style="font-weight:600; color:var(--text-main); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${tenBai}">${tenBai}</div>
+            <div style="display:flex; gap:14px; margin-top:5px; color:var(--text-muted); font-size:13px;">
+              <span>📚 ${monHoc}</span>
+              <span>📅 ${t}</span>
+            </div>
           </div>`;
         }).join('')
-      : '<div style="color:var(--text-muted); font-size:15px; font-style:italic; padding:10px 0;">Chưa có bài tập nào</div>';
+      : '<div style="color:var(--text-muted); font-size:15px; font-style:italic; padding:16px; text-align:center;">Chưa có bài tập nào</div>';
 
   } catch (err) {
     showToast('Lỗi tải hồ sơ: ' + err.message, 'error');
@@ -1346,6 +1512,37 @@ async function openProfileModal(magv) {
 
 function closeProfileModal() {
   document.getElementById('gv-profile-modal').style.display = 'none';
+}
+
+function switchProfileTab(tab) {
+  const btnLogin = document.getElementById('profile-tab-login-btn');
+  const btnEx = document.getElementById('profile-tab-exercise-btn');
+  const panelLogin = document.getElementById('profile-tab-login');
+  const panelEx = document.getElementById('profile-tab-exercise');
+
+  if (!btnLogin || !btnEx || !panelLogin || !panelEx) return;
+
+  if (tab === 'login') {
+    btnLogin.style.background = 'rgba(255,255,255,0.15)';
+    btnLogin.style.color = 'white';
+    btnLogin.style.borderBottom = '3px solid white';
+    btnEx.style.background = 'transparent';
+    btnEx.style.color = 'rgba(255,255,255,0.6)';
+    btnEx.style.borderBottom = '3px solid transparent';
+    
+    panelLogin.style.display = 'block';
+    panelEx.style.display = 'none';
+  } else {
+    btnEx.style.background = 'rgba(255,255,255,0.15)';
+    btnEx.style.color = 'white';
+    btnEx.style.borderBottom = '3px solid white';
+    btnLogin.style.background = 'transparent';
+    btnLogin.style.color = 'rgba(255,255,255,0.6)';
+    btnLogin.style.borderBottom = '3px solid transparent';
+    
+    panelLogin.style.display = 'none';
+    panelEx.style.display = 'block';
+  }
 }
 
 // ─────────────────────────────────────────────────
@@ -1427,7 +1624,16 @@ function renderLoginHistoryTable(data, tbody) {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">Không có dữ liệu trong khoảng thời gian này</td></tr>';
     return;
   }
-  const fmt = dt => dt ? new Date(dt).toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+  // fmt: handles both string "YYYY-MM-DD HH:mm:ss" (from server) and Date objects
+  const fmt = dt => {
+    if (!dt) return '—';
+    if (typeof dt === 'string') {
+      const [date, time] = dt.split(' ');
+      const [y, mo, d] = date.split('-');
+      return `${d}/${mo}/${y}, ${time ? time.slice(0,5) : ''}`;
+    }
+    return new Date(dt).toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  };
   tbody.innerHTML = data.map(r => {
     const dur = r.DurationMin != null ? `${r.DurationMin} phút` : '—';
     const statusBadge = r.IsOnline
@@ -1574,13 +1780,15 @@ function showActivityDetails(index) {
     detailsObj = { raw: data.details };
   }
 
+  const fmtDate = dt => dt ? new Date(dt).toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+
   let infoHtml = `
     <div style="background:#f1f5f9; padding:16px; border-radius:12px; margin-bottom:20px; display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:14px;">
       <div><strong style="color:#475569">Bài tập:</strong> <span style="color:#0f172a; font-weight:600">${data.exercise_title || '—'}</span> <span style="color:#64748b; font-size:13px">(ID: ${data.exercise_id || '—'})</span></div>
       <div><strong style="color:#475569">Giảng viên:</strong> <span style="color:#0f172a; font-weight:600">${data.lecturer_name || '—'}</span> <span style="color:#64748b; font-size:13px">(ID: ${data.lecturer_id || '—'})</span></div>
       <div><strong style="color:#475569">Môn học:</strong> <span style="color:#0f172a">${data.subject_id || '—'}</span></div>
       <div><strong style="color:#475569">Dạng bài:</strong> <span style="color:#0f172a">${data.form_id || '—'}</span></div>
-      <div><strong style="color:#475569">Thời gian:</strong> <span style="color:#0f172a">${fmt(data.timestamp)}</span></div>
+      <div><strong style="color:#475569">Thời gian:</strong> <span style="color:#0f172a">${fmtDate(data.timestamp)}</span></div>
       <div><strong style="color:#475569">Hành động:</strong> <span style="color:#0f172a; font-weight:600; text-transform:uppercase;">${data.action || '—'}</span></div>
     </div>
   `;
@@ -2945,7 +3153,8 @@ async function doExportSelected(type = 'exercises') {
     const a    = document.createElement('a');
     a.href = url; 
     const labelMap = { exercises: 'BaiTap_ChonLoc', students: 'SinhVien_ChonLoc', grades: 'DiemNopBai_ChonLoc' };
-    a.download = `${labelMap[type]}.${format === 'csv' ? 'csv' : 'xlsx'}`;
+    const ext = format === 'csv' ? 'csv' : (format === 'pdf' ? 'pdf' : 'xlsx');
+    a.download = `${labelMap[type]}.${ext}`;
     document.body.appendChild(a); a.click();
     document.body.removeChild(a); URL.revokeObjectURL(url);
     loadExportLog();
@@ -2979,7 +3188,7 @@ async function doExport(type) {
     if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Lỗi xuất file'); }
 
     const blob   = await res.blob();
-    const ext    = format === 'csv' ? 'csv' : 'xlsx';
+    const ext    = format === 'csv' ? 'csv' : (format === 'pdf' ? 'pdf' : 'xlsx');
     const url    = URL.createObjectURL(blob);
     const link   = document.createElement('a');
     link.href    = url;
@@ -3454,3 +3663,4 @@ function selectAllAdminExportGr(val) {
   document.querySelectorAll('#exp-gr-list-container .grp-chk-gr').forEach(c => c.checked = val);
   updateAdminExportGRCount();
 }
+

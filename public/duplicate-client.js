@@ -52,6 +52,30 @@ async function loadDuplicatesSection() {
     loadDuplicateHistory();
 }
 
+async function syncAllMissingAI() {
+    showCustomConfirm("Bắt đầu đồng bộ vân tay AI cho các bài tập cũ?<br><br><span style='font-size:14px;color:var(--text-muted)'>Quá trình này sẽ chạy ngầm và gọi API Groq cho từng bài tập cũ (mỗi bài cách nhau 2 giây). Bạn có thể đóng thông báo này và làm việc khác.</span>", async () => {
+        const btn = document.getElementById('btn-sync-ai');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Đang đồng bộ chạy ngầm...';
+            btn.style.opacity = '0.7';
+        }
+        try {
+            const res = await fetch('/api/duplicate/sync-all', { method: 'POST', credentials: 'include' });
+            const data = await res.json();
+            if (res.ok) {
+                showCustomAlert(`✅ ${data.message}<br><br>Có <b>${data.count}</b> bài tập cũ đang được đồng bộ. Vui lòng chờ khoảng ${Math.ceil(data.count * 2 / 60)} phút trước khi bấm Quét Toàn Hệ Thống!`);
+            } else {
+                showCustomAlert('Lỗi đồng bộ: ' + data.error, true);
+                if (btn) { btn.disabled = false; btn.innerHTML = 'Đồng bộ vân tay AI (Bài cũ)'; btn.style.opacity = '1'; }
+            }
+        } catch (e) {
+            showCustomAlert('Lỗi kết nối.', true);
+            if (btn) { btn.disabled = false; btn.innerHTML = 'Đồng bộ vân tay AI (Bài cũ)'; btn.style.opacity = '1'; }
+        }
+    });
+}
+
 async function startDuplicateScan() {
     showCustomConfirm("Bắt đầu quét chéo toàn hệ thống?<br><br><span style='font-size:14px;color:var(--text-muted)'>Quá trình quét bằng AI Groq có thể mất vài giây đến vài phút tùy vào số lượng bài tập.</span>", async () => {
         const btn = document.getElementById('btn-start-scan');
