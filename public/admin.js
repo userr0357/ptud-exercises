@@ -3700,7 +3700,7 @@ async function loadAdminSubjectRequests() {
   tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">Đang tải...</td></tr>';
   try {
     const res = await fetch('/api/admin/subject-requests', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      credentials: 'include'
     });
     const data = await res.json();
     if (data.length === 0) {
@@ -3798,7 +3798,8 @@ async function submitApproveSubject() {
   try {
     const res = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(bodyData)
     });
     const data = await res.json();

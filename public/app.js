@@ -1397,7 +1397,8 @@ async function submitSubjectRequest(e) {
   try {
     const res = await fetch('/api/lecturer/subject-request', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(data)
     });
     const result = await res.json();
@@ -1417,7 +1418,7 @@ async function loadSubjectRequests() {
   tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; color:#64748b;">Đang tải...</td></tr>';
   try {
     const res = await fetch('/api/lecturer/subject-requests', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      credentials: 'include'
     });
     const data = await res.json();
     if (data.length === 0) {
