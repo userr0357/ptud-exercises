@@ -3806,7 +3806,7 @@ async function submitApproveSubject() {
       closeApproveSubjectModal();
       loadAdminSubjectRequests();
       if (document.getElementById('admin-req-tbody')) {
-          loadLecturers(); // Refresh lecturers to reflect new perms
+          loadLecturersStats(); // Refresh lecturers to reflect new perms
       }
     } else {
       showToast(data.error || 'Lỗi xử lý yêu cầu', 'error');
