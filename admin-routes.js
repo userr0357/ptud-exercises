@@ -157,7 +157,15 @@ module.exports = function(app, auth) {
         CreatedData, UpdatedData, DeletedData, Changes
         FROM EXERCISE_AUDIT_LOG WHERE 1=1`;
       const { lecturer, subject, from, to } = req.query;
-      if (lecturer) { sql += ' AND LecturerId = @gv'; r.input('gv', mssql.VarChar, lecturer); }
+      
+      if (!req.user.is_admin) {
+        sql += ' AND (LecturerId = @myUid OR ExerciseId IN (SELECT MaBaiTap FROM BAITAP WHERE MaGiangVien = @myUid))';
+        r.input('myUid', mssql.VarChar, req.user.lecturer_id);
+      } else if (lecturer) { 
+        sql += ' AND LecturerId = @gv'; 
+        r.input('gv', mssql.VarChar, lecturer); 
+      }
+      
       if (subject) { sql += ' AND SubjectId = @mon'; r.input('mon', mssql.VarChar, subject); }
       if (from) { sql += ' AND ActionTime >= @from'; r.input('from', mssql.DateTime, new Date(from)); }
       if (to) { sql += ' AND ActionTime <= @to'; r.input('to', mssql.DateTime, new Date(to)); }
@@ -180,10 +188,19 @@ module.exports = function(app, auth) {
     try {
       const pool = await db.getPool();
       const r = await pool.request();
-      const result = await r.query(`SELECT TOP 200 Id, ExerciseId, LecturerId, LecturerName, ExerciseTitle,
+      let sql = `SELECT TOP 200 Id, ExerciseId, LecturerId, LecturerName, ExerciseTitle,
         Action, ActionTime, SubjectId, FormId, Details, CreatedAt, action_type,
         CreatedData, UpdatedData, DeletedData, Changes
-        FROM EXERCISE_AUDIT_LOG ORDER BY COALESCE(ActionTime, CreatedAt) DESC`);
+        FROM EXERCISE_AUDIT_LOG WHERE 1=1`;
+        
+      if (!req.user.is_admin) {
+        sql += ' AND (LecturerId = @myUid OR ExerciseId IN (SELECT MaBaiTap FROM BAITAP WHERE MaGiangVien = @myUid))';
+        r.input('myUid', mssql.VarChar, req.user.lecturer_id);
+      }
+      
+      sql += ' ORDER BY COALESCE(ActionTime, CreatedAt) DESC';
+        
+      const result = await r.query(sql);
       res.json(result.recordset.map(r => ({
         id: r.Id, exercise_id: r.ExerciseId, exercise_title: r.ExerciseTitle || r.ExerciseId,
         lecturer_id: r.LecturerId, lecturer_name: r.LecturerName,
@@ -408,6 +425,13 @@ module.exports = function(app, auth) {
   app.put('/api/admin/lecturer/:id/update', auth, async (req, res) => {
     try {
       const { newId, name, username, email, quyen, newPass } = req.body;
+
+      // Self-protection: không cho admin hạ quyền của chính mình
+      const selfId = req.user.lecturer_id || req.user.name;
+      if (req.params.id === selfId && quyen && quyen.toLowerCase() !== 'admin') {
+        return res.status(403).json({ error: 'Bạn không thể tự bỏ quyền Admin của chính mình.' });
+      }
+
       const pool = await db.getPool();
       
       let query = 'UPDATE GIANGVIEN SET MaGiangVien=@newId, TenGiangVien=@name, TenDangNhap=@username, Email=@email, Quyen=@role';
@@ -489,6 +513,12 @@ module.exports = function(app, auth) {
 
   app.delete('/api/admin/lecturer/:id/delete', auth, async (req, res) => {
     try {
+      // Self-protection: không cho admin tự xóa chính mình
+      const selfId = req.user.lecturer_id || req.user.name;
+      if (req.params.id === selfId) {
+        return res.status(403).json({ error: 'Bạn không thể tự xóa tài khoản của chính mình.' });
+      }
+
       const pool = await db.getPool();
       const mssql = require('mssql');
       const tx = new mssql.Transaction(pool);

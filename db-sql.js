@@ -191,6 +191,25 @@ async function createExercise(subjectId, formId, exercise, ownerGvId) {
     }
   }
 
+  // Insert into audit log
+  try {
+    const lReq = await pool.request().input('id', mssql.VarChar, ownerGvId || '').query('SELECT TenGiangVien FROM GIANGVIEN WHERE MaGiangVien = @id');
+    const ownerName = lReq.recordset.length ? lReq.recordset[0].TenGiangVien : (ownerGvId || 'Admin');
+    await pool.request()
+      .input('exId', mssql.VarChar, exercise.id)
+      .input('lId', mssql.VarChar, ownerGvId || '')
+      .input('lName', mssql.NVarChar, ownerName)
+      .input('title', mssql.NVarChar, exercise.title)
+      .input('action', mssql.NVarChar, 'Tạo mới')
+      .input('subId', mssql.VarChar, subjectId)
+      .input('formId', mssql.NVarChar, String(formId))
+      .input('details', mssql.NVarChar, `Tạo bài tập mới`)
+      .input('type', mssql.VarChar, 'CREATE')
+      .query(`INSERT INTO EXERCISE_AUDIT_LOG 
+              (ExerciseId, LecturerId, LecturerName, ExerciseTitle, Action, ActionTime, SubjectId, FormId, Details, action_type, CreatedAt)
+              VALUES (@exId, @lId, @lName, @title, @action, GETDATE(), @subId, @formId, @details, @type, GETDATE())`);
+  } catch(e) { console.error('Audit log create error', e); }
+
   return { success: true, newId };
 }
 
@@ -198,7 +217,7 @@ async function updateExercise(maBaiTap, exercise, currentUserId) {
   const pool = await getPool();
   // Check ownership
   const check = await pool.request().input('id', mssql.VarChar, maBaiTap)
-    .query('SELECT Id, MaGiangVien FROM BAITAP WHERE MaBaiTap = @id AND (IsDeleted = 0 OR IsDeleted IS NULL)');
+    .query('SELECT Id, MaGiangVien, TenBaiTap, MaMon, MaDangBai FROM BAITAP WHERE MaBaiTap = @id AND (IsDeleted = 0 OR IsDeleted IS NULL)');
   if (!check.recordset.length) return { error: 'Not found', status: 404 };
   const owner = check.recordset[0].MaGiangVien;
   const numericId = check.recordset[0].Id;
@@ -235,19 +254,70 @@ async function updateExercise(maBaiTap, exercise, currentUserId) {
       }
     }
   }
-  
+
+  // Insert into audit log
+  try {
+    const exTitle = exercise.title || check.recordset[0].TenBaiTap || maBaiTap;
+    const subId = check.recordset[0].MaMon;
+    const formId = check.recordset[0].MaDangBai;
+    
+    const actorId = currentUserId || owner || '';
+    const lReq = await pool.request().input('id', mssql.VarChar, actorId).query('SELECT TenGiangVien FROM GIANGVIEN WHERE MaGiangVien = @id');
+    const actorName = lReq.recordset.length ? lReq.recordset[0].TenGiangVien : (actorId || 'Admin');
+
+    await pool.request()
+      .input('exId', mssql.VarChar, maBaiTap)
+      .input('lId', mssql.VarChar, actorId)
+      .input('lName', mssql.NVarChar, actorName)
+      .input('title', mssql.NVarChar, exTitle)
+      .input('action', mssql.NVarChar, 'Cập nhật')
+      .input('subId', mssql.VarChar, subId)
+      .input('formId', mssql.NVarChar, String(formId))
+      .input('details', mssql.NVarChar, `Cập nhật bài tập`)
+      .input('type', mssql.VarChar, 'UPDATE')
+      .query(`INSERT INTO EXERCISE_AUDIT_LOG 
+              (ExerciseId, LecturerId, LecturerName, ExerciseTitle, Action, ActionTime, SubjectId, FormId, Details, action_type, CreatedAt)
+              VALUES (@exId, @lId, @lName, @title, @action, GETDATE(), @subId, @formId, @details, @type, GETDATE())`);
+  } catch(e) { console.error('Audit log update error', e); }
+
   return { success: true };
 }
 
 async function deleteExercise(maBaiTap, currentUserId) {
   const pool = await getPool();
   const check = await pool.request().input('id', mssql.VarChar, maBaiTap)
-    .query('SELECT MaGiangVien FROM BAITAP WHERE MaBaiTap = @id AND (IsDeleted = 0 OR IsDeleted IS NULL)');
+    .query('SELECT MaGiangVien, TenBaiTap, MaMon, MaDangBai FROM BAITAP WHERE MaBaiTap = @id AND (IsDeleted = 0 OR IsDeleted IS NULL)');
   if (!check.recordset.length) return { error: 'Not found', status: 404 };
   const owner = check.recordset[0].MaGiangVien;
   if (owner && currentUserId && owner !== currentUserId) return { error: 'Forbidden', status: 403 };
   await pool.request().input('id', mssql.VarChar, maBaiTap)
     .query('UPDATE BAITAP SET IsDeleted = 1 WHERE MaBaiTap = @id');
+
+  // Insert into audit log
+  try {
+    const exTitle = check.recordset[0].TenBaiTap || maBaiTap;
+    const subId = check.recordset[0].MaMon;
+    const formId = check.recordset[0].MaDangBai;
+    
+    const actorId = currentUserId || owner || '';
+    const lReq = await pool.request().input('id', mssql.VarChar, actorId).query('SELECT TenGiangVien FROM GIANGVIEN WHERE MaGiangVien = @id');
+    const actorName = lReq.recordset.length ? lReq.recordset[0].TenGiangVien : (actorId || 'Admin');
+
+    await pool.request()
+      .input('exId', mssql.VarChar, maBaiTap)
+      .input('lId', mssql.VarChar, actorId)
+      .input('lName', mssql.NVarChar, actorName)
+      .input('title', mssql.NVarChar, exTitle)
+      .input('action', mssql.NVarChar, 'Xóa')
+      .input('subId', mssql.VarChar, subId)
+      .input('formId', mssql.NVarChar, String(formId))
+      .input('details', mssql.NVarChar, `Lưu trữ / Xóa bài tập`)
+      .input('type', mssql.VarChar, 'DELETE')
+      .query(`INSERT INTO EXERCISE_AUDIT_LOG 
+              (ExerciseId, LecturerId, LecturerName, ExerciseTitle, Action, ActionTime, SubjectId, FormId, Details, action_type, CreatedAt)
+              VALUES (@exId, @lId, @lName, @title, @action, GETDATE(), @subId, @formId, @details, @type, GETDATE())`);
+  } catch(e) { console.error('Audit log delete error', e); }
+
   return { success: true };
 }
 

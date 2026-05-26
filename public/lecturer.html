@@ -1992,7 +1992,7 @@
           recentEl.innerHTML = d.recent.map(r => `<tr>
             <td style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0);font-size:16px;font-weight:600;color:var(--text-main,#1e293b)">${r.TenBaiTap || '—'}</td>
             <td style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0);font-size:15px;color:var(--text-muted,#64748b)">${r.TenMon || '—'}</td>
-            <td style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0)"><span style="font-size:14px;font-weight:700;padding:3px 10px;border-radius:12px;background:${r.TenDoKho==='Dễ'?'#dcfce7':r.TenDoKho==='Khó'?'#fee2e2':'#fef9c3'};color:${r.TenDoKho==='Dễ'?'#166534':r.TenDoKho==='Khó'?'#991b1b':'#854d0e'}">${r.TenDoKho || '—'}</span></td>
+            <td style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0)"><span style="display:inline-block;white-space:nowrap;font-size:14px;font-weight:700;padding:3px 10px;border-radius:12px;background:${r.TenDoKho==='Dễ'?'#dcfce7':r.TenDoKho==='Khó'?'#fee2e2':'#fef9c3'};color:${r.TenDoKho==='Dễ'?'#166534':r.TenDoKho==='Khó'?'#991b1b':'#854d0e'}">${r.TenDoKho || '—'}</span></td>
             <td style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0)"><span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;font-size:15px;font-weight:800;background:${(lvlColors[r.SkillLevel]||'#6366f1')}20;color:${lvlColors[r.SkillLevel]||'#6366f1'}">${r.SkillLevel || '—'}</span></td>
             <td style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0);font-size:15px;color:var(--text-muted,#64748b)">${fmt(r.UpdatedAt)}</td>
           </tr>`).join('');

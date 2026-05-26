@@ -271,6 +271,31 @@
             </div>
           </div>
 
+          <!-- ─── Phân Loại Theo Dạng Bài ─── -->
+          <div style="background:var(--card-bg);border-radius:12px;padding:20px;border:1px solid var(--border-color);margin-top:16px;">
+            <div style="margin-bottom:14px;">
+              <h3 style="margin:0;font-size:17px;font-weight:700;color:var(--text-main);">📋 Phân loại theo dạng bài</h3>
+              <p style="margin:4px 0 0;font-size:15px;color:var(--text-muted);">Số lượng bài tập phân bổ theo từng dạng bài</p>
+            </div>
+            <div style="display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start;">
+              <div style="position:relative;height:220px;"><canvas id="dash-pie-form"></canvas></div>
+              <div>
+                <table style="width:100%;border-collapse:collapse;font-size:16px;">
+                  <thead>
+                    <tr style="border-bottom:2px solid var(--border-color);">
+                      <th style="padding:8px 10px;text-align:left;color:var(--text-muted);font-weight:600;font-size:15px;">Dạng Bài</th>
+                      <th style="padding:8px 10px;text-align:center;color:var(--text-muted);font-weight:600;font-size:15px;">Số Bài</th>
+                      <th style="padding:8px 6px;color:var(--text-muted);font-weight:600;font-size:15px;">Tỷ Lệ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dash-form-legend-tbody">
+                    <tr><td colspan="3" style="padding:20px;text-align:center;color:var(--text-muted);">Đang tải...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
           <!-- ─── Phân Loại Theo Mức Kỹ Năng (full row) ─── -->
           <div style="background:var(--card-bg);border-radius:12px;border:1px solid var(--border-color);overflow:hidden;margin-top:16px;">
             <div style="background:linear-gradient(135deg,#6366f1,#818cf8);padding:16px 20px;">

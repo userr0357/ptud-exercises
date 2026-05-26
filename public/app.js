@@ -374,7 +374,7 @@ function renderSubject() {
             <span title="Tiêu chí">⚖️ ${critCount}</span>
           </div>
           <div style="display:flex; gap:8px; align-items:center;">
-            <span style="font-size:12px; font-weight:700; background:${diffLabel==='Khó'?'#fee2e2':(diffLabel==='Trung bình'?'#fef3c7':'#dcfce7')}; color:${diffLabel==='Khó'?'#991b1b':(diffLabel==='Trung bình'?'#92400e':'#166534')}; padding:4px 8px; border-radius:6px;">${escapeHtml(diffLabel)}</span>
+            <span style="display:inline-block;white-space:nowrap;font-size:12px; font-weight:700; background:${diffLabel==='Khó'?'#fee2e2':(diffLabel==='Trung bình'?'#fef3c7':'#dcfce7')}; color:${diffLabel==='Khó'?'#991b1b':(diffLabel==='Trung bình'?'#92400e':'#166534')}; padding:4px 8px; border-radius:6px;">${escapeHtml(diffLabel)}</span>
             ${ex.submission_format ? `<span style="font-size:12px; font-weight:600; color:var(--text-muted);">${escapeHtml(ex.submission_format)}</span>` : ''}
           </div>
         </div>
@@ -1060,7 +1060,9 @@ function renderManageList() {
     const tdId = document.createElement('td'); tdId.textContent = ex.id || '';
     const tdTitle = document.createElement('td'); tdTitle.textContent = ex.title || '';
     tdTitle.style.cursor = 'pointer'; tdTitle.onclick = () => showExercise(ex, f);
-    const tdDiff = document.createElement('td'); tdDiff.textContent = ex.difficulty || '';
+    const tdDiff = document.createElement('td');
+    const diffText = ex.difficulty || '';
+    tdDiff.innerHTML = diffText ? `<span style="display:inline-block;white-space:nowrap;padding:3px 10px;border-radius:12px;font-size:14px;font-weight:600;background:${diffText==='Khó'?'#fee2e2':(diffText==='Trung bình'?'#fef9c3':'#dcfce7')};color:${diffText==='Khó'?'#991b1b':(diffText==='Trung bình'?'#854d0e':'#166534')}">${diffText}</span>` : '';
     const tdTotal = document.createElement('td');
     // compute total points from grading_criteria if numeric points available
     let totalPoints = 0;

@@ -3,6 +3,7 @@ let dashboardCharts = {};
 let lecturerData = []; // Lưu danh sách GV đã tải
 let gvCurrentPage = 1;
 const gvPerPage = 10;
+let _currentAdminId = null; // ID admin đang đăng nhập (dùng cho self-protection)
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -167,10 +168,10 @@ function renderLecturersTable(searchQuery = '') {
       ? '<span style="background:#fef2f2; color:#dc2626; padding:4px 10px; border-radius:20px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">🔒 Đã khóa</span>'
       : '<span style="background:#f0fdf4; color:#16a34a; padding:4px 10px; border-radius:20px; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">✅ Hoạt động</span>';
 
-    // Prepare safe strings for inline onclick attrs
     const _safeName = (gv.TenGiangVien || gv.MaGiangVien).replace(/'/g, '\\u0027');
     const _safeSubjects = (gv.SubjectList || 'Chưa phân công').replace(/'/g, '\\u0027');
     const _exCount = gv.ExerciseCount || 0;
+    const _isSelf = (_currentAdminId && gv.MaGiangVien === _currentAdminId);
 
     const row = document.createElement('tr');
     row.style.cssText = 'transition:background 0.15s; cursor:default;';
@@ -201,6 +202,7 @@ function renderLecturersTable(searchQuery = '') {
         <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
           ${roleBadge}
           ${statusBadge}
+          ${_isSelf ? '<span style="background:#fef9c3;color:#b45309;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;">Tài khoản của bạn</span>' : ''}
         </div>
       </td>
       <td style="padding:14px 12px;">
@@ -215,9 +217,12 @@ function renderLecturersTable(searchQuery = '') {
           <button onclick="viewLecturerHistory('${gv.MaGiangVien}')"
             style="padding:6px 12px; background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; border-radius:7px; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap;"
             title="Xem hồ sơ tổng quan">👤 Hồ sơ</button>
-          <button onclick="deleteLecturer('${gv.MaGiangVien}', '${_safeName}')"
+          ${_isSelf
+            ? `<button disabled title="Không thể tự xóa chính mình" style="padding:6px 12px; background:#f1f5f9; color:#94a3b8; border:1px solid #e2e8f0; border-radius:7px; font-size:14px; font-weight:600; cursor:not-allowed; white-space:nowrap; opacity:0.6;">🗑 Xóa</button>`
+            : `<button onclick="deleteLecturer('${gv.MaGiangVien}', '${_safeName}')"
             style="padding:6px 12px; background:#fef2f2; color:#dc2626; border:1px solid #fecaca; border-radius:7px; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap;"
-            title="Xóa giảng viên">🗑 Xóa</button>
+            title="Xóa giảng viên">🗑 Xóa</button>`
+          }
         </div>
       </td>
     `;
@@ -501,6 +506,19 @@ async function openEditLecturerModal(magv) {
   document.getElementById('edit-gv-pass').value = '';
   document.getElementById('edit-modal-title').textContent = 'Đang tải...';
   document.getElementById('edit-modal-subtitle').textContent = `Mã: ${magv}`;
+
+  // Self-protection: phát hiện admin đang sửa chính mình
+  const isSelf = (_currentAdminId && magv === _currentAdminId);
+  const quyenSel = document.getElementById('edit-gv-quyen');
+  const selfNotice = document.getElementById('self-protection-notice');
+
+  if (isSelf) {
+    if (quyenSel) { quyenSel.disabled = true; quyenSel.title = 'Không thể tự thay đổi quyền của chính mình'; }
+    if (selfNotice) selfNotice.style.display = 'flex';
+  } else {
+    if (quyenSel) { quyenSel.disabled = false; quyenSel.title = ''; }
+    if (selfNotice) selfNotice.style.display = 'none';
+  }
 
   try {
     const res = await fetch(`/api/admin/lecturer/${magv}/detail`, { credentials: 'include' });
@@ -846,7 +864,7 @@ function renderDetailExercisesTable(query = '') {
         <div style="font-size:14px;color:var(--text-muted);">${ex.TenMon||'—'}</div>
       </td>
       <td style="padding:12px 14px;">
-        <span style="background:${dc[0]};color:${dc[1]};padding:3px 10px;border-radius:20px;font-size:14px;font-weight:600;">${ex.TenDoKho||'—'}</span>
+        <span style="display:inline-block;white-space:nowrap;background:${dc[0]};color:${dc[1]};padding:3px 10px;border-radius:20px;font-size:14px;font-weight:600;">${ex.TenDoKho||'—'}</span>
       </td>
       <td style="padding:12px 14px;text-align:center;">
         <span title="${lvlNames[lvl]||''}" style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;background:${col}20;color:${col};font-size:15px;font-weight:800;border:1px solid ${col}44;">L${lvl}</span>
@@ -2376,6 +2394,7 @@ async function loadAdminInfo() {
     const res = await fetch('/api/lecturer/me', { credentials: 'include' });
     if (res.ok) {
       const admin = await res.json();
+      _currentAdminId = admin.lecturer_id || admin.name; // Lưu ID để dùng self-protection
       const userName = document.querySelector('.admin-user-name');
       if (userName) userName.textContent = admin.name;
     }
@@ -2430,11 +2449,13 @@ async function loadDashboardPieCharts() {
     if (!res.ok) return;
     const data = await res.json();
 
-    // Xóa "Đang tải..." khỏi cả 2 legend tables
+    // Xóa "Đang tải..." khỏi cả legend tables
     const subLeg = document.getElementById('dash-subject-legend-tbody');
     const lvlLeg = document.getElementById('dash-level-legend-tbody');
+    const formLeg = document.getElementById('dash-form-legend-tbody');
     if (subLeg) subLeg.innerHTML = '';
     if (lvlLeg) lvlLeg.innerHTML = '';
+    if (formLeg) formLeg.innerHTML = '';
 
     if (data.bySubject && data.bySubject.length) {
       renderPieChart('dash-pie-subject', data.bySubject, 'subject', 'dash-subject-legend-tbody');
@@ -2447,6 +2468,12 @@ async function loadDashboardPieCharts() {
       renderPieChart('dash-pie-level', lvlData, 'level', 'dash-level-legend-tbody');
     } else if (lvlLeg) {
       lvlLeg.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:16px;color:var(--text-muted);">Không có dữ liệu</td></tr>';
+    }
+
+    if (data.byForm && data.byForm.length) {
+      renderPieChart('dash-pie-form', data.byForm, 'form', 'dash-form-legend-tbody');
+    } else if (formLeg) {
+      formLeg.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:16px;color:var(--text-muted);">Không có dữ liệu</td></tr>';
     }
   } catch (e) { console.error('Dashboard pie charts failed', e); }
 }
@@ -2722,7 +2749,7 @@ async function viewSkillLevelDetails(level) {
           </div>
         </td>
         <td style="padding:11px 12px; text-align:center;">
-          <span style="background:${diff.bg}; color:${diff.color}; padding:3px 10px; border-radius:20px; font-size:14px; font-weight:700;">${diff.label}</span>
+          <span style="display:inline-block;white-space:nowrap;background:${diff.bg}; color:${diff.color}; padding:3px 10px; border-radius:20px; font-size:14px; font-weight:700;">${diff.label}</span>
         </td>
         <td style="padding:11px 12px; text-align:center;">
           <button onclick="openAdminExModal('${ex.MaBaiTap}')"
@@ -3053,7 +3080,7 @@ function renderAdminExportList(exercises) {
 
   const diffBadge = d => {
     const cls = d === 'Khó' ? '#ef4444' : (d === 'Trung bình' ? '#f59e0b' : '#10b981');
-    return `<span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:${cls}22;color:${cls};">${d||'—'}</span>`;
+    return `<span style="display:inline-block;white-space:nowrap;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:${cls}22;color:${cls};">${d||'—'}</span>`;
   };
 
   let html = '';
