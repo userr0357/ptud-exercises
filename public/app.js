@@ -97,9 +97,13 @@ async function loadSubjects() {
   try { updateLoginButton(); } catch (e) {}
   // auto-select first subject when opening student page (so students see exercises immediately)
   try {
+    const isStudentPage = !window.location.pathname.includes('lecturer') && !window.location.pathname.includes('admin');
     const hash = (location.hash || '').replace(/^#/, '');
     if (!hash && state.subjects && state.subjects.length) {
-      await selectSubject(state.subjects[0].subject_id);
+      const visible = isStudentPage ? state.subjects.filter(s => s.total_exercises > 0) : state.subjects;
+      if (visible.length > 0) {
+        await selectSubject(visible[0].subject_id);
+      }
     }
   } catch (e) { /* ignore */ }
   // If we are on the lecturer management page (has #manage-list), render its list now
@@ -120,7 +124,11 @@ function renderSidebar() {
   const ul = document.getElementById('subject-list');
   if (!ul) return;
   ul.innerHTML = '';
-  state.subjects.forEach(s => {
+  
+  const isStudentPage = !window.location.pathname.includes('lecturer') && !window.location.pathname.includes('admin');
+  const subjectsToRender = isStudentPage ? state.subjects.filter(s => s.total_exercises > 0) : state.subjects;
+  
+  subjectsToRender.forEach(s => {
     const li = document.createElement('li');
     const isActive = state.currentSubject && state.currentSubject.subject_id === s.subject_id;
     const firstLetter = (s.subject_name || 'S').charAt(0).toUpperCase();
