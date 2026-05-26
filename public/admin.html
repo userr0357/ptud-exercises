@@ -1153,6 +1153,38 @@
     </div>
   </div>
 
+  <!-- SECTION: YÊU CẦU MÔN HỌC -->
+  <div id="subject-requests" class="admin-section" style="display:none">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <div style="display: flex; align-items: flex-start; gap: 12px;">
+        <span style="font-size: 28px; line-height: 1;">📬</span>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 class="section-title" style="margin:0; line-height: 1;">Yêu cầu môn học</h2>
+          <p style="margin:0; font-size:15px; color:var(--text-muted);">Xét duyệt các yêu cầu thêm/hủy môn học của giảng viên</p>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--card-bg); border-radius:12px; border:1px solid var(--border-color); overflow:hidden; margin-bottom:24px;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Thời gian</th>
+            <th>Giảng viên</th>
+            <th>Loại Yêu Cầu</th>
+            <th>Môn học</th>
+            <th>Lý do</th>
+            <th style="text-align:center;">Trạng thái</th>
+            <th style="text-align:center; min-width:180px;">Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="admin-req-tbody">
+          <tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">Đang tải...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
   <!-- MODAL: SIDE-BY-SIDE -->
   <div id="duplicate-modal" style="display:none;position:fixed;inset:0;z-index:3500;background:rgba(0,0,0,0.6);backdrop-filter:blur(5px);align-items:center;justify-content:center;">
     <div style="width:95%;max-width:1100px;height:85vh;background:var(--card-bg);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;overflow:hidden;">
@@ -1222,38 +1254,7 @@
     </div>
   </div>
 
-  <!-- SECTION: YÊU CẦU MÔN HỌC -->
-  <div id="subject-requests" class="admin-section" style="display:none">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-      <div style="display: flex; align-items: flex-start; gap: 12px;">
-        <span style="font-size: 28px; line-height: 1;">📬</span>
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <h2 class="section-title" style="margin:0; line-height: 1;">Yêu cầu môn học</h2>
-          <p style="margin:0; font-size:15px; color:var(--text-muted);">Xét duyệt các yêu cầu thêm/hủy môn học của giảng viên</p>
-        </div>
-      </div>
-    </div>
-    <div style="background:var(--card-bg); border-radius:12px; border:1px solid var(--border-color); overflow:hidden; margin-bottom:24px;">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Thời gian</th>
-            <th>Giảng viên</th>
-            <th>Loại Yêu Cầu</th>
-            <th>Môn học</th>
-            <th>Lý do</th>
-            <th style="text-align:center;">Trạng thái</th>
-            <th style="text-align:center; min-width:180px;">Hành động</th>
-          </tr>
-        </thead>
-        <tbody id="admin-req-tbody">
-          <tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">Đang tải...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-</main>
+  </main>
   </div>
   
   <!-- MODAL: Duyệt Yêu Cầu Môn Học -->
