@@ -3753,7 +3753,6 @@ function openApproveSubjectModal(id, actionType, gvName, subjectCode, subjectNam
   if (isApprove) {
     if (actionType === 'ADD') {
       document.getElementById('req-modal-permissions').style.display = 'block';
-      document.getElementById('req-perm-add').checked = false;
       document.getElementById('req-perm-edit').checked = false;
       document.getElementById('req-perm-del').checked = false;
     } else {
@@ -3786,8 +3785,7 @@ async function submitApproveSubject() {
   
   if (isApprove && actionType === 'ADD') {
     bodyData.permissions = {
-      CanView: 1, // default
-      CanAdd: document.getElementById('req-perm-add').checked ? 1 : 0,
+      CanView: 1, // default - luôn có quyền xem
       CanEdit: document.getElementById('req-perm-edit').checked ? 1 : 0,
       CanDelete: document.getElementById('req-perm-del').checked ? 1 : 0,
     };
@@ -3804,17 +3802,17 @@ async function submitApproveSubject() {
     });
     const data = await res.json();
     if (res.ok && data.success) {
-      showAdminToast(`Đã ${isApprove ? 'phê duyệt' : 'từ chối'} yêu cầu thành công!`, 'success');
+      showToast(`✅ Đã ${isApprove ? 'phê duyệt' : 'từ chối'} yêu cầu thành công!`, 'success');
       closeApproveSubjectModal();
       loadAdminSubjectRequests();
       if (document.getElementById('admin-req-tbody')) {
           loadLecturers(); // Refresh lecturers to reflect new perms
       }
     } else {
-      showAdminToast(data.error || 'Lỗi xử lý yêu cầu', 'error');
+      showToast(data.error || 'Lỗi xử lý yêu cầu', 'error');
     }
   } catch(e) {
-    showAdminToast(e.message, 'error');
+    showToast('Lỗi kết nối: ' + e.message, 'error');
   }
 }
 

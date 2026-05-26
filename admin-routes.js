@@ -1323,30 +1323,27 @@ module.exports = function(app, auth) {
             .input('code', mssql.VarChar, requestData.SubjectCode)
             .query("SELECT * FROM GIANGVIEN_MONHOC WHERE MaGiangVien=@gv AND MaMon=@code");
             
-          const canView = permissions?.CanView ? 1 : 1; // Default at least view
-          const canAdd = permissions?.CanAdd ? 1 : 0;
-          const canEdit = permissions?.CanEdit ? 1 : 0;
-          const canDelete = permissions?.CanDelete ? 1 : 0;
+          const quyenXem = 1; // Mặc định luôn có quyền xem
+          const quyenSua = permissions?.CanEdit ? 1 : 0;
+          const quyenXoa = permissions?.CanDelete ? 1 : 0;
 
           if (checkAssignedR.recordset.length === 0) {
             await transaction.request()
               .input('gv', mssql.VarChar, requestData.LecturerId)
               .input('code', mssql.VarChar, requestData.SubjectCode)
-              .input('v', mssql.Bit, canView)
-              .input('a', mssql.Bit, canAdd)
-              .input('e', mssql.Bit, canEdit)
-              .input('d', mssql.Bit, canDelete)
-              .query(`INSERT INTO GIANGVIEN_MONHOC (MaGiangVien, MaMon, CanView, CanAdd, CanEdit, CanDelete) 
-                      VALUES (@gv, @code, @v, @a, @e, @d)`);
+              .input('v', mssql.Bit, quyenXem)
+              .input('e', mssql.Bit, quyenSua)
+              .input('d', mssql.Bit, quyenXoa)
+              .query(`INSERT INTO GIANGVIEN_MONHOC (MaGiangVien, MaMon, QuyenXem, QuyenSua, QuyenXoa) 
+                      VALUES (@gv, @code, @v, @e, @d)`);
           } else {
-             await transaction.request()
+            await transaction.request()
               .input('gv', mssql.VarChar, requestData.LecturerId)
               .input('code', mssql.VarChar, requestData.SubjectCode)
-              .input('v', mssql.Bit, canView)
-              .input('a', mssql.Bit, canAdd)
-              .input('e', mssql.Bit, canEdit)
-              .input('d', mssql.Bit, canDelete)
-              .query(`UPDATE GIANGVIEN_MONHOC SET CanView=@v, CanAdd=@a, CanEdit=@e, CanDelete=@d 
+              .input('v', mssql.Bit, quyenXem)
+              .input('e', mssql.Bit, quyenSua)
+              .input('d', mssql.Bit, quyenXoa)
+              .query(`UPDATE GIANGVIEN_MONHOC SET QuyenXem=@v, QuyenSua=@e, QuyenXoa=@d 
                       WHERE MaGiangVien=@gv AND MaMon=@code`);
           }
         } else if (requestData.ActionType === 'REMOVE') {
