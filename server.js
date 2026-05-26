@@ -971,6 +971,56 @@ app.post('/api/lecturer/forms', auth, async (req, res) => {
 });
 
 // ==================================================
+//  SUBJECT REQUESTS (LECTURER)
+// ==================================================
+app.post('/api/lecturer/subject-request', auth, async (req, res) => {
+    try {
+        const pool = await db.getPool();
+        const gvId = req.user.lecturer_id;
+        const { SubjectCode, SubjectName, ActionType, Reason } = req.body;
+        
+        if (!SubjectCode || !SubjectName || !ActionType) {
+            return res.status(400).json({ error: 'Thiếu thông tin yêu cầu.' });
+        }
+
+        // Check for existing pending request
+        const checkR = await pool.request()
+            .input('gv', sql.VarChar, gvId)
+            .input('code', sql.VarChar, SubjectCode)
+            .query("SELECT 1 FROM YEUCAU_MONHOC WHERE LecturerId=@gv AND SubjectCode=@code AND Status='PENDING'");
+        if (checkR.recordset.length > 0) {
+            return res.status(400).json({ error: 'Bạn đã có một yêu cầu đang chờ duyệt cho môn này.' });
+        }
+
+        await pool.request()
+            .input('gv', sql.VarChar, gvId)
+            .input('code', sql.VarChar, SubjectCode)
+            .input('name', sql.NVarChar, SubjectName)
+            .input('action', sql.VarChar, ActionType)
+            .input('reason', sql.NVarChar, Reason || '')
+            .query(`INSERT INTO YEUCAU_MONHOC (LecturerId, SubjectCode, SubjectName, ActionType, Reason)
+                    VALUES (@gv, @code, @name, @action, @reason)`);
+                    
+        res.json({ success: true });
+    } catch(e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/lecturer/subject-requests', auth, async (req, res) => {
+    try {
+        const pool = await db.getPool();
+        const gvId = req.user.lecturer_id;
+        const r = await pool.request()
+            .input('gv', sql.VarChar, gvId)
+            .query("SELECT * FROM YEUCAU_MONHOC WHERE LecturerId=@gv ORDER BY CreatedAt DESC");
+        res.json(r.recordset);
+    } catch(e) {
+        res.json([]);
+    }
+});
+
+// ==================================================
 //  LECTURER DASHBOARD STATS
 // ==================================================
 app.get('/api/lecturer/dashboard', auth, async (req, res) => {

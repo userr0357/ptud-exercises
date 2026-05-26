@@ -3691,3 +3691,138 @@ function selectAllAdminExportGr(val) {
   updateAdminExportGRCount();
 }
 
+// ==================================================
+// SUBJECT REQUESTS (ADMIN)
+// ==================================================
+async function loadAdminSubjectRequests() {
+  const tbody = document.getElementById('admin-req-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">Đang tải...</td></tr>';
+  try {
+    const res = await fetch('/api/admin/subject-requests', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+    const data = await res.json();
+    if (data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">Không có yêu cầu nào.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(r => {
+      const isAdd = r.ActionType === 'ADD';
+      const typeBadge = isAdd ? `<span style="background:#e0e7ff;color:#4338ca;padding:4px 10px;border-radius:8px;font-size:13px;font-weight:700;">➕ Thêm môn</span>` 
+                              : `<span style="background:#fee2e2;color:#b91c1c;padding:4px 10px;border-radius:8px;font-size:13px;font-weight:700;">➖ Hủy môn</span>`;
+      let statusBadge = '';
+      if (r.Status === 'PENDING') statusBadge = `<span style="background:#fef9c3;color:#a16207;padding:4px 10px;border-radius:8px;font-size:13px;font-weight:700;">⏳ Chờ duyệt</span>`;
+      else if (r.Status === 'APPROVED') statusBadge = `<span style="background:#dcfce7;color:#15803d;padding:4px 10px;border-radius:8px;font-size:13px;font-weight:700;">✅ Đã duyệt</span>`;
+      else statusBadge = `<span style="background:#fee2e2;color:#b91c1c;padding:4px 10px;border-radius:8px;font-size:13px;font-weight:700;">❌ Đã từ chối</span>`;
+
+      let actions = '';
+      if (r.Status === 'PENDING') {
+        actions = `
+          <div style="display:flex;gap:6px;justify-content:center;">
+            <button onclick="openApproveSubjectModal(${r.Id}, '${r.ActionType}', '${r.TenGiangVien} (${r.LecturerId})', '${r.SubjectCode}', '${r.SubjectName.replace(/'/g,"\\'").replace(/"/g,'&quot;')}', true)" style="padding:6px 12px;background:#10b981;color:white;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Duyệt</button>
+            <button onclick="openApproveSubjectModal(${r.Id}, '${r.ActionType}', '${r.TenGiangVien} (${r.LecturerId})', '${r.SubjectCode}', '${r.SubjectName.replace(/'/g,"\\'").replace(/"/g,'&quot;')}', false)" style="padding:6px 12px;background:#ef4444;color:white;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Từ chối</button>
+          </div>
+        `;
+      }
+      return `
+        <tr>
+          <td style="font-size:14px;">${new Date(r.CreatedAt).toLocaleString('vi-VN')}</td>
+          <td style="font-weight:600;">${r.TenGiangVien}<br><span style="font-size:12px;color:var(--text-muted);font-weight:400;">${r.LecturerId}</span></td>
+          <td>${typeBadge}</td>
+          <td style="font-weight:600;">${r.SubjectCode}<br><span style="font-size:13px;color:var(--text-muted);font-weight:400;">${r.SubjectName}</span></td>
+          <td style="font-size:14px;color:var(--text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;">${r.Reason || ''}</td>
+          <td style="text-align:center;">${statusBadge}</td>
+          <td style="text-align:center;">${actions}</td>
+        </tr>
+      `;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:red;">Lỗi: ${e.message}</td></tr>`;
+  }
+}
+
+function openApproveSubjectModal(id, actionType, gvName, subjectCode, subjectName, isApprove) {
+  document.getElementById('req-modal-id').value = id;
+  document.getElementById('req-modal-action-type').value = actionType;
+  document.getElementById('req-modal-approve').value = isApprove ? '1' : '0';
+  document.getElementById('req-modal-gv').textContent = gvName;
+  document.getElementById('req-modal-sub').textContent = `${subjectCode} - ${subjectName}`;
+  document.getElementById('req-modal-type').textContent = actionType === 'ADD' ? 'Thêm môn học' : 'Hủy môn học';
+  
+  if (isApprove) {
+    if (actionType === 'ADD') {
+      document.getElementById('req-modal-permissions').style.display = 'block';
+      document.getElementById('req-perm-add').checked = false;
+      document.getElementById('req-perm-edit').checked = false;
+      document.getElementById('req-perm-del').checked = false;
+    } else {
+      document.getElementById('req-modal-permissions').style.display = 'none';
+    }
+    document.getElementById('req-modal-reject-reason').style.display = 'none';
+    document.getElementById('req-modal-submit-btn').textContent = 'Phê duyệt';
+    document.getElementById('req-modal-submit-btn').style.background = 'linear-gradient(135deg,#10b981,#059669)';
+  } else {
+    document.getElementById('req-modal-permissions').style.display = 'none';
+    document.getElementById('req-modal-reject-reason').style.display = 'block';
+    document.getElementById('req-reject-feedback').value = '';
+    document.getElementById('req-modal-submit-btn').textContent = 'Từ chối';
+    document.getElementById('req-modal-submit-btn').style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+  }
+  document.getElementById('modal-approve-subject').classList.add('show');
+}
+
+function closeApproveSubjectModal() {
+  document.getElementById('modal-approve-subject').classList.remove('show');
+}
+
+async function submitApproveSubject() {
+  const id = document.getElementById('req-modal-id').value;
+  const isApprove = document.getElementById('req-modal-approve').value === '1';
+  const actionType = document.getElementById('req-modal-action-type').value;
+  
+  let endpoint = `/api/admin/subject-requests/${id}/${isApprove ? 'approve' : 'reject'}`;
+  let bodyData = {};
+  
+  if (isApprove && actionType === 'ADD') {
+    bodyData.permissions = {
+      CanView: 1, // default
+      CanAdd: document.getElementById('req-perm-add').checked ? 1 : 0,
+      CanEdit: document.getElementById('req-perm-edit').checked ? 1 : 0,
+      CanDelete: document.getElementById('req-perm-del').checked ? 1 : 0,
+    };
+  } else if (!isApprove) {
+    bodyData.feedback = document.getElementById('req-reject-feedback').value;
+  }
+  
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      body: JSON.stringify(bodyData)
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showAdminToast(`Đã ${isApprove ? 'phê duyệt' : 'từ chối'} yêu cầu thành công!`, 'success');
+      closeApproveSubjectModal();
+      loadAdminSubjectRequests();
+      if (document.getElementById('admin-req-tbody')) {
+          loadLecturers(); // Refresh lecturers to reflect new perms
+      }
+    } else {
+      showAdminToast(data.error || 'Lỗi xử lý yêu cầu', 'error');
+    }
+  } catch(e) {
+    showAdminToast(e.message, 'error');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const tabReq = document.querySelector('[data-section="subject-requests"]');
+  if (tabReq) {
+    tabReq.addEventListener('click', () => {
+      loadAdminSubjectRequests();
+    });
+  }
+});
+

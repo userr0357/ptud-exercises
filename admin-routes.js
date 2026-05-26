@@ -1272,4 +1272,125 @@ module.exports = function(app, auth) {
       res.json(result.recordset);
     } catch(e) { res.json([]); }
   });
+
+  // ==================================================
+  // SUBJECT REQUESTS
+  // ==================================================
+  app.get('/api/admin/subject-requests', auth, async (req, res) => {
+    try {
+      const pool = await db.getPool();
+      const r = await pool.request()
+        .query(`SELECT r.*, gv.TenGiangVien 
+                FROM YEUCAU_MONHOC r 
+                LEFT JOIN GIANGVIEN gv ON r.LecturerId = gv.MaGiangVien 
+                ORDER BY r.CreatedAt DESC`);
+      res.json(r.recordset);
+    } catch(e) { res.status(500).json({error: e.message}); }
+  });
+
+  app.post('/api/admin/subject-requests/:id/approve', auth, async (req, res) => {
+    try {
+      const pool = await db.getPool();
+      const reqId = req.params.id;
+      // Get request details
+      const reqInfoR = await pool.request().input('id', mssql.Int, reqId).query("SELECT * FROM YEUCAU_MONHOC WHERE Id=@id");
+      if (reqInfoR.recordset.length === 0) return res.status(404).json({error: 'Không tìm thấy yêu cầu'});
+      const requestData = reqInfoR.recordset[0];
+      
+      if (requestData.Status !== 'PENDING') return res.status(400).json({error: 'Yêu cầu này đã được xử lý'});
+
+      const { permissions } = req.body; // e.g. { CanView: 1, CanAdd: 1, CanEdit: 1, CanDelete: 0 }
+
+      const transaction = new mssql.Transaction(pool);
+      await transaction.begin();
+      try {
+        if (requestData.ActionType === 'ADD') {
+          // 1. Ensure subject exists in MONHOC
+          const checkMonR = await transaction.request()
+            .input('code', mssql.VarChar, requestData.SubjectCode)
+            .query("SELECT * FROM MONHOC WHERE MaMon=@code");
+          if (checkMonR.recordset.length === 0) {
+            await transaction.request()
+              .input('code', mssql.VarChar, requestData.SubjectCode)
+              .input('name', mssql.NVarChar, requestData.SubjectName)
+              .query("INSERT INTO MONHOC (MaMon, TenMon) VALUES (@code, @name)");
+          }
+
+          // 2. Grant permissions
+          // Check if already assigned
+          const checkAssignedR = await transaction.request()
+            .input('gv', mssql.VarChar, requestData.LecturerId)
+            .input('code', mssql.VarChar, requestData.SubjectCode)
+            .query("SELECT * FROM GIANGVIEN_MONHOC WHERE MaGiangVien=@gv AND MaMon=@code");
+            
+          const canView = permissions?.CanView ? 1 : 1; // Default at least view
+          const canAdd = permissions?.CanAdd ? 1 : 0;
+          const canEdit = permissions?.CanEdit ? 1 : 0;
+          const canDelete = permissions?.CanDelete ? 1 : 0;
+
+          if (checkAssignedR.recordset.length === 0) {
+            await transaction.request()
+              .input('gv', mssql.VarChar, requestData.LecturerId)
+              .input('code', mssql.VarChar, requestData.SubjectCode)
+              .input('v', mssql.Bit, canView)
+              .input('a', mssql.Bit, canAdd)
+              .input('e', mssql.Bit, canEdit)
+              .input('d', mssql.Bit, canDelete)
+              .query(`INSERT INTO GIANGVIEN_MONHOC (MaGiangVien, MaMon, CanView, CanAdd, CanEdit, CanDelete) 
+                      VALUES (@gv, @code, @v, @a, @e, @d)`);
+          } else {
+             await transaction.request()
+              .input('gv', mssql.VarChar, requestData.LecturerId)
+              .input('code', mssql.VarChar, requestData.SubjectCode)
+              .input('v', mssql.Bit, canView)
+              .input('a', mssql.Bit, canAdd)
+              .input('e', mssql.Bit, canEdit)
+              .input('d', mssql.Bit, canDelete)
+              .query(`UPDATE GIANGVIEN_MONHOC SET CanView=@v, CanAdd=@a, CanEdit=@e, CanDelete=@d 
+                      WHERE MaGiangVien=@gv AND MaMon=@code`);
+          }
+        } else if (requestData.ActionType === 'REMOVE') {
+          // Check < 10 exercises
+          const countR = await transaction.request()
+            .input('gv', mssql.VarChar, requestData.LecturerId)
+            .input('code', mssql.VarChar, requestData.SubjectCode)
+            .query("SELECT COUNT(*) as count FROM BAITAP WHERE MaGiangVien=@gv AND MaMon=@code AND (IsDeleted=0 OR IsDeleted IS NULL)");
+          
+          if (countR.recordset[0].count >= 10) {
+             throw new Error('Môn học này đang có 10 bài tập trở lên, không thể xóa quyền phụ trách.');
+          }
+          
+          // Remove from GIANGVIEN_MONHOC
+          await transaction.request()
+            .input('gv', mssql.VarChar, requestData.LecturerId)
+            .input('code', mssql.VarChar, requestData.SubjectCode)
+            .query("DELETE FROM GIANGVIEN_MONHOC WHERE MaGiangVien=@gv AND MaMon=@code");
+        }
+
+        // Update Request Status
+        await transaction.request()
+          .input('id', mssql.Int, reqId)
+          .query("UPDATE YEUCAU_MONHOC SET Status='APPROVED', UpdatedAt=GETDATE() WHERE Id=@id");
+
+        await transaction.commit();
+        res.json({success: true});
+      } catch (err) {
+        await transaction.rollback();
+        res.status(400).json({error: err.message});
+      }
+    } catch(e) { res.status(500).json({error: e.message}); }
+  });
+
+  app.post('/api/admin/subject-requests/:id/reject', auth, async (req, res) => {
+    try {
+      const pool = await db.getPool();
+      const reqId = req.params.id;
+      const { feedback } = req.body;
+      await pool.request()
+        .input('id', mssql.Int, reqId)
+        .input('feedback', mssql.NVarChar, feedback || '')
+        .query("UPDATE YEUCAU_MONHOC SET Status='REJECTED', AdminFeedback=@feedback, UpdatedAt=GETDATE() WHERE Id=@id");
+      res.json({success: true});
+    } catch(e) { res.status(500).json({error: e.message}); }
+  });
 };

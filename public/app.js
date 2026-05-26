@@ -1358,4 +1358,94 @@ if (document.getElementById('lecturer-export-log-tbody')) {
   setTimeout(loadLecturerExportLog, 1000);
 }
 
+// ==================================================
+// SUBJECT REQUESTS (LECTURER)
+// ==================================================
+function openSubjectRequestModal() {
+  document.getElementById('modal-subject-request').classList.add('show');
+  switchReqTab('form');
+}
+function closeSubjectRequestModal() {
+  document.getElementById('modal-subject-request').classList.remove('show');
+}
+function switchReqTab(tab) {
+  if (tab === 'form') {
+    document.getElementById('req-form-section').style.display = 'block';
+    document.getElementById('req-history-section').style.display = 'none';
+    document.getElementById('tab-req-form').style.borderBottomColor = '#6366f1';
+    document.getElementById('tab-req-form').style.color = '#6366f1';
+    document.getElementById('tab-req-history').style.borderBottomColor = 'transparent';
+    document.getElementById('tab-req-history').style.color = 'var(--text-muted)';
+  } else {
+    document.getElementById('req-form-section').style.display = 'none';
+    document.getElementById('req-history-section').style.display = 'block';
+    document.getElementById('tab-req-history').style.borderBottomColor = '#6366f1';
+    document.getElementById('tab-req-history').style.color = '#6366f1';
+    document.getElementById('tab-req-form').style.borderBottomColor = 'transparent';
+    document.getElementById('tab-req-form').style.color = 'var(--text-muted)';
+    loadSubjectRequests();
+  }
+}
+async function submitSubjectRequest(e) {
+  e.preventDefault();
+  const data = {
+    ActionType: document.getElementById('req-action').value,
+    SubjectCode: document.getElementById('req-code').value.toUpperCase().trim(),
+    SubjectName: document.getElementById('req-name').value.trim(),
+    Reason: document.getElementById('req-reason').value.trim()
+  };
+  try {
+    const res = await fetch('/api/lecturer/subject-request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if (res.ok && result.success) {
+      showToast('Đã gửi yêu cầu thành công. Vui lòng chờ Admin duyệt!', 'success');
+      document.getElementById('subject-request-form').reset();
+      switchReqTab('history');
+    } else {
+      showToast(result.error || 'Lỗi gửi yêu cầu', 'error');
+    }
+  } catch(err) {
+    showToast(err.message, 'error');
+  }
+}
+async function loadSubjectRequests() {
+  const tbody = document.getElementById('req-history-tbody');
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; color:#64748b;">Đang tải...</td></tr>';
+  try {
+    const res = await fetch('/api/lecturer/subject-requests', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+    const data = await res.json();
+    if (data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; color:#64748b;">Chưa có yêu cầu nào.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(r => {
+      const isAdd = r.ActionType === 'ADD';
+      const actionBadge = isAdd ? `<span style="background:#e0e7ff;color:#4338ca;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:bold">Xin Thêm Môn</span>` 
+                                : `<span style="background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:bold">Xin Hủy Môn</span>`;
+      
+      let statusBadge = '';
+      if (r.Status === 'PENDING') statusBadge = `<span style="background:#fef9c3;color:#a16207;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:bold">⏳ Đang chờ duyệt</span>`;
+      else if (r.Status === 'APPROVED') statusBadge = `<span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:bold">✅ Đã duyệt</span>`;
+      else statusBadge = `<span style="background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:bold">❌ Bị từ chối</span> <div style="font-size:12px;color:#ef4444;margin-top:4px">${r.AdminFeedback||''}</div>`;
+      
+      return `
+        <tr style="border-bottom:1px solid var(--border-color,#e2e8f0);">
+          <td style="padding:12px;font-size:14px;color:var(--text-main)">${new Date(r.CreatedAt).toLocaleString('vi-VN')}</td>
+          <td style="padding:12px;">${actionBadge}</td>
+          <td style="padding:12px;font-weight:600;color:var(--text-main)">${r.SubjectCode} - ${r.SubjectName}</td>
+          <td style="padding:12px;">${statusBadge}</td>
+        </tr>
+      `;
+    }).join('');
+  } catch(err) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px; color:#ef4444;">Lỗi tải dữ liệu.</td></tr>`;
+  }
+}
+
 
