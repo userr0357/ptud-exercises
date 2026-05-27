@@ -277,9 +277,14 @@
 
           <!-- ─── Phân Loại Theo Dạng Bài ─── -->
           <div style="background:var(--card-bg);border-radius:12px;padding:20px;border:1px solid var(--border-color);margin-top:16px;">
-            <div style="margin-bottom:14px;">
-              <h3 style="margin:0;font-size:17px;font-weight:700;color:var(--text-main);">📋 Phân loại theo dạng bài</h3>
-              <p style="margin:4px 0 0;font-size:15px;color:var(--text-muted);">Số lượng bài tập phân bổ theo từng dạng bài</p>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+              <div>
+                <h3 style="margin:0;font-size:17px;font-weight:700;color:var(--text-main);">📋 Phân loại theo dạng bài</h3>
+                <p style="margin:4px 0 0;font-size:15px;color:var(--text-muted);">Số lượng bài tập phân bổ theo từng dạng bài</p>
+              </div>
+              <select id="filter-type-subject" onchange="loadTypeChartBySubject()" style="padding:6px 12px;border:1px solid var(--border-color);border-radius:8px;background:var(--card-bg);color:var(--text-main);font-size:14px;cursor:pointer;outline:none;">
+                <option value="">Tất cả môn học</option>
+              </select>
             </div>
             <div style="display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start;">
               <div style="position:relative;height:220px;"><canvas id="dash-pie-form"></canvas></div>

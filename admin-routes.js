@@ -555,14 +555,14 @@ module.exports = function(app, auth) {
       const pool = await db.getPool();
       // By Subject
       const subR = await pool.request().query(`SELECT m.MaMon AS mamon, m.TenMon AS label, COUNT(b.Id) AS value
-        FROM MONHOC m LEFT JOIN BAITAP b ON b.MaMon=m.MaMon AND (b.IsDeleted=0 OR b.IsDeleted IS NULL)
+        FROM MONHOC m INNER JOIN BAITAP b ON b.MaMon=m.MaMon AND (b.IsDeleted=0 OR b.IsDeleted IS NULL)
         GROUP BY m.MaMon, m.TenMon`);
       // By Level
       const lvlR = await pool.request().query(`SELECT SkillLevel AS label, COUNT(*) AS value
         FROM BAITAP WHERE (IsDeleted=0 OR IsDeleted IS NULL) GROUP BY SkillLevel ORDER BY SkillLevel`);
       // By Form (for type chart)
       const formR = await pool.request().query(`SELECT d.TenDangBai AS label, COUNT(b.Id) AS value
-        FROM DANGBAI d LEFT JOIN BAITAP b ON b.MaDangBai=d.MaDangBai AND (b.IsDeleted=0 OR b.IsDeleted IS NULL)
+        FROM DANGBAI d INNER JOIN BAITAP b ON b.MaDangBai=d.MaDangBai AND (b.IsDeleted=0 OR b.IsDeleted IS NULL)
         GROUP BY d.TenDangBai`);
       res.json({
         bySubject: subR.recordset,
@@ -580,7 +580,7 @@ module.exports = function(app, auth) {
       let queryStr = `
         SELECT d.TenDangBai AS label, COUNT(b.Id) AS value
         FROM DANGBAI d 
-        LEFT JOIN BAITAP b ON b.MaDangBai = d.MaDangBai AND (b.IsDeleted = 0 OR b.IsDeleted IS NULL)
+        INNER JOIN BAITAP b ON b.MaDangBai = d.MaDangBai AND (b.IsDeleted = 0 OR b.IsDeleted IS NULL)
       `;
       const request = pool.request();
       if (mamon) {
@@ -618,7 +618,7 @@ module.exports = function(app, auth) {
     try {
       const pool = await db.getPool();
       const r = await pool.request().query(`SELECT m.TenMon AS label, COUNT(b.Id) AS value
-        FROM MONHOC m LEFT JOIN BAITAP b ON b.MaMon=m.MaMon AND (b.IsDeleted=0 OR b.IsDeleted IS NULL)
+        FROM MONHOC m INNER JOIN BAITAP b ON b.MaMon=m.MaMon AND (b.IsDeleted=0 OR b.IsDeleted IS NULL)
         GROUP BY m.TenMon`);
       res.json(r.recordset);
     } catch(e) { res.json([]); }

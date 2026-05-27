@@ -189,7 +189,12 @@ app.post('/api/lecturer/forgot-password', async (req, res) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Lưu OTP vào DB (hết hạn sau 5 phút)
+    // Hủy các OTP cũ chưa sử dụng
+    await pool.request()
+      .input('email', sql.NVarChar, email)
+      .query('UPDATE PasswordResetOTP SET IsUsed=1 WHERE Email=@email AND IsUsed=0');
+
+    // Lưu OTP mới vào DB (hết hạn sau 5 phút)
     await pool.request()
       .input('email', sql.NVarChar, email)
       .input('otp', sql.NVarChar, otp)
@@ -233,6 +238,28 @@ app.post('/api/lecturer/forgot-password', async (req, res) => {
   } catch (err) {
     console.error('Forgot password error:', err.message);
     res.status(500).json({ error: 'Lỗi máy chủ khi gửi OTP' });
+  }
+});
+
+app.post('/api/lecturer/verify-otp', async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) return res.status(400).json({ error: 'Thiếu thông tin' });
+
+    const pool = await db.getPool();
+    const otpRes = await pool.request()
+      .input('email', sql.NVarChar, email)
+      .input('otp', sql.NVarChar, otp)
+      .query(`SELECT TOP 1 * FROM PasswordResetOTP 
+              WHERE Email=@email AND OTP=@otp AND IsUsed=0 AND ExpireAt > GETDATE()
+              ORDER BY CreatedAt DESC`);
+              
+    if (!otpRes.recordset.length) return res.status(400).json({ error: 'Mã OTP không hợp lệ hoặc đã hết hạn' });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Verify OTP error:', err.message);
+    res.status(500).json({ error: 'Lỗi máy chủ' });
   }
 });
 
@@ -286,6 +313,49 @@ app.get('/api/next-id', auth, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+// API: AI Suggest Difficulty & Level
+app.post('/api/ai/suggest-difficulty', auth, async (req, res) => {
+  try {
+    const { title, form_name } = req.body;
+    if (!title) return res.status(400).json({ error: 'Thiếu tên bài tập' });
+
+    const prompt = `Bạn là một chuyên gia giáo dục máy tính. 
+Bài tập lập trình có tên: "${title}"
+Dạng bài: "${form_name || 'Không xác định'}"
+Hãy đánh giá mức độ phức tạp của bài tập này và trả về JSON chỉ chứa 2 trường:
+{
+  "difficulty": "Dễ" | "Trung bình" | "Khó",
+  "skill_level": 1 | 2 | 3 | 4 | 5
+}
+Trong đó skill_level tuân theo thang đo Bloom. CHỈ trả về đoạn JSON hợp lệ, không kèm theo bất kỳ văn bản giải thích nào khác.`;
+
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.3
+      })
+    });
+    const data = await response.json();
+    if (data.error) return res.status(500).json({ error: data.error.message });
+
+    const content = data.choices[0].message.content;
+    const parsed = JSON.parse(content);
+    res.json(parsed);
+  } catch (err) {
+    console.error('Suggest difficulty error:', err);
+    res.status(500).json({ error: 'Lỗi máy chủ' });
+  }
+});
+
+// API: AI Sinh nội dung bài tập
 app.post('/api/exercise', auth, upload.array('files'), async (req, res) => {
   try {
     const payload = req.body;

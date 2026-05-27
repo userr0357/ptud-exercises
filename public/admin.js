@@ -2458,6 +2458,15 @@ async function loadDashboardPieCharts() {
     if (formLeg) formLeg.innerHTML = '';
 
     if (data.bySubject && data.bySubject.length) {
+      const select = document.getElementById('filter-type-subject');
+      if (select && select.options.length === 1) {
+        data.bySubject.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.mamon;
+          opt.textContent = s.label;
+          select.appendChild(opt);
+        });
+      }
       renderPieChart('dash-pie-subject', data.bySubject, 'subject', 'dash-subject-legend-tbody');
     } else if (subLeg) {
       subLeg.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:16px;color:var(--text-muted);">Không có dữ liệu</td></tr>';
@@ -2476,6 +2485,38 @@ async function loadDashboardPieCharts() {
       formLeg.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:16px;color:var(--text-muted);">Không có dữ liệu</td></tr>';
     }
   } catch (e) { console.error('Dashboard pie charts failed', e); }
+}
+
+async function loadTypeChartBySubject() {
+  const select = document.getElementById('filter-type-subject');
+  const mamon = select ? select.value : '';
+  
+  const formLeg = document.getElementById('dash-form-legend-tbody');
+  if (formLeg) formLeg.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:16px;color:var(--text-muted);">⏳ Đang tải...</td></tr>';
+  
+  try {
+    const url = mamon ? `/api/admin/stats/type-by-subject?mamon=${encodeURIComponent(mamon)}` : '/api/admin/stats/distribution';
+    const res = await fetch(url, { credentials: 'include' });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    
+    // API distribution returns { byForm: [...] } whereas type-by-subject returns [...] directly
+    const byForm = mamon ? data : data.byForm;
+    
+    if (formLeg) formLeg.innerHTML = '';
+    
+    if (byForm && byForm.length) {
+      renderPieChart('dash-pie-form', byForm, 'form', 'dash-form-legend-tbody');
+    } else {
+      if (formLeg) formLeg.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:16px;color:var(--text-muted);">Không có dữ liệu</td></tr>';
+      if (dashboardCharts['dash-pie-form']) {
+        dashboardCharts['dash-pie-form'].destroy();
+        delete dashboardCharts['dash-pie-form'];
+      }
+    }
+  } catch (err) {
+    if (formLeg) formLeg.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:16px;color:#ef4444;">❌ Lỗi tải dữ liệu</td></tr>';
+  }
 }
 
 function renderActivityChart(data) {

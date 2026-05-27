@@ -942,7 +942,10 @@
         <select name="difficulty" id="field-difficulty">
           <option>Dễ</option><option selected>Trung bình</option><option>Khó</option>
         </select>
-        <label>Cấp độ kỹ năng (Skill Level)</label>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;">
+          <label style="margin:0;">Cấp độ kỹ năng (Skill Level)</label>
+          <button type="button" id="btn-suggest-level" onclick="suggestDifficultyAndLevel()" style="padding:4px 10px;background:#fffbeb;color:#d97706;border:1.5px solid #fde68a;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">🪄 AI Gợi ý</button>
+        </div>
         <select name="level" id="field-level">
           <option value="1">Level 1 – Nhận biết (Lắp ghép cú pháp)</option>
           <option value="2">Level 2 – Hiểu & phân tích</option>

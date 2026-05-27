@@ -592,3 +592,48 @@ if (document.readyState === 'loading') {
 } else {
   initAIFeatures();
 }
+
+// Hàm gợi ý độ khó và level bằng AI
+async function suggestDifficultyAndLevel() {
+  const title = document.getElementById('field-title').value.trim();
+  if (!title) {
+    showToast('Vui lòng nhập tên bài tập trước khi dùng AI gợi ý!', 'error');
+    return;
+  }
+  
+  const formSelect = document.getElementById('form-form');
+  const formName = formSelect.options[formSelect.selectedIndex]?.text || '';
+  const btn = document.getElementById('btn-suggest-level');
+  
+  const oldText = btn.innerHTML;
+  btn.innerHTML = '⏳ Đang phân tích...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/ai/suggest-difficulty', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({ title, form_name: formName })
+    });
+    
+    if (!res.ok) throw new Error('Lỗi phản hồi từ máy chủ');
+    const data = await res.json();
+    
+    if (data.difficulty) {
+      document.getElementById('field-difficulty').value = data.difficulty;
+    }
+    if (data.skill_level) {
+      document.getElementById('field-level').value = data.skill_level.toString();
+    }
+    showToast('✨ AI đã gợi ý Độ Khó và Level phù hợp!');
+  } catch (err) {
+    console.error(err);
+    showToast('Không thể lấy gợi ý từ AI', 'error');
+  } finally {
+    btn.innerHTML = oldText;
+    btn.disabled = false;
+  }
+}
