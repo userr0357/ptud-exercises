@@ -50,3 +50,8 @@ Notes:
 - The backend persists changes directly into `db.json`.
 - Excel export available per subject via the UI (button in Lecturer panel) or GET `/api/export?subject_id=CS101`.
 - File uploads are stored in `uploads/` and file metadata saved in `attached_files` on the exercise.
+
+Page chính: 
+https://ptud-exercises.onrender.com/
+https://ptud-exercises.onrender.com/admin.html
+https://ptud-exercises.onrender.com/lecturer
